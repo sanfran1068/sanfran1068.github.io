@@ -4950,7 +4950,7 @@ This is another regular paragraph.
     <content><![CDATA[<p>实现了一种发布订阅者模式的插件机制。通过 Tapable 我们可以注册时间，从而在不同时机去触发注册的事件进行执行。Tapable 怎么使用呢？</p>
 <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 初始化 hook，此处的字符串数组比较重要</span></span><br><span class="line"><span class="keyword">const</span> hook = <span class="keyword">new</span> <span class="title class_">SyncHook</span>([<span class="string">&#x27;arg1&#x27;</span>, <span class="string">&#x27;arg2&#x27;</span>, <span class="string">&#x27;arg3&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为 hook 注册事件，同步 hook 只有 tap 方法，</span></span><br><span class="line"><span class="comment">// 接受两个参数，一个是字符串的标识，第二个是注册的函数，在调用时执行</span></span><br><span class="line">hook.<span class="title function_">tap</span>(<span class="string">&#x27;flag1&#x27;</span>, <span class="function">(<span class="params">arg1, arg2, arg3</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;flag1:&#x27;</span>, arg1, arg2, arg3)</span><br><span class="line">&#125;)</span><br><span class="line">hook.<span class="title function_">tap</span>(<span class="string">&#x27;flag2&#x27;</span>, <span class="function">(<span class="params">arg1, arg2, arg3</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;flag2:&#x27;</span>,arg1, arg2, arg3)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用事件并传递执行参数</span></span><br><span class="line">hook.<span class="title function_">call</span>(<span class="string">&#x27;19Qingfeng&#x27;</span>, <span class="string">&#x27;wang&#x27;</span>, <span class="string">&#x27;haoyu&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印结果</span></span><br><span class="line"><span class="comment">// flag1: 19Qingfeng wang haoyu</span></span><br><span class="line"><span class="comment">// flag2: 19Qingfeng wang haoyu</span></span><br></pre></td></tr></table></figure>
 <span id="more"></span>
-<h3 id="hook-的分类"><a href="#hook-的分类" class="headerlink" title="hook 的分类"></a>hook 的分类</h3><h4 id="根据同步和异步分类"><a href="#根据同步和异步分类" class="headerlink" title="根据同步和异步分类"></a>根据同步和异步分类</h4><p><img src="Tapable%20b61b89bee0e14e4096b199f1b9e6f3b8/%25E6%2588%25AA%25E5%25B1%258F2023-03-16_%25E4%25B8%258B%25E5%258D%25884.16.48.png" alt="截屏2023-03-16 下午4.16.48.png"></p>
+<h3 id="hook-的分类"><a href="#hook-的分类" class="headerlink" title="hook 的分类"></a>hook 的分类</h3><h4 id="根据同步和异步分类"><a href="#根据同步和异步分类" class="headerlink" title="根据同步和异步分类"></a>根据同步和异步分类</h4><p><img src="https://img.alicdn.com/imgextra/i2/O1CN01sDdVcy1SRnbq3kJc8_!!6000000002244-0-tps-1313-685.jpg" alt="6000000002244-0-tps-1313-685"></p>
 <p>同步的 hook，只有 tap 是唯一的注册事件的方法，通过 call 方法触发 hook 的执行。</p>
 <p>异步的 hook，可以通过 tap、tapAsync 和 tapPromise 三种方式来注册，可以通过 call、callAsync 和 promise 三种方式来触发注册函数。tapAsync 注册函数额外接受一个 callback 参数，调用 callback 表示函数执行完毕。tapAsync 和 tapPromise 如果有错误对象或 reject，则中断执行。</p>
 <p>异步的 hook，另外还可以分为可串行和可并行执行两种类型。</p>
@@ -5028,6 +5028,37 @@ This is another regular paragraph.
         <tag>Framework</tag>
         <tag>Angular</tag>
         <tag>Dependency Injection</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>论前端之死[The End of Front-End Development-Josh Comeau]</title>
+    <url>/2023/04/16/2023-04-16-how-frontend-field-die.html</url>
+    <content><![CDATA[<p><a href="https://www.joshwcomeau.com/blog/the-end-of-frontend-development/">The End of Front-End Development</a></p>
+<h3 id="AI-带来的失业焦虑"><a href="#AI-带来的失业焦虑" class="headerlink" title="AI 带来的失业焦虑"></a>AI 带来的失业焦虑</h3><p>当前网络上充斥着“前端已死“的论调，而作者 Josh 是极度不同意这个观点的，而且十分厌恶在网络上散播这种焦虑的现象。</p>
+<p>其实自从 HTML、CSS 出现以来，就不断有制作网站的工具出现：像 2000 年的 WordPress，2010 年代的 Webflow 以及当前 2020 年代的低代码/无代码平台。当然随着这样的发展，有一部分网站开发者的确被时代抛弃，比如一个个体经营户要创建一个店铺网站，只需要每个月花点钱去建站平台上搭一个页面即可，而不需要专门雇一个网站开发者来维护。</p>
+<h3 id="GPT-4-是否能替代开发者？"><a href="#GPT-4-是否能替代开发者？" class="headerlink" title="GPT-4 是否能替代开发者？"></a>GPT-4 是否能替代开发者？</h3><p>当下的情况是，GPT-4 能够将一个网站设计草稿变为一个具有功能的网站，通过轻点按钮。作者认为这是令人震惊的，在原型设计上有很强的潜力。但是需要注意的是，网站开发者已经数十年没有写过如此简单的页面了（现在的网站页面早已和这些页面完全不同）。</p>
+<p>反过来看下 GPT-4 所使用的模型 LLM（Large Language Model）。事实上， LLMs 只是一个文本预测模型——你给出提示词，模型会返回一些最相关的关键词/句子，实际上这个准确率大概只有 80%。LLMs 是无法对给出的答案进行验证或证明的，这只是一个<strong>概率游戏</strong>。只要是有概率存在，那么这个模型就会有不同程度的不准确性。映射到 LLMs 模型生成代码的层面，睡hui为代码的健壮性、安全性来”打标“呢？</p>
+<p>对于一个 50 行的 HTML 代码来说，实际上的生产环境 web 应用有着巨大的不同。一个简单的博客 app 可能就会有 65k 行的代码，包含 900 多个文件。如果模型能够生成如此巨量的代码，那么<strong>测试和 debug 就会前所未有的困难！</strong></p>
+<span id="more"></span>
+<h3 id="AI-是一种工具"><a href="#AI-是一种工具" class="headerlink" title="AI 是一种工具"></a>AI 是一种工具</h3><p>目前的 AI 不是万能的，它的优势只存在于训练数据。网络上的代码段随处可见，但是代码仓库一般来首确是独一无二的。</p>
+<p>AI 可以增强开发者的能力，而非替代他们。目前的最佳实践是将 AI 集成在开发工具中来增强开发者的开发能力。那么问题来了，当单个开发者的能力提升后，会不会造成裁员？大概率不会，作者在曾经工作的所有公司，都是需求大于供给，开发者数量总是限制需求开发的瓶颈。另一方面，当一个开发者的效率提升了 2 倍，那么很可能开发所产生的 bug、更多的需求会随之产生。</p>
+<p>当前市场上，很多公司的确不会自己雇佣开发者来开发网站，比较常见的是将这些需求承包给专业做网站开发的公司。</p>
+<h3 id="放眼其他领域"><a href="#放眼其他领域" class="headerlink" title="放眼其他领域"></a>放眼其他领域</h3><p>作者用一个在迪士尼工作了近 20 年的动画、特效设计师来举例——Aaron Blaise 发表了<a href="https://www.youtube.com/watch?v=xm7BwEsdVbQ">一段视频</a>，视频题目是《迪士尼对于 AI 动画的反馈》。视频中，动画设计师并没有将 AI 视作威胁，而是将其作为提升生产力的工具，并能够提供更多相关的工作。</p>
+<p>艺术家、知识性白领和律师等职业人士，也面临着这样的讨论。大部分资深的人员认为 AI 能够提供更多的帮助来提升生产力，它能够代理更多任务，但是不能代理更多职务。</p>
+<p>如果有 LLMs 能够完全替代软件开发工程师的那一天，想必它也会完全提到更多的知识性工作职位。AI 不是一场海啸，而是一个更高的平台。</p>
+<h3 id="使用-LLMs-模型帮助学习"><a href="#使用-LLMs-模型帮助学习" class="headerlink" title="使用 LLMs 模型帮助学习"></a>使用 LLMs 模型帮助学习</h3><p>作者听身边很多开发者谈到 GPT 能够帮助提升学习技能，当你对文档或教程有疑惑时可以向 AI 提问。GPT 像一个变成伙伴，当你有任何问题都能得到可供参考的答案。</p>
+<p>但是作者认为利用这样的工具来学习有利有弊。如果你将 AI 视作指南针，让它带领你给你引导，会让你自己的方向感丢失。如果你将 AI 视作”陪审团“，让它给与你可供参考的建议和意见，由你自己来决定是否参考时，这样的学习更能够提升自己的能力。</p>
+<h3 id="提升开发者信心的一个消息"><a href="#提升开发者信心的一个消息" class="headerlink" title="提升开发者信心的一个消息"></a>提升开发者信心的一个消息</h3><p>作者写这篇博客的原因是想跟开发者们强调说，面对上述焦虑和怀疑，并且认为持续学习毫无意义的开发者是会被时代所抛弃的。</p>
+<p>谁也不能保证现状会一直持续这样发展，就像在 2000 年代和现在区别，网站开发已经拥有完全不同的技术能力和环境。</p>
+<p>所以利用好 AI，不断持续学习吧，在未来可能有更多可能的职业和挑战，大浪淘沙，只有不断积累节能、持续学习才能永立潮头！</p>
+]]></content>
+      <categories>
+        <category>Translation</category>
+      </categories>
+      <tags>
+        <tag>Trend</tag>
+        <tag>Frontend</tag>
+        <tag>Blog</tag>
       </tags>
   </entry>
 </search>
