@@ -5031,9 +5031,9 @@ This is another regular paragraph.
       </tags>
   </entry>
   <entry>
-    <title>论前端之死[The End of Front-End Development-Josh Comeau]</title>
+    <title>论前端之死[The End of Front-End Development by Josh Comeau]</title>
     <url>/2023/04/16/2023-04-16-how-frontend-field-die.html</url>
-    <content><![CDATA[<p><a href="https://www.joshwcomeau.com/blog/the-end-of-frontend-development/">The End of Front-End Development</a></p>
+    <content><![CDATA[<p>原文：<a href="https://www.joshwcomeau.com/blog/the-end-of-frontend-development/">The End of Front-End Development</a></p>
 <h3 id="AI-带来的失业焦虑"><a href="#AI-带来的失业焦虑" class="headerlink" title="AI 带来的失业焦虑"></a>AI 带来的失业焦虑</h3><p>当前网络上充斥着“前端已死“的论调，而作者 Josh 是极度不同意这个观点的，而且十分厌恶在网络上散播这种焦虑的现象。</p>
 <p>其实自从 HTML、CSS 出现以来，就不断有制作网站的工具出现：像 2000 年的 WordPress，2010 年代的 Webflow 以及当前 2020 年代的低代码/无代码平台。当然随着这样的发展，有一部分网站开发者的确被时代抛弃，比如一个个体经营户要创建一个店铺网站，只需要每个月花点钱去建站平台上搭一个页面即可，而不需要专门雇一个网站开发者来维护。</p>
 <h3 id="GPT-4-是否能替代开发者？"><a href="#GPT-4-是否能替代开发者？" class="headerlink" title="GPT-4 是否能替代开发者？"></a>GPT-4 是否能替代开发者？</h3><p>当下的情况是，GPT-4 能够将一个网站设计草稿变为一个具有功能的网站，通过轻点按钮。作者认为这是令人震惊的，在原型设计上有很强的潜力。但是需要注意的是，网站开发者已经数十年没有写过如此简单的页面了（现在的网站页面早已和这些页面完全不同）。</p>

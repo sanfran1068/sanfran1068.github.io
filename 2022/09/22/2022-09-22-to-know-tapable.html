@@ -308,8 +308,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/04/16/2023-04-16-how-frontend-field-die.html" rel="next" title="论前端之死[The End of Front-End Development-Josh Comeau]">
-                  论前端之死[The End of Front-End Development-Josh Comeau] <i class="fa fa-chevron-right"></i>
+                <a href="/2023/04/16/2023-04-16-how-frontend-field-die.html" rel="next" title="论前端之死[The End of Front-End Development by Josh Comeau]">
+                  论前端之死[The End of Front-End Development by Josh Comeau] <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -377,5 +377,23 @@
 
 
 
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+  <script>
+    document.body.addEventListener("mousemove", evt => {
+      const mouseX = evt.clientX;
+      const mouseY = evt.clientY;
+
+      gsap.set(".cursor", {
+        x: mouseX,
+        y: mouseY
+      })
+
+      gsap.to(".shape", {
+        x: mouseX,
+        y: mouseY,
+        stagger: -0.1
+      })
+    });
+  </script>
 </body>
 </html>
