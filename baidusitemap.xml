@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://keefe.wang/2022/09/22/2022-09-22-to-know-tapable.html</loc>
+    <lastmod>2023-05-09</lastmod>
+  </url>
+  <url>
+    <loc>http://keefe.wang/2022/07/03/2022-07-03-angular-detect-change-detail.html</loc>
+    <lastmod>2023-05-09</lastmod>
+  </url>
+  <url>
+    <loc>http://keefe.wang/2022/04/19/2022-04-19-understanding-DI-in-angular.html</loc>
+    <lastmod>2023-05-09</lastmod>
+  </url>
+  <url>
+    <loc>http://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html</loc>
+    <lastmod>2023-05-09</lastmod>
+  </url>
+  <url>
+    <loc>http://keefe.wang/2022/02/11/2022-02-11-how-browser-render-an-HTML-page.html</loc>
+    <lastmod>2023-05-09</lastmod>
+  </url>
+  <url>
     <loc>http://keefe.wang/2021/09/01/2021-09-01-understand-freezing-strategy-of-browser.html</loc>
     <lastmod>2023-05-08</lastmod>
   </url>

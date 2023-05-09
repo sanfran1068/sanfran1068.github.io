@@ -82,7 +82,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">44</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">39</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">49</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">44</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -161,7 +161,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -186,6 +186,454 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2022/09/22/2022-09-22-to-know-tapable.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/09/22/2022-09-22-to-know-tapable.html" class="post-title-link" itemprop="url">认识 Tapable</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-22 23:30:00" itemprop="dateCreated datePublished" datetime="2022-09-22T23:30:00+08:00">2022-09-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SourceCodeReading/" itemprop="url" rel="index"><span itemprop="name">SourceCodeReading</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>实现了一种发布订阅者模式的插件机制。通过 Tapable 我们可以注册时间，从而在不同时机去触发注册的事件进行执行。Tapable 怎么使用呢？</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化 hook，此处的字符串数组比较重要</span></span><br><span class="line"><span class="keyword">const</span> hook = <span class="keyword">new</span> <span class="title class_">SyncHook</span>([<span class="string">&#x27;arg1&#x27;</span>, <span class="string">&#x27;arg2&#x27;</span>, <span class="string">&#x27;arg3&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 为 hook 注册事件，同步 hook 只有 tap 方法，</span></span><br><span class="line"><span class="comment">// 接受两个参数，一个是字符串的标识，第二个是注册的函数，在调用时执行</span></span><br><span class="line">hook.<span class="title function_">tap</span>(<span class="string">&#x27;flag1&#x27;</span>, <span class="function">(<span class="params">arg1, arg2, arg3</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;flag1:&#x27;</span>, arg1, arg2, arg3)</span><br><span class="line">&#125;)</span><br><span class="line">hook.<span class="title function_">tap</span>(<span class="string">&#x27;flag2&#x27;</span>, <span class="function">(<span class="params">arg1, arg2, arg3</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;flag2:&#x27;</span>,arg1, arg2, arg3)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用事件并传递执行参数</span></span><br><span class="line">hook.<span class="title function_">call</span>(<span class="string">&#x27;19Qingfeng&#x27;</span>, <span class="string">&#x27;wang&#x27;</span>, <span class="string">&#x27;haoyu&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印结果</span></span><br><span class="line"><span class="comment">// flag1: 19Qingfeng wang haoyu</span></span><br><span class="line"><span class="comment">// flag2: 19Qingfeng wang haoyu</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/09/22/2022-09-22-to-know-tapable.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2022/07/03/2022-07-03-angular-detect-change-detail.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/07/03/2022-07-03-angular-detect-change-detail.html" class="post-title-link" itemprop="url">Angular 脏检的细节理解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-03 22:00:00" itemprop="dateCreated datePublished" datetime="2022-07-03T22:00:00+08:00">2022-07-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>前端框架最主要解决的就是当数据状态改变时去更新 DOM，Angular 使用的是 change detection。change detection 一般可分为两部分，更新应用数据模型 model，Angular 根据更新后的 model 重新渲染 DOM。<br>大概的一个过程：</p>
+<ol>
+<li>开发者代码更新组件的数据模型 model（例如请求接口返回数据更新）</li>
+<li>angular 检测变化</li>
+<li>脏检机制对整个应用从根到叶检测对应的数据模型是否变化</li>
+<li>如果有数据更新，则更新 DOM</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/03/2022-07-03-angular-detect-change-detail.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html" class="post-title-link" itemprop="url">Angular 的脏检到底如何工作</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-12 22:30:00" itemprop="dateCreated datePublished" datetime="2022-06-12T22:30:00+08:00">2022-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="脏检如何实现？"><a href="#脏检如何实现？" class="headerlink" title="脏检如何实现？"></a>脏检如何实现？</h3><p>Angular 的变化检测机制是建立在 Javascript 的可覆写机制。Angular 在启动阶段会对浏览器的一些底层 API 进行补丁，比如在 addEventListener 方法中添加一些功能：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">addEventListener</span>(<span class="params">eventName, callback</span>) &#123;</span><br><span class="line">     <span class="comment">// call the real addEventListener</span></span><br><span class="line">     <span class="title function_">callRealAddEventListener</span>(eventName, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">// first call the original callback</span></span><br><span class="line">        <span class="title function_">callback</span>(...);     </span><br><span class="line">        <span class="comment">// and then run Angular-specific functionality</span></span><br><span class="line">        <span class="keyword">var</span> changed = angular.<span class="title function_">runChangeDetection</span>();</span><br><span class="line">         <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">             angular.<span class="title function_">reRenderUIPart</span>();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个为底层浏览器 API 打补丁的过程是由 zone.js 工具库提供的。补丁和脏检机制一班发生在以下几种异步情况：</p>
+<ul>
+<li>所有浏览器事件（鼠标事件、键盘事件…）</li>
+<li>setTimeout() 和 setInterval()</li>
+<li>Ajax HTTP 请求</li>
+</ul>
+<p>为了了解 zone 的概念，我们需要先了解浏览器任务和时间循环的机制。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2022/04/19/2022-04-19-understanding-DI-in-angular.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/19/2022-04-19-understanding-DI-in-angular.html" class="post-title-link" itemprop="url">理解 Angular 的依赖注入</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-19 23:00:01" itemprop="dateCreated datePublished" datetime="2022-04-19T23:00:01+08:00">2022-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>依赖注入是一种设计模式，它的主要作用是让类与其依赖相互独立。它能够解决的现实问题是，当一个类 classA 需要依赖另一些类 classB、classC 时，不再需要 classA 中去实例化 classB、classC，即一个类不需要知道它所依赖的其他服务的具体实现，而是直接去使用其依赖。另外还能够便于编写单测、减少冗余代码、使应用便于扩展。</p>
+<p>注入的依赖可以是任何类或值。<br>Angular 框架中有三种依赖注入的类型：</p>
+<ul>
+<li>Constructor Injection：injector 将依赖（服务）在类构建时注入其中</li>
+<li>Setter Injection：injector 将依赖注入到 setter 属性方法中</li>
+<li>Interface Injection： 依赖本身自带 injector，可以将依赖注入任何传入其中的使用者。接受该依赖的使用者必须通过 interface 暴露一个 setter 方法。</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/04/19/2022-04-19-understanding-DI-in-angular.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2022/02/11/2022-02-11-how-browser-render-an-HTML-page.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.png">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/11/2022-02-11-how-browser-render-an-HTML-page.html" class="post-title-link" itemprop="url">浏览器怎样渲染一个页面？—— DOM，CSSOM及其渲染</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-11 22:00:00" itemprop="dateCreated datePublished" datetime="2022-02-11T22:00:00+08:00">2022-02-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Translation/" itemprop="url" rel="index"><span itemprop="name">Translation</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在网页开发的过程中，影响用户体验的因素有很多，大部分归咎于资源加载速度慢、初始页面渲染时加载非必须的文件（甚至会出现没有样式的文档）等等。为了避免这些问题的产生，我们需要理解浏览器渲染一个特定的网页的整个周期和流程。</p>
+<p>首先，我们需要搞清楚什么是 DOM。当一个浏览器向服务端请求一个 HTML 文档，服务器会将这个 HTML 文档以二进制形式的数据（一个带着 <code>Content-Type = &#39;text/html; charset=UTF-8&#39;</code> 的text 文件）进行响应。这其中， <code>text/html</code> 是一种 MIME 类型（MIME 能够告诉浏览器这是一个 HTML 文档，并且字符编码是 UTF-8）。有了这个信息，浏览器就能将二进制文件转换成一个可理解的文本文件，如下图所示</p>
+<p><img src="https://img.alicdn.com/imgextra/i1/O1CN01IYGRnh1NfTM2NnrLz_!!6000000001597-2-tps-1000-259.png" alt="6000000001597-2-tps-1000-259"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/11/2022-02-11-how-browser-render-an-HTML-page.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -628,453 +1076,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.png">
-      <meta itemprop="name" content="Keefe Wang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html" class="post-title-link" itemprop="url">理解 JavaScript（Node）中的 Cookie 和 Session</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-05-03 22:00:00" itemprop="dateCreated datePublished" datetime="2021-05-03T22:00:00+08:00">2021-05-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Translation/" itemprop="url" rel="index"><span itemprop="name">Translation</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>问题一：为什么网站（网页应用）需要有登录的功能？<br>问题二：Cookie 到底是个什么东西？<br>问题三：Cookie 是怎样告诉服务器”是谁发送的请求“？<br>问题四：Cookie 和 Session 验证之间有什么不同？<br>问题五：Session 又是什么？</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2021/04/21/2021-04-21-value-type-of-javascript.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.png">
-      <meta itemprop="name" content="Keefe Wang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/21/2021-04-21-value-type-of-javascript.html" class="post-title-link" itemprop="url">JavaScript 中的值</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-21 22:00:00" itemprop="dateCreated datePublished" datetime="2021-04-21T22:00:00+08:00">2021-04-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="JavaScript-中的值的分类"><a href="#JavaScript-中的值的分类" class="headerlink" title="JavaScript 中的值的分类"></a>JavaScript 中的值的分类</h3><p>JavaScript 中的值可以分为<strong>原始类型</strong>和<strong>复杂类型（对象）</strong>：</p>
-<ul>
-<li>原始类型<ul>
-<li>Boolean - <code>true</code> 或 <code>false</code></li>
-<li>null - 用 <code>type of</code> 检验 <code>null</code> 数据类型时为 <code>Object</code> ，但它不是对象，这是JS的一个bug</li>
-<li>undefined</li>
-<li>number - JavaScript中的所有数字都是浮点数，没有整数</li>
-<li>string</li>
-<li>symbol (ES6)</li>
-</ul>
-</li>
-<li>复杂类型（对象）<ul>
-<li>原始类型的包装对象（Boolean、Number、String）</li>
-<li>内置对象（Date）</li>
-<li>用户创建对象</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/21/2021-04-21-value-type-of-javascript.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2021/04/08/2021-04-08-design-pattern-with-javascript-class.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.png">
-      <meta itemprop="name" content="Keefe Wang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/04/08/2021-04-08-design-pattern-with-javascript-class.html" class="post-title-link" itemprop="url">JavaScript 设计模式与类</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-04-08 22:00:00" itemprop="dateCreated datePublished" datetime="2021-04-08T22:00:00+08:00">2021-04-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文主要针对 JavaScript 类的各种设计模式实现进行简单总结和举例。</p>
-<h3 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="variable constant_">BMW</span> = &#123;</span><br><span class="line">	<span class="attr">type</span>: <span class="string">&#x27;Car&#x27;</span>,</span><br><span class="line">	<span class="attr">color</span>: <span class="string">&#x27;White&#x27;</span>,</span><br><span class="line">	<span class="attr">run</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">		<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;BMW start!&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/08/2021-04-08-design-pattern-with-javascript-class.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2021/02/14/2021-02-14-state-machine-by-javascript.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.png">
-      <meta itemprop="name" content="Keefe Wang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/14/2021-02-14-state-machine-by-javascript.html" class="post-title-link" itemprop="url">用 JavaScript 实现有限状态机</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-02-14 22:01:01" itemprop="dateCreated datePublished" datetime="2021-02-14T22:01:01+08:00">2021-02-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Toolkit/" itemprop="url" rel="index"><span itemprop="name">Toolkit</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>当一个事物拥有有限多种状态，任一时刻只处于一种状态，而且在某种条件下可以从一种状态转变为另一种状态，满足这三个条件就可以被抽象成为一个有限状态机。当一个对象的状态越多、状态转换的事件越多，就越适合使用状态机来实现。</p>
-<p>“javascript-state-machine”是一个很好用的有限状态机函数库。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/14/2021-02-14-state-machine-by-javascript.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://keefe.wang/2020/11/01/2020-11-01-what-delete-really-delete.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.png">
-      <meta itemprop="name" content="Keefe Wang">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Keefe's Café">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/11/01/2020-11-01-what-delete-really-delete.html" class="post-title-link" itemprop="url">What delete really delete?</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-11-01 21:03:00" itemprop="dateCreated datePublished" datetime="2020-11-01T21:03:00+08:00">2020-11-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>为了引入本文要讨论的内容，先放出一个几乎不会遇到的问题：<code>delete 0</code> 会发生什么？<br>答案是控制台输出 <code>true</code>，其他什么都没发生。<br>那假如我们继续尝试delete ，执行下面的语句会分别发生什么呢？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* example 1 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="number">0</span></span><br><span class="line"><span class="comment">/* example 2 */</span></span><br><span class="line"><span class="keyword">const</span> a = &#123;<span class="attr">name</span>: <span class="string">&#x27;z&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">delete</span> a.<span class="property">name</span></span><br><span class="line"><span class="comment">/* example 3 */</span></span><br><span class="line"><span class="keyword">delete</span> y</span><br><span class="line"><span class="comment">/* example 4 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="literal">null</span></span><br><span class="line"><span class="comment">/* example 5 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="literal">undefined</span></span><br><span class="line"><span class="comment">/* example 6 */</span></span><br><span class="line"><span class="keyword">const</span> x = <span class="number">1</span></span><br><span class="line"><span class="keyword">delete</span> x</span><br><span class="line"><span class="comment">/* example 7 */</span></span><br><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="title class_">WeakMap</span>();</span><br><span class="line"><span class="keyword">delete</span> map;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/11/01/2020-11-01-what-delete-really-delete.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
