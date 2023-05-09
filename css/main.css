@@ -1174,6 +1174,7 @@ pre code {
   border: 2px solid #333;
   max-width: 96px;
   padding: 2px;
+  margin-top: 8px;
   border-radius: 50%;
 }
 .site-author-name {
@@ -1241,7 +1242,7 @@ pre code {
   visibility: hidden;
 }
 .sidebar-nav-active .sidebar-nav {
-  height: calc(2em + 1px);
+  height: calc(2.5em + 1px);
   pointer-events: unset;
   visibility: unset;
 }
@@ -1250,6 +1251,7 @@ pre code {
   color: #666;
   cursor: pointer;
   display: inline-block;
+  margin-top: 16px;
   transition: 0.2s ease-in-out;
   transition-property: border-bottom-color, color;
 }
@@ -1261,13 +1263,13 @@ pre code {
 }
 .sidebar-toc-active .sidebar-nav-toc,
 .sidebar-overview-active .sidebar-nav-overview {
-  border-bottom-color: #87daff;
-  color: #87daff;
+  border-bottom-color: #fe4365;
+  color: #fe4365;
   transition-delay: 0.2s;
 }
 .sidebar-toc-active .sidebar-nav-toc:hover,
 .sidebar-overview-active .sidebar-nav-overview:hover {
-  color: #87daff;
+  color: #fe4365;
 }
 .sidebar-panel-container {
   align-items: start;
@@ -1360,7 +1362,7 @@ pre code {
   }
 }
 .sidebar-toggle:hover .toggle-line {
-  background: #87daff;
+  background: #fe4365;
 }
 @media (any-hover: hover) {
   body:not(.sidebar-active) .sidebar-toggle:hover :first-child {
@@ -1387,6 +1389,7 @@ pre code {
 }
 .post-toc {
   font-size: 0.875em;
+  margin-left: 16px;
 }
 .post-toc ol {
   list-style: none;
@@ -1424,14 +1427,14 @@ pre code {
   visibility: unset;
 }
 .post-toc .nav .active > a {
-  border-bottom-color: #87daff;
-  color: #87daff;
+  border-bottom-color: #fe4365;
+  color: #fe4365;
 }
 .post-toc .nav .active-current > a {
-  color: #87daff;
+  color: #fe4365;
 }
 .post-toc .nav .active-current > a:hover {
-  color: #87daff;
+  color: #fe4365;
 }
 .site-state {
   display: flex;
@@ -1567,7 +1570,7 @@ pre code {
   }
 }
 .back-to-top:hover {
-  color: #87daff;
+  color: #fe4365;
 }
 .back-to-top.back-to-top-on {
   bottom: 30px;
@@ -2021,18 +2024,18 @@ pre code {
 }
 .reward-container button {
   background: transparent;
-  color: #87daff;
+  color: #fe4365;
   cursor: pointer;
   line-height: 2;
   padding: 0 15px;
-  border: 2px solid #87daff;
+  border: 2px solid #fe4365;
   border-radius: 2px;
   outline: 0;
   transition: all 0.2s ease-in-out;
   vertical-align: text-top;
 }
 .reward-container button:hover {
-  background: #87daff;
+  background: #fe4365;
   color: #fff;
 }
 .post-reward {
@@ -2719,7 +2722,7 @@ hr {
 .about-link:hover {
   color: #333;
 }
-.lines {
+.about-lines {
   z-index: -1;
   position: absolute;
   top: 0;
@@ -2729,7 +2732,7 @@ hr {
   margin: auto;
   width: 90vw;
 }
-.line {
+.about-line {
   position: absolute;
   width: 1px;
   height: 100%;
@@ -2738,7 +2741,7 @@ hr {
   background: rgba(255,255,255,0.1);
   overflow: hidden;
 }
-.line::after {
+.about-line::after {
   content: '';
   display: block;
   position: absolute;
@@ -2751,46 +2754,46 @@ hr {
   animation-fill-mode: forwards;
   animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
 }
-.line:nth-child(1) {
+.about-line:nth-child(1) {
   margin-left: -12%;
 }
-.line:nth-child(1)::after {
+.about-line:nth-child(1)::after {
   animation-delay: -1s;
 }
-.line:nth-child(2) {
+.about-line:nth-child(2) {
   margin-left: -6%;
 }
-.line:nth-child(2)::after {
+.about-line:nth-child(2)::after {
   animation-delay: 0.4s;
 }
-.line:nth-child(3) {
+.about-line:nth-child(3) {
   margin-left: 3%;
 }
-.line:nth-child(3)::after {
+.about-line:nth-child(3)::after {
   animation-delay: 1.9s;
 }
-.line:nth-child(4) {
+.about-line:nth-child(4) {
   margin-left: 6%;
 }
-.line:nth-child(4)::after {
+.about-line:nth-child(4)::after {
   animation-delay: 1.1s;
 }
-.line:nth-child(5) {
+.about-line:nth-child(5) {
   margin-left: 12%;
 }
-.line:nth-child(5)::after {
+.about-line:nth-child(5)::after {
   animation-delay: 1.4s;
 }
-.line:nth-child(6) {
+.about-line:nth-child(6) {
   margin-left: 18%;
 }
-.line:nth-child(6)::after {
+.about-line:nth-child(6)::after {
   animation-delay: 0s;
 }
-.line:nth-child(7) {
+.about-line:nth-child(7) {
   margin-left: 24%;
 }
-.line:nth-child(7)::after {
+.about-line:nth-child(7)::after {
   animation-delay: 0.7s;
 }
 @keyframes drop {
@@ -2954,7 +2957,7 @@ header.header {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #1c53ff;
+  background: #fff647;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
