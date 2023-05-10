@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://keefe.wang/2023/02/28/2023-02-28-rust-study-note.html</loc>
+    <lastmod>2023-05-10</lastmod>
+  </url>
+  <url>
     <loc>http://keefe.wang/2023/04/16/2023-04-16-how-frontend-field-die.html</loc>
     <lastmod>2023-05-09</lastmod>
   </url>
