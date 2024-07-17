@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="形状文法（shape grammar）最早由George Stiny和James Gips在1972年提出，是一种用带符号的形状作为基本要素，用语法结构分析和产生新的形状的设计推理方法，是一种以运算规律为主的设计方法。最早运用于绘画、雕塑和建筑设计领域，后被推广到工业设计领域。我的毕设开题之后，是实验室和阿里一起合作的项目中的一个系统实现，其中大量地使用到了形状文法的方法，所以有必要对该研究进行一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="形状文法简介">
+<meta property="og:url" content="https://keefe.wang/2017/10/08/2017-10-08-shape-grammar-learning-notes.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="形状文法（shape grammar）最早由George Stiny和James Gips在1972年提出，是一种用带符号的形状作为基本要素，用语法结构分析和产生新的形状的设计推理方法，是一种以运算规律为主的设计方法。最早运用于绘画、雕塑和建筑设计领域，后被推广到工业设计领域。我的毕设开题之后，是实验室和阿里一起合作的项目中的一个系统实现，其中大量地使用到了形状文法的方法，所以有必要对该研究进行一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i3/O1CN01x8tVcl1G7qyHzKkRn_!!6000000000576-0-tps-1566-1204.jpg">
+<meta property="article:published_time" content="2017-10-08T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.649Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="形状文法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i3/O1CN01x8tVcl1G7qyHzKkRn_!!6000000000576-0-tps-1566-1204.jpg">
+
+
+<link rel="canonical" href="https://keefe.wang/2017/10/08/2017-10-08-shape-grammar-learning-notes.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2017/10/08/2017-10-08-shape-grammar-learning-notes.html","path":"2017/10/08/2017-10-08-shape-grammar-learning-notes.html","title":"形状文法简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>形状文法简介 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%A2%E7%8A%B6%E6%96%87%E6%B3%95%E5%AE%9E%E6%96%BD%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">形状文法实施过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%AE%E5%89%8D%E5%BD%A2%E7%8A%B6%E6%96%87%E6%B3%95%E8%90%BD%E5%AE%9E%E8%BF%9B%E5%B1%95%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">目前形状文法落实进展：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2017/10/08/2017-10-08-shape-grammar-learning-notes.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="形状文法简介 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          形状文法简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-10-08 12:00:00" itemprop="dateCreated datePublished" datetime="2017-10-08T12:00:00+08:00">2017-10-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Research/" itemprop="url" rel="index"><span itemprop="name">Research</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>形状文法（shape grammar）最早由George Stiny和James Gips在1972年提出，是一种用带符号的形状作为基本要素，用语法结构分析和产生新的形状的设计推理方法，是一种以运算规律为主的设计方法。最早运用于绘画、雕塑和建筑设计领域，后被推广到工业设计领域。我的毕设开题之后，是实验室和阿里一起合作的项目中的一个系统实现，其中大量地使用到了形状文法的方法，所以有必要对该研究进行一些了解和知识点的整理。</p>
+<span id="more"></span>
+
+<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>更加简洁的概念：形状文法是一种计算机辅助设计方法，它可以按照人们的设计思想和要求，依据一定的规则产生新的形状。形状是指有限直线段的组合，并且带有符号标记，以指示形状生成的方向；规则是指对形状进行改变的规定。广义地来讲，形状文法是对已有产品特征的分析、描述和归纳；再现和发展原有产品特征，形成新的风格</p>
+<ul>
+<li><p>形状文法的定义：</p>
+<p>  形状文法定义为四元组，即SG＝(S, L, R, I)。其中，Ｓ为形状的有限集合；Ｌ为符号的有限集合；Ｒ为规则的有限集合，规则的基本形式为α → β，α是一个带符号形状，α∈(S, L)+，β也是一个带符号形状，β∈(S, L)，(S, L)＋是一个形状和符号所组成的集合，（S, L）则是（S, L）+∪（SΦ, L）；Ｉ为初始形状，I∈(S, L)+．一个形状文法定义的形状集合称为语言，这个语言包含所有的由形状文法生成的无符号形状或带符号形状，其中的每一个形状都是通过应用形状规则从初始形状派生出来的，如下图所示：</p>
+<p>  <img src="https://img.alicdn.com/imgextra/i3/O1CN01x8tVcl1G7qyHzKkRn_!!6000000000576-0-tps-1566-1204.jpg"></p>
+<p>  基础的形状文法规则有生成性规则和衍生性（修改性）规则，衍生性规则是在生成性规则的基础上进行更多参数和更多步骤的规则变化，能够生成更加复杂的纹样和图案。</p>
+</li>
+<li><p>形状文法应用流程：</p>
+<p>  以纹样的形状文法生成为例来说，最基本的步骤分为三步：</p>
+<ol>
+<li><p>纹样研究，对传统纹样及相关文化背景进行研究以锁定目标纹样。目标纹样应为传统纹样的代表，能够反映特定的文化特色。再针对目标纹样进行特征分析，包括纹样主题纹样构图规律、骨骼形式、纹样元素组织方式等信息。</p>
+</li>
+<li><p>形状演变，对第一部分得到的典型图形运用形状文法的规则进行演变，生成基本图形单元。再对基本图形单元进行派生，以得到多种创新纹样元素。</p>
+</li>
+<li><p>方案生成，设计师对派生出来的多种纹样元素进行筛选，再以纹样设计文法为约束对纹样元素进行合理组织、重构，以生成新的纹样设计方案。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="形状文法实施过程"><a href="#形状文法实施过程" class="headerlink" title="形状文法实施过程"></a>形状文法实施过程</h4><ul>
+<li><p>问题定义：即对即将要使用形状文法的客体进行研究问题的确定，一般从逻辑推理的方法得出对问题的定义；</p>
+</li>
+<li><p>初始形状确定：</p>
+<ol>
+<li><p>收集样本：选定某个领域的客体实例作为研究对象，广泛收集该领域各个发展阶段的图片，将这些图片进行整理、分类，去除类型接近的图片，找出代表性的图片，将其制作成可供调查的样本，并以一定的方式编号（labeling）。</p>
+</li>
+<li><p>专家访谈：邀集相关的专家进行访谈，一般应包括资深设计师和深度使用者。访谈的主要目的首先在于对影响该纹理特征进行分类，然后对各类特征的重要程度做出主观评价，以确定各个因子的权重．再根据纹理分类和专家的直观经验，列举出该领域实例主要的可识别特征，为进行下一步设计形态分析做准备。</p>
+</li>
+<li><p>设计形态分析：设计形态分析法是由荷兰学者Ware，具体过程是：</p>
+<ul>
+<li>将选取的产品样本图片和专家列举的产品显性特征制成调查表，的受试者选择面要广，包括专家、设计师、一般用户等，年龄、性别和职业要分布合理。</li>
+<li>由受试者将产品样本一一对照各个形态特征进行判断，以“强”、“弱”、“无”作为标准，并对应以不同分数。</li>
+<li>对调查结果进行统计分析，判断并提取产品的风格特征。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>形状规则的确定：</p>
+<ul>
+<li><p>生成性规则：生成性规则的形式可分两种：<strong>添加</strong>，即从无到有；<strong>置换</strong>，以一个完全不同的全新形态代替原形态．</p>
+</li>
+<li><p>修改性规则：“修改”就是指对原有形态的改变、变形、调整．由于生成性规则是对纹理本质的“变异”，因而修改性规则应侧重于“遗传”，否则纹理的显性特征变得面目全非，品牌的延续将无从谈起。例如，可以使用仿射变换（affine transform）进行变形，或者对整体轮廓曲线采用贝塞尔曲线（Bezier curve）进行描述并进行非精确性变形。</p>
+</li>
+</ul>
+</li>
+<li><p>设计要求与约束规则：</p>
+<p>  在完成以上两项初始形状和文法规则的确立之后，还要对于已确定问题的边界和约束进行规定。</p>
+</li>
+</ul>
+<h4 id="目前形状文法落实进展："><a href="#目前形状文法落实进展：" class="headerlink" title="目前形状文法落实进展："></a>目前形状文法落实进展：</h4><ul>
+<li><p>形状生成：Tranglify算法生成随机背景</p>
+</li>
+<li><p>形状布局：通过布局风格（平铺&#x2F;随机）、布局区域（全局&#x2F;环绕）、形状旋转和形状缩放的python代码实现</p>
+</li>
+<li><p>颜色渲染：图片颜色整个色盘选择替换</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/%E5%BD%A2%E7%8A%B6%E6%96%87%E6%B3%95/" rel="tag"># 形状文法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/09/21/2017-09-21-babel-document-study.html" rel="prev" title="Babel的使用方法">
+                  <i class="fa fa-angle-left"></i> Babel的使用方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/10/10/2017-10-10-The-Good-Part-of-JavaScripts-The-Good-Part.html" rel="next" title="JS语言精粹中的精粹">
+                  JS语言精粹中的精粹 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

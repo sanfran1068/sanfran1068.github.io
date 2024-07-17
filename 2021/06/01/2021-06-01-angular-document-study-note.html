@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="快速上手Angular - Angular 入门：你的第一个应用 首先跟随 Angular 官方文档的快速上手部分进行一个简单项目的代码编写尝试和 Firebase 部署。该示例项目中包括了对  模板语法（的一些基本特性 ngFor、ngIf、差值双花括号、属性绑定[]、事件绑定()） 组件（由一个组件类、一个 HTML 模板和组件专属样式表组成） 父组件向子组件输入信息（@Input）和输出（@">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 学习笔记">
+<meta property="og:url" content="https://keefe.wang/2021/06/01/2021-06-01-angular-document-study-note.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="快速上手Angular - Angular 入门：你的第一个应用 首先跟随 Angular 官方文档的快速上手部分进行一个简单项目的代码编写尝试和 Firebase 部署。该示例项目中包括了对  模板语法（的一些基本特性 ngFor、ngIf、差值双花括号、属性绑定[]、事件绑定()） 组件（由一个组件类、一个 HTML 模板和组件专属样式表组成） 父组件向子组件输入信息（@Input）和输出（@">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-01T14:01:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.651Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="Angular">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2021/06/01/2021-06-01-angular-document-study-note.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2021/06/01/2021-06-01-angular-document-study-note.html","path":"2021/06/01/2021-06-01-angular-document-study-note.html","title":"Angular 学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 学习笔记 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B"><span class="nav-number">1.</span> <span class="nav-text">快速上手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Angular-%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88"><span class="nav-number">2.</span> <span class="nav-text">Angular 架构概览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">2.2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.4.</span> <span class="nav-text">服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">主要概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6-1"><span class="nav-number">3.1.</span> <span class="nav-text">组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">3.2.</span> <span class="nav-text">模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Angular-%E8%A1%A8%E5%8D%95"><span class="nav-number">3.3.</span> <span class="nav-text">Angular 表单</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2021/06/01/2021-06-01-angular-document-study-note.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 学习笔记 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-01 22:01:00" itemprop="dateCreated datePublished" datetime="2021-06-01T22:01:00+08:00">2021-06-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p><a href="https://angular.cn/start">Angular - Angular 入门：你的第一个应用</a></p>
+<p>首先跟随 Angular 官方文档的快速上手部分进行一个简单项目的代码编写尝试和 Firebase 部署。该示例项目中包括了对</p>
+<ul>
+<li><strong>模板语法</strong>（的一些基本特性 <em>ngFor、</em>ngIf、差值双花括号、属性绑定[]、事件绑定()）</li>
+<li><strong>组件</strong>（由一个组件类、一个 HTML 模板和组件专属样式表组成）</li>
+<li>父组件向子组件<strong>输入</strong>信息（@Input）和<strong>输出</strong>（@Output、EventEmitter）</li>
+<li><strong>路由</strong>（在 app.module.ts 中注册路由、routerLink 属性、通过 ActivatedRoute 作为构造函数参数来使用 this.route 对象）</li>
+<li><strong>管理数据</strong>（通过创建 service 类对数据进行管理，service 在引用后需要作为参数传入构造函数）</li>
+<li><strong>数据获取</strong>（使用 Angular 内置的 HttpClientModule 类实例 http 作为参数传入构造函数后，可以使用 this.http 对象请求数据）</li>
+<li>表单（使用内置的 FormBuilder 构建表单模型）</li>
+<li>构建和部署（ng build、firebase 部署）</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Angular-架构概览"><a href="#Angular-架构概览" class="headerlink" title="Angular 架构概览"></a>Angular 架构概览</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>Angular 是一个用 HTML 和 TypeScript 构建客户端应用的平台与框架。Angular 的<strong>基本构造块是模块 NgModule</strong>，它为组件提供了编译的上下文环境。应用<strong>至少会有一个用于引导应用的根模块 AppModule</strong>，通常还会有很多特性模块。模块通常由组件 Component 构成，组件定义视图（每个应用都至少有一个根组件），组件使用服务（service 提供与视图无关的逻辑功能，服务可注入到组件中）。</p>
+<p>模块、组件和服务都是使用装饰器的类。</p>
+<p>组件类一般紧跟随在 @Component() 装饰器后。组件提供两种数据绑定类型：事件绑定（处理用户输入的数据）和属性绑定（计算结果插入模板中），也支持双向数据绑定（ngModel），还可以通过<strong>管道</strong>转换要显示的数据。</p>
+<p>服务类一般紧跟随在 @Injectable() 装饰器后。该装饰器上的元数据可以将服务作为以来注入到组件中。（服务可以使组件更简洁，复用度更高）</p>
+<p>Angular 还提供了 Router 服务来帮助你定义视图之间的导航路径。</p>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>Angular 应用是模块化的，NgModule 是其模块系统。一个 NgModule 就是一个存放内聚代码块的容器，包含一些组件、服务提供者或其它代码文件。</p>
+<p>每个 Angular 应用都<strong>至少有一个 NgModule 类</strong>，也就是根模块，它习惯上命名为 <strong>AppModule</strong>，并位于一个名叫 <strong>app.module.ts</strong> 的文件中。引导这个根模块就可以启动你的应用。应用可以有其他特性模块，但是根模块可以包含任意深度、层次的子模块。</p>
+<p>NgModule 是一个带有 @NgModule() 装饰器的类。@NgModule() 装饰器是一个函数，它接受一个元数据对象，该对象的属性用来描述这个模块：</p>
+<ul>
+<li><code>declarations</code>（可声明对象表）：声明属于本 NgModule 的组件、指令、管道。</li>
+<li><code>exports</code>（导出表）：那些能在其它模块的<strong>组件模板</strong>中使用的可声明对象的子集。</li>
+<li><code>imports</code>（导入表）：本 NgModule 中所需要使用的其他模块。</li>
+<li><code>providers</code>：本模块向全局服务中贡献的那些服务的创建器。 这些服务能被本应用中的任何部分使用。（你也可以在组件级别指定服务提供者，这通常是首选方式。）</li>
+<li><code>bootstrap</code> —— 应用的主视图，称为<strong>根组件</strong>。它是应用中所有其它视图的宿主。只有<strong>根模块</strong>才应该设置这个 <code>bootstrap</code> 属性</li>
+</ul>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p><strong>组件元数据</strong></p>
+<p>组件是跟在 @Component() 装饰器后的一个 TypeScript 类，装饰器中需要设置一些元数据，其中包括：selector（CSS 选择器）、templateUrl&#x2F;template（模板文件或模板）、providers（当前组件所需的服务提供者数组）和 styleUrl&#x2F;styles（样式文件数组或样式数组）等。</p>
+<p><strong>模板语法</strong></p>
+<p>模板语法很像标准的 HTML 文档，但是有以下几种特性：</p>
+<ul>
+<li><p>数据绑定（<strong>绑定语法中，等号左边的不是 HTML 的 attr，而是 DOM 的 property 和事件！但是如果一定要设置 attr 且 DOM 的 property 中没有对应属性，可以使用 attr.someAttr 进行绑定</strong>）：</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单项数据绑定</span></span><br><span class="line"><span class="comment">// 插值</span></span><br><span class="line">&lt;li&gt;&#123;&#123;hero.<span class="property">name</span>&#125;&#125;&lt;/li&gt;  </span><br><span class="line"><span class="comment">// 属性绑定，父组件向子组件传数据  </span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">app-hero-detail</span> [<span class="attr">hero</span>]=<span class="string">&quot;selectedHero&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">app-hero-detail</span>&gt;</span></span> </span><br><span class="line"><span class="comment">// 事件绑定，调用方法进行数据处理     </span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">li</span> (<span class="attr">click</span>)=<span class="string">&quot;selectHero(hero)&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span>           </span><br><span class="line"></span><br><span class="line"><span class="comment">// 双向数据绑定，属性绑定+事件绑定</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">input</span> [(<span class="attr">ngModel</span>)]=<span class="string">&quot;hero.name&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">// attribute 绑定</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> [<span class="attr">attr.colspan</span>]=<span class="string">&quot;1 + 1&quot;</span>&gt;</span>One-Two<span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span> [<span class="attr">attr.aria-label</span>]=<span class="string">&quot;actionName&quot;</span>&gt;</span>&#123;&#123;actionName&#125;&#125; with Aria<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">// CSS 类绑定使用 [class]时，如果badCurly 有值会替换前面 class 所有类，建议指定某个特定的类</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bad curly special&quot;</span> [<span class="attr">class</span>]=<span class="string">&quot;badCurly&quot;</span>&gt;</span>Bad curly<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span> [<span class="attr">class.special</span>]=<span class="string">&quot;isSpecial&quot;</span>&gt;</span>The class binding is special<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">// 使用ngClass 可以设置一个类对象</span></span><br><span class="line"><span class="language-xml">this.currentClasses =  &#123;</span></span><br><span class="line"><span class="language-xml">    &#x27;saveable&#x27;: this.canSave,</span></span><br><span class="line"><span class="language-xml">    &#x27;modified&#x27;: !this.isUnchanged,</span></span><br><span class="line"><span class="language-xml">    &#x27;special&#x27;:  this.isSpecial</span></span><br><span class="line"><span class="language-xml">  &#125;;</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span> [<span class="attr">ngClass</span>]=<span class="string">&quot;currentClasses&quot;</span>&gt;</span>This div is initially saveable, unchanged, and special<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>ngClass、ngStyle 都是类似的，将一个类&#x2F;样式的对象绑定在元素上；</p>
+<p>ngModel 可以用来双向绑定，使用时<strong>一定需要引入 FormsModule</strong>（在相应的组件&#x2F;模块中 imports FormsModule 模块），ngModel 同时还提供了一个 (ngModelChange) 的绑定的输出属性可以处理数据变化时的逻辑。</p>
+<p><strong>管道</strong></p>
+<p>可以在模板中展示数据时进行一定的逻辑变换（左侧的数据经过右侧管道函数处理得到的值）。<strong>管道可以进行串联，可以传参（管道：参数）</strong>Angular 自带了很多管道，例如 date、currency 等：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>Today is &#123;&#123;today | date: &#x27;longDate&#x27; | lowercase &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>自定义管道</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Pipe</span>, <span class="title class_">PipeTransform</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Pipe</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;exponentialStrength&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">ExponentialStrengthPipe</span> implements <span class="title class_">PipeTransform</span> &#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="attr">value</span>: number, <span class="attr">exponent</span>: string): number &#123;</span><br><span class="line">    <span class="keyword">let</span> exp = <span class="built_in">parseFloat</span>(exponent);</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Math</span>.<span class="title function_">pow</span>(value, <span class="built_in">isNaN</span>(exp) ? <span class="number">1</span> : exp);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>纯管道与非纯管道</p>
+<p>数据更新会触发管道执行数据处理，Angular 只在检测到纯变更（指对<strong>原始类型值的更改</strong>，或对对象<strong>引用的更改</strong>），对对象、数组内部的改变是不会调用纯管道的。非纯管道是可以侦测到引用类型内部变化的，Angular 会在每个组件的变更检测周期执行该管道，成本很高。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Pipe</span>(&#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;flyingHeroesImpure&#x27;</span>,</span><br><span class="line">  <span class="attr">pure</span>: <span class="literal">false</span> / <span class="literal">true</span> <span class="comment">// 默认为true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>AsyncPipe，接受一个 Promise 或 Observable，自动订阅这个输入最终返回他们发送的值。 </p>
+<p><strong>安全导航操作符 ?. 和非空断言操作符 !.</strong></p>
+<p>?. 避免出现TypeError: Cannot read property ‘name’ of null in [null].的错误</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>The current hero&#x27;s name is &#123;&#123;currentHero?.name&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>!. 表示.之前的变量一定存在，一般是在 *ngIf 判断后使用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> *<span class="attr">ngIf</span>=<span class="string">&quot;hero&quot;</span>&gt;</span></span><br><span class="line">  The hero&#x27;s name is &#123;&#123;hero!.name&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>类型转换函数 $any()</strong></p>
+<p>绑定的模板表达式中不清楚某个变量类型，可以强制转换为 any 类型</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>The hero&#x27;s marker is &#123;&#123;$any(hero).marker&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>用户输入</strong></p>
+<p>一般会在表单中为表单元素绑定用户输入事件，可以通过传入 $event 来获取用户输入。但是 $event 不仅很大而且有时并没有 value 属性。</p>
+<p>采用模板引用变量 #someInput 是更好的方法。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// template</span></span><br><span class="line">&lt;<span class="title function_">input</span> (keyup)=<span class="string">&quot;onKey1($event)&quot;</span>&gt;</span><br><span class="line">&lt;input #input1 (keyup)=&quot;onKey2(input1.value)&quot;&gt;</span><br><span class="line"></span><br><span class="line">// $event bad</span><br><span class="line">onKey1(event: KeyboardEvent) &#123; // with type info</span><br><span class="line">  this.values += (&lt;HTMLInputElement&gt;event.target).value + &#x27; | &#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// #input1 good</span><br><span class="line">onKey1(value: any) &#123; // with type info</span><br><span class="line">  this.values += value + &#x27; | &#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用户输入事件有很多，有按键事件（keyup、keydown）、失焦事件（blur）和鼠标事件（mouseup）按键事件过滤，采用类似 <code>keyup.enter</code> 表示只有当 enter 键释放时才处理。</p>
+<p><strong>指令</strong></p>
+<p>Angular 中有<strong>结构型指令</strong>（通过添加、移除或替换 DOM 元素来修改布局，例如 *ngIf 和 *ngFor）和<strong>属性型指令</strong>（修改现有元素的外观或行为，例如 ngModel）。也可以通过 @Directive() 装饰器自定义一些指令。</p>
+<p>*ngIf 与 v-if 类似，是控制元素是否存在，与显隐逻辑不通；</p>
+<p>*ngFor 的模板语法是 let…of…，需要带索引时，则需要声明索引变量 let i &#x3D; index；Angular 中提供了一个 trackBy（是一个函数类型，需要在数据中提供），其作用与 key 相同能够提升性能。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">trackByHeroes(index: number, hero: Hero): number &#123; return hero.id; &#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> *<span class="attr">ngFor</span>=<span class="string">&quot;let hero of heroes; let i=index; trackBy: trackByHeroes&quot;</span>&gt;</span>&#123;&#123;i + 1&#125;&#125; - &#123;&#123;hero.name&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>ngSwitch 指令是属性型指令（修改元素行为而非 DOM 结构）由三部分构成：ngSwitch，<em>ngSwitchCase，</em>ngSwitchDefault</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> [<span class="attr">ngSwitch</span>]=<span class="string">&quot;currentHero.emotion&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">app-happy-hero</span>    *<span class="attr">ngSwitchCase</span>=<span class="string">&quot;&#x27;happy&#x27;&quot;</span>    [<span class="attr">hero</span>]=<span class="string">&quot;currentHero&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">app-happy-hero</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">app-sad-hero</span>      *<span class="attr">ngSwitchCase</span>=<span class="string">&quot;&#x27;sad&#x27;&quot;</span>      [<span class="attr">hero</span>]=<span class="string">&quot;currentHero&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">app-sad-hero</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">app-confused-hero</span> *<span class="attr">ngSwitchCase</span>=<span class="string">&quot;&#x27;confused&#x27;&quot;</span> [<span class="attr">hero</span>]=<span class="string">&quot;currentHero&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">app-confused-hero</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">app-unknown-hero</span>  *<span class="attr">ngSwitchDefault</span>           [<span class="attr">hero</span>]=<span class="string">&quot;currentHero&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">app-unknown-hero</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>创建指令，必须使用 @Directive 装饰器（ElementRef 是标签元素引用的类型）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Directive</span>, <span class="title class_">ElementRef</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Directive</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;[appHighlight]&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">HighlightDirective</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">el: ElementRef</span>) &#123;</span><br><span class="line">       el.<span class="property">nativeElement</span>.<span class="property">style</span>.<span class="property">backgroundColor</span> = <span class="string">&#x27;yellow&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建根据事件触发的指令（HostListener 装饰器可以订阅该指令所在的 DOM 元素的事件）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;p appHighlight [highlightColor]=<span class="string">&quot;color&quot;</span>&gt;<span class="title class_">Highlighted</span> <span class="keyword">with</span> parent component<span class="string">&#x27;s color&lt;/p&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">import &#123; Directive, ElementRef, HostListener &#125; from &#x27;</span>@angular/core<span class="string">&#x27;;</span></span><br><span class="line"><span class="string">@Directive(&#123;</span></span><br><span class="line"><span class="string">  selector: &#x27;</span>[appHighlight]<span class="string">&#x27;</span></span><br><span class="line"><span class="string">&#125;)</span></span><br><span class="line"><span class="string">export class HighlightDirective &#123;</span></span><br><span class="line"><span class="string">	@Input highlightColor: string;</span></span><br><span class="line"><span class="string">  constructor(el: ElementRef) &#123;&#125;</span></span><br><span class="line"><span class="string">	@HostListener(&#x27;</span>mouseenter<span class="string">&#x27;) onMouseEnter() &#123;</span></span><br><span class="line"><span class="string">	  this.highlight(this.highlightColor);</span></span><br><span class="line"><span class="string">	&#125;</span></span><br><span class="line"><span class="string">	</span></span><br><span class="line"><span class="string">	@HostListener(&#x27;</span>mouseleave<span class="string">&#x27;) onMouseLeave() &#123;</span></span><br><span class="line"><span class="string">	  this.highlight(null);</span></span><br><span class="line"><span class="string">	&#125;</span></span><br><span class="line"><span class="string">	</span></span><br><span class="line"><span class="string">	private highlight(color: string) &#123;</span></span><br><span class="line"><span class="string">	  this.el.nativeElement.style.backgroundColor = color;</span></span><br><span class="line"><span class="string">	&#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><ng-template> 指令，单独使用时，里面的元素都不会显示（转换为注释）。除非有 ngIf，ngFor 或 ngSwitch 等结构型指令。此时应该使用[ngIf](是 *ngif 的原始版本，* ngif 会转换成[ngif]*)</p>
+<p>可以为 <ng-template> 添加模板引用 #someTemp，然后使用 *ngTemplateOutlet 指令去服用这些模板引用。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div *ngIf=<span class="string">&quot;hero&quot;</span> &gt;&#123;&#123;hero.<span class="property">name</span>&#125;&#125;&lt;/div&gt;</span><br><span class="line"><span class="comment">// equals to </span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ng-template</span> [<span class="attr">ngIf</span>]=<span class="string">&quot;hero&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123;hero.name&#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">ng-template</span>&gt;</span></span><span class="string">`</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<p><ng-container> 是一个分组元素，且不会污染样式和布局，不存在 DOM 中。</p>
+<p><strong>模板引用变量</strong></p>
+<p>用来引用模板中的某个 DOM 元素，它还可以引用 Angular 组件或指令或Web Component。<strong>不要在同一个模板中多次定义同一个变量名!</strong></p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// #phone 代表 input 这个元素</span></span><br><span class="line">&lt;input #phone placeholder=<span class="string">&quot;phone number&quot;</span>&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span> (<span class="attr">click</span>)=<span class="string">&quot;callPhone(phone.value)&quot;</span>&gt;</span>Call<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// #heroForm=&quot;ngForm&quot; 可以将引用内容进行修改</span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">form</span> (<span class="attr">ngSubmit</span>)=<span class="string">&quot;onSubmit(heroForm)&quot;</span> #<span class="attr">heroForm</span>=<span class="string">&quot;ngForm&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>输入和输出属性</strong></p>
+<p>输入和输出属性在父组件上呈现为数据绑定属性，在子组件中需要有 @Input 和 @Output 装饰器声明流入的成员。</p>
+<p>输入属性是一个带有 @Input 装饰器的可设置属性，输入属性通常接收数据值。</p>
+<p>输出属性是一个带有 @Output 装饰器的可观察对象型的属性。 这个属性几乎总是返回 Angular 的<strong>EventEmitter</strong>，输出属性暴露事件生产者。</p>
+<p>输入和输出属性可以使用别名，第一种方式是在装饰器中传入别名字符串，第二种是在元数据的 inputs 和 outputs 数组中用冒号右边表示别名：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Output</span>(<span class="string">&#x27;myClick&#x27;</span>) clicks = <span class="keyword">new</span> <span class="title class_">EventEmitter</span>&lt;string&gt;();</span><br><span class="line">@<span class="title class_">Directive</span>(&#123;</span><br><span class="line">  <span class="attr">outputs</span>: [<span class="string">&#x27;clicks:myClick&#x27;</span>]  <span class="comment">// propertyName:alias</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h3><p>服务是一个广义的概念，它包括应用所需的任何值、函数或特性。但是狭义上，服务就是脱离视图的一些定义了用途的类。将组件和服务分开，可以提高模块性和复用性，让代码更加精简。组件的工作只管用户体验，而应该把诸如从服务器获取数据、验证用户输入或直接往控制台中写日志等工作委托给各种服务。</p>
+<p><strong>依赖注入</strong></p>
+<p>服务是用 @Injectable() 装饰器来提供元数据的类。提供服务需要在 service 类的装饰器 @Injectable() 中注册服务提供者 providedIn 字段。服务还可以在模块 NgModule 和组件级别进行注入，都是在装饰器中添加 providers 字段。</p>
+<h2 id="主要概念"><a href="#主要概念" class="headerlink" title="主要概念"></a>主要概念</h2><h3 id="组件-1"><a href="#组件-1" class="headerlink" title="组件"></a>组件</h3><p><strong>组件的构成</strong></p>
+<p>每一个组件可以使用一个目录进行包含，其中包括 HTML 模板、一个 TypeScript 类（包含应用数据和逻辑）和一个模板的样式（可选）。其中在 TypeScript 类中需要指明组件的 CSS 选择器（即组件标签名），以及模板文件和样式文件。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// [name].component.ts</span></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-component-overview&#x27;</span>,</span><br><span class="line">  <span class="attr">templateUrl</span>: <span class="string">&#x27;./component-overview.component.html&#x27;</span>,</span><br><span class="line">  <span class="attr">styleUrls</span>: [<span class="string">&#x27;./component-overview.component.css&#x27;</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>CSS 选择器一般以 app 开头，例如一个组件标签为 <app-hello-world>，那么它的 CSS 选择器（selector）就应当是 app-hello-world，组件 ts 类文件最好命名为 hello-world.component.ts。模板和样式文件亦然。</p>
+<p>HTML 模板可以使用外部的 templateUrl，也可以使用 template 属性指定一段 HTML 代码，可以使用模板字符串来实现。<strong>templateUrl 和 template 两个字段不能同时出现</strong>。</p>
+<p>styleUrls 字段以<strong>字符串数组</strong>形式指定模板的样式文件，也可以使用 styles 字段（字符串数组类型）来内置样式。</p>
+<p><strong>组件生命周期和钩子</strong></p>
+<p>Angular 中生命周期钩子由 TypeScript 的 Interface 实现，在组件或指令类实现中，需要 implements 相应的钩子接口，每个接口都有唯一的一个钩子方法，方法名即接口名前加 on。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Directive</span>()</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">PeekABooDirective</span> implements <span class="title class_">OnInit</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">private logger: LoggerService</span>) &#123; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// implement OnInit&#x27;s `ngOnInit` method</span></span><br><span class="line">  <span class="title function_">ngOnInit</span>(<span class="params"></span>) &#123; <span class="variable language_">this</span>.<span class="title function_">logIt</span>(<span class="string">`OnInit`</span>); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">logIt</span>(<span class="params">msg: string</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">logger</span>.<span class="title function_">log</span>(<span class="string">`#<span class="subst">$&#123;nextId++&#125;</span> <span class="subst">$&#123;msg&#125;</span>`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>生命周期顺序如下：</p>
+<ul>
+<li>ngOnChanges()：设置或重新设置数据绑定的输入属性时响应。 该方法接受当前和上一属性值的 SimpleChanges 对象，该钩子频繁发生，钩子中的操作会十分影响性能</li>
+<li>ngOnInit()：第一次显示数据绑定和设置指令&#x2F;组件的输入属性之后，初始化指令&#x2F;组件。在第一轮 ngOnChanges() 完成之后调用，只调用一次</li>
+<li>ngDoCheck()：检测，并在发生 Angular 无法或不愿意自己检测的变化时作出反应</li>
+<li>ngAfterContentInit()：把外部内容投影进组件视图或指令所在的视图之后调用</li>
+<li>ngAfterContentChecked()：检查完被投影到组件或指令中的内容之后调用</li>
+<li>ngAfterViewInit()：初始化完组件视图及其子视图或包含该指令的视图之后调用</li>
+<li>ngAfterViewChecked()：每当 Angular 做完组件视图和子视图或包含该指令的视图的变更检测之后调用</li>
+<li>ngOnDestroy()：每当 Angular 每次销毁指令&#x2F;组件之前调用并清扫，事件监听解绑、反订阅可观察对象和停止计时器等操作可在此钩子进行。</li>
+</ul>
+<p><strong>视图封装</strong></p>
+<p>组件的 CSS 样式被封装进了自己的视图中，而不会影响到应用程序的其它部分。视图封装有三种模式：</p>
+<ul>
+<li><code>ShadowDom</code> 模式使用浏览器原生的 Shadow DOM 实现，来为组件的宿主元素附加一个 Shadow DOM。组件的视图被附加到这个 Shadow DOM 中，组件的样式也被包含在这个 Shadow DOM 中。(不进不出，没有样式能进来，组件样式出不去。)</li>
+<li><code>Emulated</code> 模式（<strong>默认值</strong>）通过预处理（并改名）CSS 代码来模拟 Shadow DOM 的行为，以达到把 CSS 样式局限在组件视图中的目的。(只进不出，全局样式能进来，组件样式出不去)</li>
+<li><code>None</code> 意味着不使用视图封装。 Angular 会把 CSS 添加到全局样式中。而不会应用上前面讨论过的那些作用域规则、隔离和保护等。 从本质上来说，这跟把组件的样式直接放进 HTML 是一样的。</li>
+</ul>
+<p><strong>组件交互</strong></p>
+<ul>
+<li><p>输入型绑定（父传子）：父组件通过在模板上添加属性指令 [] 将数据传入子组件，子组件需要在类中使用 @Input 装饰器引入对应的数据变量名</p>
+<ul>
+<li>setter 拦截输入数据变化：在上面输入型绑定的基础上，子组件中可以对传入的属性进行 get 和 set 重写，在 set 方法中可以拦截输入数据变化</li>
+<li>ngOnChanges() 钩子监听数据变化：在上面输入型绑定的基础上，子组件的类可以实现 onChanges 接口，在 ngOnChanges 方法中监听输入数据的变化</li>
+</ul>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// parent component</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-name-parent&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`&lt;app-name-child *ngFor=&quot;let name of names&quot; [name]=&quot;name&quot;&gt;&lt;/app-name-child&gt;`</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">NameParentComponent</span> &#123;</span><br><span class="line">  names = [<span class="string">&#x27;Dr IQ&#x27;</span>, <span class="string">&#x27;   &#x27;</span>, <span class="string">&#x27;  Bombasto  &#x27;</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// child component</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span>, <span class="title class_">Input</span>, <span class="title class_">OnChanges</span>, <span class="title class_">SimpleChanges</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-name-child&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">&#x27;&lt;h3&gt;&quot;&#123;&#123;name&#125;&#125;&quot;&lt;/h3&gt;&#x27;</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">NameChildComponent</span> implements <span class="title class_">OnChanges</span> &#123;</span><br><span class="line">  @<span class="title class_">Input</span>()</span><br><span class="line">  <span class="keyword">get</span> <span class="title function_">name</span>(): string &#123; <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">_name</span>; &#125;</span><br><span class="line">  <span class="keyword">set</span> <span class="title function_">name</span>(<span class="params">name: string</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_name</span> = (name &amp;&amp; name.<span class="title function_">trim</span>()) || <span class="string">&#x27;&lt;no name set&gt;&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  private _name = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="title function_">ngOnChanges</span>(<span class="params">changes: SimpleChanges</span>) &#123;</span><br><span class="line">		<span class="variable language_">console</span>.<span class="title function_">log</span>(changes);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>父组件监听子组件的事件：子组件暴露一个 EventEmitter 属性，当事件发生时，子组件利用该属性 emits (向上弹射)事件。父组件绑定到这个事件属性，并在事件发生时作出回应。</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// parent component</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-vote-taker&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">		&lt;p&gt;&#123;&#123;clickCount&#125;&#125;&lt;/p&gt;</span></span><br><span class="line"><span class="string">    &lt;app-child (changeMsg)=&quot;onMsg($event)&quot;&gt;&lt;/app-child&gt;</span></span><br><span class="line"><span class="string">		`</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">VoteTakerComponent</span> &#123;</span><br><span class="line">  message = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">onMsg</span>(<span class="params">msg: string</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">message</span> = msg.<span class="property">length</span> &gt; <span class="number">0</span> ? msg : <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span>, <span class="title class_">EventEmitter</span>, <span class="title class_">Input</span>, <span class="title class_">Output</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-voter&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;button (click)=&quot;onChangeMsg(&#x27;a&#x27;)&quot;&gt;Show A&lt;/button&gt;</span></span><br><span class="line"><span class="string">    &lt;button (click)=&quot;onChangeMsg(&#x27;b&#x27;)&quot;&gt;Show B&lt;/button&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">VoterComponent</span> &#123;</span><br><span class="line">  @<span class="title class_">Input</span>()  <span class="attr">name</span>: string;</span><br><span class="line">  @<span class="title class_">Output</span>() changeMsg = <span class="keyword">new</span> <span class="title class_">EventEmitter</span>&lt;string&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="title function_">onChangeMsg</span>(<span class="params">str: string</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">changeMsg</span>.<span class="title function_">emit</span>(str);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>父组件、子组件通过本地变量交互，父组件在使用子组件时，在子组件标签中添加 #[tagName] 可以以此来表示子组件引用，通过 tagName 来访问子组件的属性和方法等（该方法只能在父组件模板中进行子组件引用的使用）</p>
+</li>
+<li><p>为了能够在父组件的类中调用子组件引用，父组件可以调用 @ViewChild()：</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">ParentComponent</span> &#123;</span><br><span class="line">  @<span class="title class_">ViewChild</span>(<span class="title class_">ChildComponent</span>)</span><br><span class="line">  private <span class="attr">childComponent</span>: <span class="title class_">ChildComponent</span>;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">start</span>(<span class="params"></span>) &#123; <span class="variable language_">this</span>.<span class="property">childComponent</span>.<span class="title function_">someFun</span>(); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>父组件和它的子组件共享同一个服务，利用该服务在组件家族内部实现双向通讯。父组件中需要在装饰器的 provider 传入该服务，父子组件构造函数中都需要有该服务作为参数传入。</p>
+</li>
+</ul>
+<p><strong>组件样式</strong></p>
+<p>组件在 @Component 装饰器里可以通过 styles 字段（字符串数组）设置组件样式，也可以通过 styleUrls 字段（字符串数组）设置外部的样式文件。这两种方式都只会影响本组件，不会影响其他组件、模块以及投影进来的组件。</p>
+<p>可以通过模板中内联样式来设置组件的样式：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-hero-controls&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;style&gt;</span></span><br><span class="line"><span class="string">      button &#123;</span></span><br><span class="line"><span class="string">        background-color: white;</span></span><br><span class="line"><span class="string">        border: 1px solid #777;</span></span><br><span class="line"><span class="string">      &#125;</span></span><br><span class="line"><span class="string">    &lt;/style&gt;</span></span><br><span class="line"><span class="string">    &lt;button (click)=&quot;activate()&quot;&gt;Activate&lt;/button&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>还可以通过模板中添加 link 标签设置组件样式</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-hero-team&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/hero-team.component.css&quot;&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">      &lt;li *ngFor=&quot;let member of hero.team&quot;&gt;</span></span><br><span class="line"><span class="string">        &#123;&#123;member&#125;&#125;</span></span><br><span class="line"><span class="string">      &lt;/li&gt;</span></span><br><span class="line"><span class="string">    &lt;/ul&gt;`</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>组件目录下的样式文件中可以使用 <code>@import</code> 语法引用其他样式文件。</p>
+<p><strong>动态组件</strong></p>
+<p><strong>Angular 元素和自定义元素</strong></p>
+<h3 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h3><p><strong>插值</strong></p>
+<p>在模板中，可以使用双花括号在标记文本中嵌入表达式，Angular 对所有双花括号中的表达式求值，把求值的结果转换成字符串，并把它们跟相邻的字符串字面量连接起来。</p>
+<p>模板表达式不能使用具有或可能引发副作用的 JavaScript 表达式：</p>
+<ul>
+<li>赋值 (<code>=</code>, <code>+=</code>, <code>=</code>, <code>...</code>)</li>
+<li><code>new</code>、<code>typeof</code>、<code>instanceof</code> 等运算符</li>
+<li>使用 <code>;</code> 或 <code>,</code> 串联起来的表达式</li>
+<li>自增和自减运算符：<code>++</code> 和 <code>-</code></li>
+<li>一些 ES2015+ 版本的运算符</li>
+<li>不支持位运算，比如 | 和 &amp;</li>
+<li>只能使用表达式上下文的成员，不能使用 window、document 等全局命名空间的任何东西</li>
+</ul>
+<p>模板表达式上下文，指的是在这个组件实例中各种绑定值的来源。由模板变量、指令的上下文变量（如果有）和组件的成员叠加而成的，其优先级为模板变量 &gt; 指令的上下文变量 &gt; 组件的成员。</p>
+<p><strong>模板语句</strong></p>
+<p>是可在 HTML 中用于响应用户事件的方法或属性。 <code>(click)=&quot;deleteHero()&quot;</code> 等号右边引号中的就是模板语句。模板语句不允许使用以下 JavaScript 和模板表达式语法：</p>
+<ul>
+<li><code>new</code></li>
+<li>递增和递减运算符 <code>++</code> 和 <code>-</code></li>
+<li>赋值运算符，例如 <code>+=</code> 和 <code>=</code></li>
+<li>按位运算符，例如 <code>|</code> 和 <code>&amp;</code></li>
+<li><a href="https://angular.cn/guide/pipes">管道操作符</a></li>
+</ul>
+<p>使用插值表达式还是属性绑定？<strong>如果数据类型不是字符串，必须使用属性绑定</strong>。</p>
+<p><strong>管道</strong></p>
+<p>管道是一些简单的函数，用来对字符串、货币金额、日期和其他显示数据进行转换和格式化。可以在<strong>模板表达式</strong>中用来接受输入值并返回一个转换后的值。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>The hero&#x27;s birthday is &#123;&#123; birthday | date | uppercase&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>为自定义数据转换创建管道，可以使用 @Pipe() 装饰器（ng generate pipe）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Pipe</span>, <span class="title class_">PipeTransform</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Pipe</span>(&#123;<span class="attr">name</span>: <span class="string">&#x27;exponentialStrength&#x27;</span>&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">ExponentialStrengthPipe</span> implements <span class="title class_">PipeTransform</span> &#123;</span><br><span class="line">  <span class="title function_">transform</span>(<span class="attr">value</span>: number, exponent?: number): number &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Math</span>.<span class="title function_">pow</span>(value, <span class="built_in">isNaN</span>(exponent) ? <span class="number">1</span> : exponent);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Angular-表单"><a href="#Angular-表单" class="headerlink" title="Angular 表单"></a>Angular 表单</h3><p><strong>表单底层构造块</strong></p>
+<ul>
+<li><code>[FormControl](https://v7.angular.cn/api/forms/FormControl)</code> 实例用于追踪单个表单控件的值和验证状态。</li>
+<li><code>[FormGroup](https://v7.angular.cn/api/forms/FormGroup)</code> 用于追踪一个表单控件组的值和状态。</li>
+<li><code>[FormArray](https://v7.angular.cn/api/forms/FormArray)</code> 用于追踪表单控件数组的值和状态。</li>
+<li><code>[ControlValueAccessor](https://v7.angular.cn/api/forms/ControlValueAccessor)</code> 用于在 Angular 的 <code>[FormControl](https://v7.angular.cn/api/forms/FormControl)</code> 实例和原生 DOM 元素之间创建一个桥梁。</li>
+</ul>
+<p><strong>表单模型</strong></p>
+<p>响应式表单建立表单模型（表单模型是数据源），使用 FormControl 来建立单个表单控件的模型：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">FormControl</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/forms&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-reactive-favorite-color&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    Favorite Color: &lt;input type=&quot;text&quot; [formControl]=&quot;favoriteColorControl&quot;&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">FavoriteColorComponent</span> &#123;</span><br><span class="line">  favoriteColorControl = <span class="keyword">new</span> <span class="title class_">FormControl</span>(<span class="string">&#x27;&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>模板驱动表单（模板是数据源），使用 ngModel 与示例的数据进行联动：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Component</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/core&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Component</span>(&#123;</span><br><span class="line">  <span class="attr">selector</span>: <span class="string">&#x27;app-template-favorite-color&#x27;</span>,</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    Favorite Color: &lt;input type=&quot;text&quot; [(ngModel)]=&quot;favoriteColor&quot;&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">FavoriteColorComponent</span> &#123;</span><br><span class="line">  favoriteColor = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>更新表单的值：</strong></p>
+<ul>
+<li><p>setValue()：单个控件设置新值</p>
+</li>
+<li><p>patchValue()：用传入对象中的属性进行对应值的替换</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">updateProfile</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">profile</span>.<span class="title function_">patchValue</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;Keefe&#x27;</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 只有 name 替换了，age 还是原来的值</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>FormBuilder</strong></p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">FormBuilder</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;@angular/forms&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">ProfileEditorComponent</span> &#123;</span><br><span class="line">  profileForm = <span class="variable language_">this</span>.<span class="property">fb</span>.<span class="title function_">group</span>(&#123;</span><br><span class="line">    <span class="attr">firstName</span>: [<span class="string">&#x27;&#x27;</span>],</span><br><span class="line">    <span class="attr">lastName</span>: [<span class="string">&#x27;&#x27;</span>],</span><br><span class="line">    <span class="attr">address</span>: <span class="variable language_">this</span>.<span class="property">fb</span>.<span class="title function_">group</span>(&#123;</span><br><span class="line">      <span class="attr">street</span>: [<span class="string">&#x27;&#x27;</span>],</span><br><span class="line">      <span class="attr">city</span>: [<span class="string">&#x27;&#x27;</span>],</span><br><span class="line">      <span class="attr">state</span>: [<span class="string">&#x27;&#x27;</span>],</span><br><span class="line">      <span class="attr">zip</span>: [<span class="string">&#x27;&#x27;</span>]</span><br><span class="line">    &#125;),</span><br><span class="line">  &#125;);</span><br><span class="line"> </span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">private fb: FormBuilder</span>) &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>响应式表单：使用 FormArray 可以动态添加表单控件</p>
+<p><strong>表单验证</strong></p>
+<p>模板驱动表单的验证，Angular 会对 HTML 自带的一些属性进行同名函数验证，这里的appForbiddenName 是一个验证器的指令</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;input </span><br><span class="line">	id=<span class="string">&quot;name&quot;</span> </span><br><span class="line">	name=<span class="string">&quot;name&quot;</span> </span><br><span class="line">	<span class="keyword">class</span>=<span class="string">&quot;form-control&quot;</span></span><br><span class="line">  required minlength=<span class="string">&quot;4&quot;</span> </span><br><span class="line">	appForbiddenName=<span class="string">&quot;bob&quot;</span></span><br><span class="line">  [(ngModel)]=<span class="string">&quot;hero.name&quot;</span> </span><br><span class="line">	#name=<span class="string">&quot;ngModel&quot;</span> &gt;</span><br><span class="line"><span class="comment">// 这里的 #name=&quot;ngModel&quot; 是将 ngModel 导出成 name 变量，方便下面检测其 dirty 和touched 属性（判断是否填写过）</span></span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span> </span></span></span><br><span class="line"><span class="tag"><span class="language-xml">	*<span class="attr">ngIf</span>=<span class="string">&quot;name.invalid &amp;&amp; (name.dirty || name.touched)&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">  <span class="attr">class</span>=<span class="string">&quot;alert alert-danger&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span> *<span class="attr">ngIf</span>=<span class="string">&quot;name.errors.required&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    Name is required.</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span> *<span class="attr">ngIf</span>=<span class="string">&quot;name.errors.minlength&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    Name must be at least 4 characters long.</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span> *<span class="attr">ngIf</span>=<span class="string">&quot;name.errors.forbiddenName&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    Name cannot be Bob.</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>响应式表单验证，FormControl的第一个参数是表单绑定的数据变量，第二个是验证条件（可以是数组，也可以是单个验证函数）</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="property">heroForm</span> = <span class="keyword">new</span> <span class="title class_">FormGroup</span>(&#123;</span><br><span class="line">    <span class="string">&#x27;name&#x27;</span>: <span class="keyword">new</span> <span class="title class_">FormControl</span>(<span class="variable language_">this</span>.<span class="property">hero</span>.<span class="property">name</span>, [</span><br><span class="line">       <span class="title class_">Validators</span>.<span class="property">required</span>,</span><br><span class="line">       <span class="title class_">Validators</span>.<span class="title function_">minLength</span>(<span class="number">4</span>),</span><br><span class="line">       <span class="title function_">forbiddenNameValidator</span>(<span class="regexp">/bob/i</span>) </span><br><span class="line">    ]),</span><br><span class="line">    <span class="string">&#x27;alterEgo&#x27;</span>: <span class="keyword">new</span> <span class="title class_">FormControl</span>(<span class="variable language_">this</span>.<span class="property">hero</span>.<span class="property">alterEgo</span>),</span><br><span class="line">    <span class="string">&#x27;power&#x27;</span>: <span class="keyword">new</span> <span class="title class_">FormControl</span>(<span class="variable language_">this</span>.<span class="property">hero</span>.<span class="property">power</span>, <span class="title class_">Validators</span>.<span class="property">required</span>)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>自定义验证器</strong></p>
+<p>验证器是一个工厂，返回一个验证器函数</p>
+<p><strong>控件状态 CSS 类</strong></p>
+<ul>
+<li><code>.ng-valid</code></li>
+<li><code>.ng-invalid</code></li>
+<li><code>.ng-pending</code></li>
+<li><code>.ng-pristine</code></li>
+<li><code>.ng-dirty</code></li>
+<li><code>.ng-untouched</code></li>
+<li><code>.ng-touched</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/21/2021-05-21-typescript-docuemnt-essence.html" rel="prev" title="TypeScript 文档精粹">
+                  <i class="fa fa-angle-left"></i> TypeScript 文档精粹
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/07/2021-07-07-angular-router.html" rel="next" title="Angular 路由">
+                  Angular 路由 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

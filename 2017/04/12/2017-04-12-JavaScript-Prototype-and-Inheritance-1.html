@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="原型构造函数模式下，对象中的方法作用域只在对象中，对象的不同实例的同名函数都是不相等的。为了解决这个问题，js中创建的每一个函数都有一个prototype属性，这个属性是一个指针，指向一个对象，而这个对象的用途是包含可以由特定类型的所由实例共享的属性和方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript中的原型与继承-原型篇">
+<meta property="og:url" content="https://keefe.wang/2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="原型构造函数模式下，对象中的方法作用域只在对象中，对象的不同实例的同名函数都是不相等的。为了解决这个问题，js中创建的每一个函数都有一个prototype属性，这个属性是一个指针，指向一个对象，而这个对象的用途是包含可以由特定类型的所由实例共享的属性和方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i4/O1CN01EtwJ2z1ekpSHFw3CL_!!6000000003910-2-tps-880-359.png">
+<meta property="article:published_time" content="2017-04-12T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.647Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="原型">
+<meta property="article:tag" content="继承">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i4/O1CN01EtwJ2z1ekpSHFw3CL_!!6000000003910-2-tps-880-359.png">
+
+
+<link rel="canonical" href="https://keefe.wang/2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html","path":"2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html","title":"JavaScript中的原型与继承-原型篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript中的原型与继承-原型篇 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">原型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">原型对象</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">1.1.1.</span> <span class="nav-text">原型对象的创建</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E5%AF%B9%E8%B1%A1%E5%92%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.2.</span> <span class="nav-text">原型对象和构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E4%B8%8Ein%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.1.3.</span> <span class="nav-text">原型与in操作符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E7%9A%84%E5%8A%A8%E6%80%81%E6%80%A7"><span class="nav-number">1.1.4.</span> <span class="nav-text">原型的动态性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8E%9F%E5%9E%8B"><span class="nav-number">1.1.5.</span> <span class="nav-text">原生对象的原型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">原型对象的缺点</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript中的原型与继承-原型篇 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript中的原型与继承-原型篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-12 12:00:00" itemprop="dateCreated datePublished" datetime="2017-04-12T12:00:00+08:00">2017-04-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h3><p>构造函数模式下，对象中的方法作用域只在对象中，对象的不同实例的同名函数都是不相等的。为了解决这个问题，js中创建的每一个函数都有一个prototype属性，这个属性是一个指针，指向一个对象，而这个对象的用途是包含可以由特定类型的所由实例共享的属性和方法。</p>
+<span id="more"></span>
+
+<h4 id="原型对象"><a href="#原型对象" class="headerlink" title="原型对象"></a>原型对象</h4><p>JavaScript 中并没有提供类的实现，虽然在ES2015&#x2F;ES6之中引入了 class 关键字，但是 JavaScript 仍然是基于原型的。而 JavaScript 中创建对象的方法有：new Object() 方法、字面量方法、工厂模式、构造函数方法和<strong>原型模式</strong>。其中，使用原型模式创建对象可以令所有实例共享方法，减少内存消耗，有利于对象继承。</p>
+<p>JavaScript 中的<strong>继承</strong>则是体现在一种结构上——对象，所有的对象都是由Object衍生的对象，所有的对象都继承了 Object.prototype 的方法和属性（也有可能被覆盖）。每一个对象都有一个内部链接到另一个对象，这个对象成为它的原型（prototype）。而且，该原型对象也有自己的原型，直到追溯到一个以 null 为原型的对象，因为 null 是没有原型的，所以可以作为这个<strong>原型链（prototype chain</strong>中的最终链接。</p>
+<p>只要创建了一个新函数，就会为该函数创建一个prototype属性，这个属性指向函数的原型对象。所有原型对象都自动获得一个constructor属性，这个属性包含一个指向prototype属性所在函数的指针。</p>
+<p><img src="https://img.alicdn.com/imgextra/i4/O1CN01EtwJ2z1ekpSHFw3CL_!!6000000003910-2-tps-880-359.png"></p>
+<h5 id="原型对象的创建"><a href="#原型对象的创建" class="headerlink" title="原型对象的创建"></a>原型对象的创建</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params">name, age, job</span>) &#123; </span><br><span class="line">     <span class="variable language_">this</span>.<span class="property">name</span> = name; </span><br><span class="line">     <span class="variable language_">this</span>.<span class="property">age</span> = age; </span><br><span class="line">     <span class="variable language_">this</span>.<span class="property">job</span> = job; </span><br><span class="line"> &#125; </span><br><span class="line"> <span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">sayName</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">     <span class="title function_">alert</span>(<span class="variable language_">this</span>.<span class="property">name</span>); </span><br><span class="line"> &#125; </span><br><span class="line"> <span class="keyword">var</span> person1 = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;Nicholas&quot;</span>, <span class="number">29</span>, <span class="string">&quot;Lawyer&quot;</span>); </span><br><span class="line"> <span class="keyword">var</span> person2 = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;Katie&quot;</span>, <span class="number">30</span> <span class="string">&quot;Account&quot;</span>); </span><br><span class="line"> <span class="keyword">var</span> person3 = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;Nicholas&quot;</span>, <span class="number">29</span>, <span class="string">&quot;Lawyer&quot;</span>); </span><br><span class="line"> person1.<span class="title function_">sayName</span>();     <span class="comment">//&quot;Nicholas&quot; </span></span><br><span class="line"> person2.<span class="title function_">sayName</span>();     <span class="comment">//&quot;Katie&quot;</span></span><br><span class="line"> <span class="title function_">alert</span>(person1.<span class="property">sayName</span> == person3.<span class="property">sayName</span>);    <span class="comment">//true </span></span><br></pre></td></tr></table></figure>
+
+<p>更加简单的原型对象创建语法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params"></span>)&#123;&#125;</span><br><span class="line"><span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span> = &#123; </span><br><span class="line">   name : <span class="string">&quot;Nicholas&quot;</span>, </span><br><span class="line">   age : <span class="number">29</span>, </span><br><span class="line">   job : <span class="string">&quot;Software Engineer&quot;</span>, </span><br><span class="line">   sayName : <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">     <span class="title function_">alert</span>(<span class="variable language_">this</span>.<span class="property">name</span>) </span><br><span class="line">   &#125; </span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>代码搜索某属性的路径：</p>
+<p>  上面代码中出现了Person.prototype,通过该形式可以获得原型对象，并且可以为其添加属性和方法。这段代码也展示了对象属性和方法搜索的路径：每当代码读取某个对象的某个属性时，进行目标为该属性的名字，搜索首先从实例（person1）本身开始，若有该名字的属性则返回该属性，若没有则继续搜索该实例中原型指针指向的原型对象，在原型对象中查找该名字的属性。所以说<strong>实例是共享原型中保存的属性和方法</strong>。</p>
+</li>
+<li><p>实例的属性，原型的属性？</p>
+<p>  一个对象的所有实例尽管可以共享该原型对象的所有属性和方法，但是却无法重写原型对象中的属性和方法，只能通过利用同名属性和方法来覆盖和屏蔽原型对象中的属性和方法；若想把实例中覆盖的属性还原，可以通过delete操作。使用hasOwnProperty()方法可以检测一个属性是存在于实例中还是存在于原型中。</p>
+</li>
+<li><p>怎样获得原型对象:</p>
+<p>  下面的代码展示了Object.getPrototypeOf(obj)方法和<strong>proto</strong>属性的使用：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="title function_">getPrototypeOf</span>(person1) === <span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>;     <span class="comment">//true </span></span><br><span class="line">person1.<span class="property">__proto__</span> === <span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>;    <span class="comment">//true </span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>可以看到，Object.getPrototypeOf(obj)是获取obj对象的原型对象的方法，这个方法将在<strong>利用原型实现继承的情况中发挥非常重要的作用</strong>。obj.<strong>proto</strong> 也是如此，是每一个对象都拥有的属性，但是<strong>proto</strong>并不是一个规范的属性（当使用Object.create()方法创建对象时，<strong>proto</strong> 并不能指向该对象的原型对象），其对应的标准属性应当是[[Prototype]]。</p>
+<h5 id="原型对象和构造函数"><a href="#原型对象和构造函数" class="headerlink" title="原型对象和构造函数"></a>原型对象和构造函数</h5><p>对于对象Person来说，它的构造函数是Person()，它的原型对象为Person.prototype；而Person.prototype.constructor又会指回Person。而对象Person的实例person1和person2都包含有一个属性[[Prototype]]（也就是上面提到的<strong>proto</strong>）它们都指向Person.prototype；同时，person1和person2也可以通过isprototypeOf(）方法来确定是否与确定对象之间有这种关系：</p>
+<figure class="highlight javascript">
+
+<pre>
+
+<div class="line">alert(Person.prototype.isPrototypeOf(person1));    <span class="comment">//true</span></div>
+
+</pre>
+
+</figure>
+
+<h5 id="原型与in操作符"><a href="#原型与in操作符" class="headerlink" title="原型与in操作符"></a>原型与in操作符</h5><ul>
+<li><p>in操作符单独使用的情况</p>
+<p>in操作符单独使用会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是在原型中：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接上面Person对象代码 </span></span><br><span class="line"><span class="keyword">var</span> person4 = <span class="keyword">new</span> <span class="title class_">Person</span>(); </span><br><span class="line"><span class="title function_">alert</span>(person4.<span class="title function_">hasOwnproperty</span>(<span class="string">&quot;name&quot;</span>));     <span class="comment">//由于person4实例没有覆盖原型中的name所以返回false </span></span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;name&quot;</span> <span class="keyword">in</span> person4);    <span class="comment">//true </span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>for-in循环</p>
+<p>该种方式是返回所有能够通过对象访问的、可枚举的属性，包括实例和原型中的属性，并且屏蔽了原型中不可枚举（[[Enumerable]]）的属性（仅在IE8及更早版本中有不可枚举的属性）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> o = &#123; </span><br><span class="line">   toString : <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">     <span class="keyword">return</span> <span class="string">&quot;my Object&quot;</span> </span><br><span class="line">   &#125; </span><br><span class="line"> &#125; </span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">var</span> prop <span class="keyword">in</span> o) &#123; </span><br><span class="line">   <span class="keyword">if</span> (prop == <span class="string">&quot;toString&quot;</span>) &#123; </span><br><span class="line">     <span class="title function_">alert</span>(<span class="string">&quot;Found toString&quot;</span>);      <span class="comment">//IE中无法显示 </span></span><br><span class="line">   &#125; </span><br><span class="line"> &#125;     </span><br></pre></td></tr></table></figure>
+
+<p>若想获取对象中所有可枚举的实例属性，可以使用Object.keys(),该函数接受一个对象或实例作为参数（当然也可以是原型对象），返回一个包含所有可枚举属性的字符串数组。示例代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接Person对象代码 </span></span><br><span class="line"><span class="keyword">var</span> keys = <span class="title class_">Object</span>.<span class="title function_">keys</span>(person.<span class="property"><span class="keyword">prototype</span></span>); </span><br><span class="line"><span class="keyword">var</span> person5 = <span class="keyword">new</span> <span class="title class_">Person</span>(); </span><br><span class="line">person5.<span class="property">name</span> = <span class="string">&quot;Rob&quot;</span>; </span><br><span class="line">person5.<span class="property">age</span> = <span class="number">31</span>; </span><br><span class="line"><span class="title function_">alert</span>(keys); </span><br><span class="line"><span class="title function_">alert</span>(<span class="title class_">Object</span>.<span class="title function_">keys</span>(person5)); </span><br><span class="line"><span class="keyword">var</span> keys2 = <span class="title class_">Object</span> .<span class="title function_">getOwnPropertyNames</span>(<span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>);     </span><br><span class="line"><span class="title function_">alert</span>(keys2); </span><br></pre></td></tr></table></figure>
+
+<p>上述代码中出现的Object.getOwnPropertyNames(Person.prototype)方法可以得到所有的可枚举&#x2F;不可枚举的实例属性（列入constructor）。</p>
+</li>
+</ul>
+<h5 id="原型的动态性"><a href="#原型的动态性" class="headerlink" title="原型的动态性"></a>原型的动态性</h5><p>由于从原型中查找值的过程试一次搜索，因此对原型对象所做的任何修改都能从实例上反映出来。即，可以先创建实例，再修改原型对象中的属性或函数，实例依旧可以访问该属性和函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接person对象代码 </span></span><br><span class="line"> <span class="keyword">var</span> friend = <span class="keyword">new</span> <span class="title class_">Person</span>(); </span><br><span class="line"> <span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">sayHi</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">   <span class="title function_">alert</span>(<span class="string">&quot;hi!&quot;</span>); </span><br><span class="line"> &#125;; </span><br><span class="line"> friend.<span class="title function_">sayHi</span>();  <span class="comment">//返回”hi” </span></span><br></pre></td></tr></table></figure>
+
+<p>尽管像以上代码中所看到的可以为原型添加属性或方法，但是如果重写整个原型对象，就会切断实例的构造函数与最初原型对象之间的联系。这是因为实例中的指针仅指向原型，而非构造函数。</p>
+<h5 id="原生对象的原型"><a href="#原生对象的原型" class="headerlink" title="原生对象的原型"></a>原生对象的原型</h5><p>不仅是自定义的对象，JavaScript中所有原生的引用类型，都是采用这种模式创建的原生对象。通过原生对象的原型可以取得所有默认方法的引用，也可以自己添加新的方法。</p>
+<h4 id="原型对象的缺点"><a href="#原型对象的缺点" class="headerlink" title="原型对象的缺点"></a>原型对象的缺点</h4><ul>
+<li><p>由于原型中所有属性都是可以被实例共享，而对于原型中含有引用类型值的属性来说就会发生问题：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接person对象代码 </span></span><br><span class="line"><span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">friends</span> = [<span class="string">&quot;Shelby&quot;</span>, <span class="string">&quot;Court&quot;</span>]; </span><br><span class="line"><span class="keyword">var</span> person6 = <span class="keyword">new</span> <span class="title class_">Person</span>(); </span><br><span class="line">person6.<span class="property">friends</span>.<span class="title function_">push</span>(<span class="string">&quot;Van&quot;</span>); </span><br><span class="line"><span class="title function_">alert</span>(person6.<span class="property">friends</span>); </span><br><span class="line"><span class="title function_">alert</span>(person1.<span class="property">friends</span>);     <span class="comment">//此时两个Person的实例拥有相同的朋友，很可能发生错误 </span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，由于原型的属性可以被共享的这一特性，原型对象中包含的引用类型值很可能被修改之后导致实例的属性也发生错误，必须要在实例属性中覆盖才可以。所以为了解决这个问题，提出了以下组合构造函数模式和原型模式的方法来创建对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//改写上面的Person对象 </span></span><br><span class="line"><span class="comment">//首先使用构造函数模式创建对象Person并加入容易被修改的属性name，age，job </span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params">name, age, job</span>) &#123; </span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = name; </span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = age; </span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">job</span> = job; </span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">friends</span> = [<span class="string">&quot;Shelby&quot;</span>, <span class="string">&quot;Court&quot;</span>]; </span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">//再使用原型模式创建构造函数和不容易被修改的属性和函数，这样可以发挥原型的共享机制并减少内存消耗 </span></span><br><span class="line"><span class="title class_">Person</span>.<span class="property"><span class="keyword">prototype</span></span> = &#123; </span><br><span class="line">  constructor : <span class="title class_">Person</span>,    <span class="comment">//将构造函数放入原型中 </span></span><br><span class="line">  sayName : <span class="keyword">function</span>(<span class="params"></span>) &#123; </span><br><span class="line">    <span class="title function_">alert</span>(<span class="variable language_">this</span>.<span class="property">name</span>); </span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/tags/%E5%8E%9F%E5%9E%8B/" rel="tag"># 原型</a>
+              <a href="/tags/%E7%BB%A7%E6%89%BF/" rel="tag"># 继承</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/03/10/2017-03-10-pseudoCSS-part1-pseudoElement-pseudoClass-note.html" rel="prev" title="CSS中的伪类与伪元素">
+                  <i class="fa fa-angle-left"></i> CSS中的伪类与伪元素
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html" rel="next" title="JavaScript正则表达式学习笔记[上]">
+                  JavaScript正则表达式学习笔记[上] <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

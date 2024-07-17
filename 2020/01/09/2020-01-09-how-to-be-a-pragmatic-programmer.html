@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="怎样成为一个务实的程序员？本文针对原作进行了一些重点的摘录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="怎样做一个Pragmatic Programmer">
+<meta property="og:url" content="https://keefe.wang/2020/01/09/2020-01-09-how-to-be-a-pragmatic-programmer.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="怎样成为一个务实的程序员？本文针对原作进行了一些重点的摘录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-09T04:30:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.649Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="规范">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2020/01/09/2020-01-09-how-to-be-a-pragmatic-programmer.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2020/01/09/2020-01-09-how-to-be-a-pragmatic-programmer.html","path":"2020/01/09/2020-01-09-how-to-be-a-pragmatic-programmer.html","title":"怎样做一个Pragmatic Programmer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>怎样做一个Pragmatic Programmer | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#What-maks-a-pragmatic-programmer"><span class="nav-number">1.</span> <span class="nav-text">What maks a pragmatic programmer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TIPs"><span class="nav-number">2.</span> <span class="nav-text">TIPs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%81%E7%BB%AD%E8%BF%9B%E8%A1%8C%E7%9F%A5%E8%AF%86%E6%8A%95%E8%B5%84"><span class="nav-number">3.</span> <span class="nav-text">持续进行知识投资</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#e-g"><span class="nav-number">3.1.</span> <span class="nav-text">e.g.</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2020/01/09/2020-01-09-how-to-be-a-pragmatic-programmer.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="怎样做一个Pragmatic Programmer | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          怎样做一个Pragmatic Programmer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-09 12:30:00" itemprop="dateCreated datePublished" datetime="2020-01-09T12:30:00+08:00">2020-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Reading/" itemprop="url" rel="index"><span itemprop="name">Reading</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>怎样成为一个务实的程序员？本文针对原作进行了一些重点的摘录。</p>
+<span id="more"></span>
+
+<h4 id="What-maks-a-pragmatic-programmer"><a href="#What-maks-a-pragmatic-programmer" class="headerlink" title="What maks a pragmatic programmer"></a>What maks a pragmatic programmer</h4><p>1.Early adopter&#x2F;faster adapter: 善于学习新的技术并能够尝试将其集成在自己的知识库中;<br>2.Inquisitive：善于提问、保持好奇心；<br>3.Critical thinker：辩证地看待问题而非一味接受前人的话语；<br>4.Realistic：发觉问题的本质，认识问题的难度并能估计解决该问题的时间；<br>5.Jack of all trades：能够转移领域之后快速适应，通过掌握核心基础知识；<br>6.We who cut mere stones must always be envisioning cathedrals.<br>7.持续以上过程</p>
+<h4 id="TIPs"><a href="#TIPs" class="headerlink" title="TIPs"></a>TIPs</h4><p>Tip1.在乎你所做的事情<br>Tip2.不断思考所做的事情，不断从big picture进行思考<br>Tip3.提供解决方案而非各种借口<br>Tip4.“不留一扇破窗”，一旦发现问题及时修复<br>Tip5.做项目的催化剂，吸引资源到一个可预见成功的项目中<br>Tip6.时刻牢记“蓝图”<br>Tip7.将产品质量作为需求之一进行考量<br>Tip8.定期对知识进行投资<br>Tip9.批判地看待自己的所见所闻</p>
+<h4 id="持续进行知识投资"><a href="#持续进行知识投资" class="headerlink" title="持续进行知识投资"></a>持续进行知识投资</h4><p>1.定期地进行知识投资<br>2.注重知识的多样性<br>3.在2的基础上注意控制风险<br>4.在一个技术还未成熟前进行学习<br>5.时常对知识库进行review</p>
+<h5 id="e-g"><a href="#e-g" class="headerlink" title="e.g."></a>e.g.</h5><p>1.一年至少学习一种新的语言<br>2.一个季度看一本技术书籍（甚至一个月、可涉及非技术例如用户等）<br>3.上课<br>4.参与到用户群体中<br>5.在不同环境中进行试验<br>6.跟上潮流：订阅杂志或期刊</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/tags/%E8%A7%84%E8%8C%83/" rel="tag"># 规范</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/21/2019-12-21-clean-code-note.html" rel="prev" title="Clean Code规范整理">
+                  <i class="fa fa-angle-left"></i> Clean Code规范整理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/12/2020-01-12-Javascript-module-history.html" rel="next" title="JavaScript模块化">
+                  JavaScript模块化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

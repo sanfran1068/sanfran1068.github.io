@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Babel是一个广泛使用的转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Babel的使用方法">
+<meta property="og:url" content="https://keefe.wang/2017/09/21/2017-09-21-babel-document-study.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="Babel是一个广泛使用的转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-09-21T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.648Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Babel">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2017/09/21/2017-09-21-babel-document-study.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2017/09/21/2017-09-21-babel-document-study.html","path":"2017/09/21/2017-09-21-babel-document-study.html","title":"Babel的使用方法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Babel的使用方法 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%BD%AC%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">使用命令行转码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%92%8C%E6%B3%A8%E5%86%8C"><span class="nav-number">2.</span> <span class="nav-text">安装和注册</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#webpack%E9%85%8D%E7%BD%AEbabel"><span class="nav-number">3.</span> <span class="nav-text">webpack配置babel</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E4%BD%BF%E7%94%A8babel-register"><span class="nav-number">4.</span> <span class="nav-text">开发环境使用babel-register</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8babel-core%E7%9A%84API%E8%BF%9B%E8%A1%8C%E8%BD%AC%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">使用babel-core的API进行转码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#babel-polyfill"><span class="nav-number">6.</span> <span class="nav-text">babel-polyfill</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2017/09/21/2017-09-21-babel-document-study.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Babel的使用方法 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Babel的使用方法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-09-21 12:00:00" itemprop="dateCreated datePublished" datetime="2017-09-21T12:00:00+08:00">2017-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Babel是一个广泛使用的转码器，可以将ES6代码转为ES5代码，从而在现有环境执行。</p>
+<span id="more"></span>
+
+<h5 id="使用命令行转码"><a href="#使用命令行转码" class="headerlink" title="使用命令行转码"></a>使用命令行转码</h5><ul>
+<li><p>安装babel-cli：<code>npm install --global babel-cli</code></p>
+</li>
+<li><p>使用：</p>
+<ul>
+<li>转码结果输出到标准输出：<code>babel compiled.js</code></li>
+<li>转码结果写入一个文件：<code>babel source.js -o compiled.js</code></li>
+<li>整个目录转码：<code>babel src -d lib</code></li>
+<li>生成source map文件：<code>babel src -d lib -s</code></li>
+</ul>
+</li>
+<li><p>在package.json中使用babel-cli</p>
+<ul>
+<li><p>在项目中安装babel-cli：<code>npm install --save-dev babel-cli</code></p>
+</li>
+<li><p>在package.json中进行配置（使用npm run build就可以进行babel转码）：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="string">&quot;devDependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;babel-cli&quot;</span>: <span class="string">&quot;^6.0.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;build&quot;</span>: <span class="string">&quot;babel src -d lib&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h5 id="安装和注册"><a href="#安装和注册" class="headerlink" title="安装和注册"></a>安装和注册</h5><ul>
+<li><p>安装</p>
+<ul>
+<li><p>ES2015转码规则<br>  npm install –save-dev babel-preset-es2015</p>
+</li>
+<li><p>react转码规则<br>  npm install –save-dev babel-preset-react</p>
+</li>
+<li><p>ES7不同阶段语法提案的转码规则（共有4个阶段），选装一个<br>  npm install –save-dev babel-preset-stage-0<br>  npm install –save-dev babel-preset-stage-1<br>  npm install –save-dev babel-preset-stage-2<br>  npm install –save-dev babel-preset-stage-3</p>
+<p>  如果是想使用比较新的语法时，比如ES7中的async&#x2F;await语法，选择安装stage-3是比较稳妥的。在安装好之后，需要在Babel的配置文件中进行注册，在项目的根目录下新建.babelrc文件并进行配置：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;presets&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;es2015&quot;</span>,</span><br><span class="line">      <span class="string">&quot;react&quot;</span>,</span><br><span class="line">      <span class="string">&quot;stage-2&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">&quot;plugins&quot;</span>: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h5 id="webpack配置babel"><a href="#webpack配置babel" class="headerlink" title="webpack配置babel"></a>webpack配置babel</h5><ul>
+<li><p>安装：安装方式仍如上一步npm安装方式</p>
+</li>
+<li><p>配置：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//webpack1.0</span></span><br><span class="line"><span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">loaders</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">            <span class="attr">exclude</span>: <span class="regexp">/(node_modules|bower_components)/</span>,</span><br><span class="line">            <span class="attr">loader</span>: <span class="string">&quot;babel&quot;</span>,</span><br><span class="line">            <span class="attr">query</span>: &#123;</span><br><span class="line">              <span class="attr">presets</span>: [<span class="string">&#x27;es2015&#x27;</span>, <span class="string">&#x27;stage-3&#x27;</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//webpack3.0，preset如果已经在package.json中指定（`babel:&#123;&quot;presets&quot;: [&quot;lastest&quot;]&#125;`），这里可以不用配置</span></span><br><span class="line"><span class="attr">module</span>: &#123;</span><br><span class="line">	<span class="attr">rules</span>: &#123;</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">			<span class="attr">use</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">			<span class="attr">exclude</span>: <span class="regexp">/(node_modules|bower_components)/</span>,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="开发环境使用babel-register"><a href="#开发环境使用babel-register" class="headerlink" title="开发环境使用babel-register"></a>开发环境使用babel-register</h5><p>babel-register的作用是在模块使用<strong>require</strong>命令进行引入时，对该命令引入的模块进行babel的转码（只要是js&#x2F;jsx&#x2F;es&#x2F;es6类型文件）：</p>
+<ul>
+<li>安装babel-register：<code>npm install --save-dev babel-register</code></li>
+<li>加载babel-register：<code>require(&quot;babel-register&quot;);require(&quot;./index.js&quot;);</code>，即可对index.js进行转码（<strong>注意：register不会对当前js文件进行转码</strong>）</li>
+</ul>
+<h5 id="使用babel-core的API进行转码"><a href="#使用babel-core的API进行转码" class="headerlink" title="使用babel-core的API进行转码"></a>使用babel-core的API进行转码</h5><ul>
+<li><p>安装：<code>npm install babel-core --save</code></p>
+</li>
+<li><p>使用：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> babel = <span class="built_in">require</span>(<span class="string">&#x27;babel-core&#x27;</span>);</span><br><span class="line"><span class="comment">// 字符串转码</span></span><br><span class="line">babel.<span class="title function_">transform</span>(<span class="string">&#x27;code();&#x27;</span>, options);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="babel-polyfill"><a href="#babel-polyfill" class="headerlink" title="babel-polyfill"></a>babel-polyfill</h5><p>Babel默认只转换新的JavaScript句法（syntax），而不转换新的API，比如Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise等全局对象，以及一些定义在全局对象上的方法（比如Object.assign）都不会转码。<br>举例来说，ES6在Array对象上新增了Array.from方法。Babel就不会转码这个方法。如果想让这个方法运行，必须使用babel-polyfill，为当前环境提供一个垫片。[^1]</p>
+<p>例如之前在学习koa2的过程中，遇到了async&#x2F;await的情况，就必须安装polyfill才能够正常加载。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/Babel/" rel="tag"># Babel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/09/21/2017-10-05-http-primary-knowledge-in-Frontend.html" rel="prev" title="前端要学习的http基础知识">
+                  <i class="fa fa-angle-left"></i> 前端要学习的http基础知识
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/10/08/2017-10-08-shape-grammar-learning-notes.html" rel="next" title="形状文法简介">
+                  形状文法简介 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

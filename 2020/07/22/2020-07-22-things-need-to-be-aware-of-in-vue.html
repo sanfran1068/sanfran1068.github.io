@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在使用 Vue 2.0 开发项目的过程中，会发现有很多容易忽略或者令人迷惑的一些小方法和概念，本文针对这些”遗珠“进行了一个整理，方便分享和以后查阅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue 中容易被忽视的小功能">
+<meta property="og:url" content="https://keefe.wang/2020/07/22/2020-07-22-things-need-to-be-aware-of-in-vue.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="在使用 Vue 2.0 开发项目的过程中，会发现有很多容易忽略或者令人迷惑的一些小方法和概念，本文针对这些”遗珠“进行了一个整理，方便分享和以后查阅。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-22T11:03:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.650Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="Framework">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2020/07/22/2020-07-22-things-need-to-be-aware-of-in-vue.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2020/07/22/2020-07-22-things-need-to-be-aware-of-in-vue.html","path":"2020/07/22/2020-07-22-things-need-to-be-aware-of-in-vue.html","title":"Vue 中容易被忽视的小功能"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vue 中容易被忽视的小功能 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1"><span class="nav-number">1.</span> <span class="nav-text">组件通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prop%E7%9B%B8%E5%85%B3"><span class="nav-number">1.1.</span> <span class="nav-text">Prop相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BA%8B%E4%BB%B6"><span class="nav-number">2.1.</span> <span class="nav-text">自定义事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="nav-number">2.2.</span> <span class="nav-text">事件监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="nav-number">2.3.</span> <span class="nav-text">修饰符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%BB%84%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">动态组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E7%BB%84%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">异步组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Slot"><span class="nav-number">4.</span> <span class="nav-text">Slot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">4.1.</span> <span class="nav-text">编译作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#default%E5%86%85%E5%AE%B9"><span class="nav-number">4.2.</span> <span class="nav-text">default内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E5%90%8D%E6%8F%92%E6%A7%BD"><span class="nav-number">4.3.</span> <span class="nav-text">具名插槽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8F%92%E6%A7%BD"><span class="nav-number">4.4.</span> <span class="nav-text">作用域插槽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%8F%92%E6%A7%BDProp"><span class="nav-number">4.5.</span> <span class="nav-text">结构插槽Prop</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E6%83%85%E5%86%B5%E5%A4%84%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">边界情况处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E5%85%83%E7%B4%A0-%E7%BB%84%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">访问元素&amp;组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%B8%A1-%E5%8A%A8%E7%94%BB"><span class="nav-number">6.</span> <span class="nav-text">过渡&amp;动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E7%B4%A0-%E7%BB%84%E4%BB%B6%E7%9A%84%E8%BF%87%E6%B8%A1"><span class="nav-number">6.1.</span> <span class="nav-text">单元素&#x2F;组件的过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%85%83%E7%B4%A0%E7%9A%84%E8%BF%87%E6%B8%A1"><span class="nav-number">6.2.</span> <span class="nav-text">多元素的过渡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BB%84%E4%BB%B6%E7%9A%84%E8%BF%87%E6%B8%A1"><span class="nav-number">6.3.</span> <span class="nav-text">多组件的过渡</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2020/07/22/2020-07-22-things-need-to-be-aware-of-in-vue.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vue 中容易被忽视的小功能 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vue 中容易被忽视的小功能
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-07-22 19:03:00" itemprop="dateCreated datePublished" datetime="2020-07-22T19:03:00+08:00">2020-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在使用 Vue 2.0 开发项目的过程中，会发现有很多容易忽略或者令人迷惑的一些小方法和概念，本文针对这些”遗珠“进行了一个整理，方便分享和以后查阅。</p>
+<span id="more"></span>
+
+<h2 id="组件通信"><a href="#组件通信" class="headerlink" title="组件通信"></a>组件通信</h2><h3 id="Prop相关"><a href="#Prop相关" class="headerlink" title="Prop相关"></a>Prop相关</h3><p>prop 是父组件向子组件传递数据的一种方式，在父组件中使用 kebab-case 的方式传入数据，在子组件中可以添加 props 属性来获取传入的数据。这是一个单向的通信过程。</p>
+<p>可以通过 v-bind 传入动态变量，也可以直接传入字符串值到子组件。</p>
+<p>如果子组件中 props 属性中没有声明某些值，那么父组件传入的就是<strong>非 prop 的 attribute</strong>，对于绝大多数 attribute 来说，<strong>从外部提供给组件的值会替换掉组件内部设置好的值</strong>。所以如果传入 type&#x3D;”text” 就会替换掉 type&#x3D;”date” 并把它破坏！庆幸的是，<strong>class 和 style attribute</strong> 会稍微智能一些，即两边的值<strong>会被合并（merge）起来，从而得到最终的值</strong>。</p>
+<p>可以使用 vm.$attr 属性来获取除 class 和 style 之外的非 prop 的 attribute，可以在父组件中使用 <code>v-bind=&quot;$attr&quot;</code> 传入，还可以通过子组件中的 <code>inheritAttrs: true</code> 字段来控制是否接受父组件传入的非 prop 的 attribute。</p>
+<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><h3 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h3><p>使用 v-on 绑定事件时，<strong>最好使用 kebab-case 命名法来命名事件</strong>，因为 v-on 事件监听器在 DOM 模板中会被自动转换为全小写 （因为 HTML 是大小写不敏感的）。</p>
+<p>可以使用 <code>v-on=&quot;$listeners&quot;</code> 来将所有的事件监听器指向这个组件的某个特定的子元素，它是一个对象，里面包含了作用在这个组件上所有的监听器（监听事件）。这样，在子组件上可以绑定 vm.$listeners 中所包含的监听事件。</p>
+<h3 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h3><p>除了 $emit 和 v-on 这一对好基友之外，vue 还提供了类似 总线（bus）机制的观察者模式的事件监听方案：</p>
+<ul>
+<li><code>$on(eventName, eventHandler)</code> 侦听一个事件</li>
+<li><code>$once(eventName, eventHandler)</code> 一次性侦听一个事件</li>
+<li><code>$off(eventName, eventHandler)</code> 停止侦听一个事件</li>
+</ul>
+<h3 id="修饰符"><a href="#修饰符" class="headerlink" title="修饰符"></a>修饰符</h3><ul>
+<li>sync<ul>
+<li>作用：对 prop 进行简单的“双向绑定”，可以实现简单的父子数据同步</li>
+<li>使用：在父组件需要双向绑定的数据上添加 .sync 修饰符，例如 <code>&lt;div&gt;&lt;child :some-prop.sync=&quot;someProp&quot;&gt;&lt;/child&gt;&lt;/div&gt;</code> ；在子组件上使用 vm.$emit 触发数据更新，例如 <code>this.$emit(&#39;update:some-prop&#39;, val)</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><h3 id="动态组件"><a href="#动态组件" class="headerlink" title="动态组件"></a>动态组件</h3><p>动态组件是通过 <component :is="componentName"></component> 来实现的，但是在切换组件时，会将每个组件的原有状态丢失，这时需要添加一个 keep-alive 标签，例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">&quot;currentTabComponent&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">keep-alive</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h3><p>Vue 允许你以一个工厂函数的方式定义你的组件，这个工厂函数会异步解析你的组件定义。Vue 只有在这个组件需要被渲染的时候才会触发该工厂函数，且会把结果缓存起来供未来重渲染。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Vue</span>.<span class="title function_">component</span>(</span><br><span class="line">  <span class="string">&#x27;async-webpack-example&#x27;</span>,</span><br><span class="line">  <span class="comment">// 这个动态导入会返回一个 `Promise` 对象。</span></span><br><span class="line">  <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./my-async-component&#x27;</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Slot"><a href="#Slot" class="headerlink" title="Slot"></a>Slot</h2><h3 id="编译作用域"><a href="#编译作用域" class="headerlink" title="编译作用域"></a>编译作用域</h3><p>父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。</p>
+<h3 id="default内容"><a href="#default内容" class="headerlink" title="default内容"></a>default内容</h3><p>可以使用 <code>&lt;slot&gt; Default content &lt;/slot&gt;</code> 来设置分发内容的默认值，当没有内容传入时会显示该内容。</p>
+<h3 id="具名插槽"><a href="#具名插槽" class="headerlink" title="具名插槽"></a>具名插槽</h3><p>有多个插槽需要进行内容分发时，可以使用具名插槽，具体用法如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 子元素设置具名插槽 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">header</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">slot</span> <span class="attr">name</span>=<span class="string">&quot;header&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 父元素设置分发内容，由 v-slot 属性来指明具体的插槽名 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">v-slot:header</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Here might be a page title<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="作用域插槽"><a href="#作用域插槽" class="headerlink" title="作用域插槽"></a>作用域插槽</h3><p>绑定在 <slot> 元素上的 attribute 被称为插槽 prop，为了让父元素能够访问到子组件中的数据，可以通过 v-bind 进行作用域的绑定，具体代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 子元素中需要在 slot 中使用 v-bind 绑定具体变量 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">slot</span> <span class="attr">v-bind:user</span>=<span class="string">&quot;user&quot;</span>&gt;</span></span><br><span class="line">    &#123;&#123; user.lastName &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">slot</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 父元素通过 v-slot 来指明子元素所 bind 的所有数据 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">child</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">template</span> <span class="attr">v-slot</span>=<span class="string">&quot;slotProps&quot;</span>&gt;</span></span><br><span class="line">		    &#123;&#123; slotProps.user.firstName &#125;&#125;</span><br><span class="line">	  <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">child</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>***v-slot 的缩写为 #***，这个在具名插槽中有</p>
+<h3 id="结构插槽Prop"><a href="#结构插槽Prop" class="headerlink" title="结构插槽Prop"></a>结构插槽Prop</h3><p>作用域插槽的内部工作原理是将你的插槽内容包裹在一个拥有单个参数的函数里，这意味着 v-slot 的值实际上可以是任何能够作为函数定义中的参数的 JavaScript 表达式。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- prop 重命名 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">current-user</span> <span class="attr">v-slot</span>=<span class="string">&quot;&#123; user: person &#125;&quot;</span>&gt;</span></span><br><span class="line">	  &#123;&#123; person.firstName &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">current-user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 为 prop 指定默认值 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">current-user</span> <span class="attr">v-slot</span>=<span class="string">&quot;&#123; user = &#123; firstName: &#x27;Guest&#x27; &#125; &#125;&quot;</span>&gt;</span></span><br><span class="line">	  &#123;&#123; user.firstName &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">current-user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="边界情况处理"><a href="#边界情况处理" class="headerlink" title="边界情况处理"></a>边界情况处理</h2><h3 id="访问元素-组件"><a href="#访问元素-组件" class="headerlink" title="访问元素&amp;组件"></a>访问元素&amp;组件</h3><ul>
+<li><p>访问根实例</p>
+<p>  一般不建议触达另一个组件实例内部或手动操作 DOM 元素</p>
+<p>  如果必须这么做，可以通过 this.$root 来访问根实例中的 data、computed 和 methods 等属性</p>
+</li>
+<li><p>访问父级元素</p>
+<p>  同访问根实例，父级元素的访问是通过 this.$parent</p>
+</li>
+<li><p>访问子元素</p>
+<p>  你可以通过 ref 这个 attribute 为子组件赋予一个 ID 引用，父组件可以通过 他会 this.$refs.someId 来访问子元素的所有属性</p>
+</li>
+<li><p>依赖注入</p>
+<p>  当出现了多层嵌套的组件时，使用 $parent 属性无法很好获取到特定父级元素，这时需要采用依赖注入的方法 provide 和 inject，相当于爷组件和孙组件之间的 props：</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 爷组件中添加 provide 属性</span></span><br><span class="line"><span class="attr">provide</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">getMap</span>: <span class="variable language_">this</span>.<span class="property">getMap</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 孙组件中添加 inject 属性</span></span><br><span class="line"><span class="attr">inject</span>: [<span class="string">&#x27;getMap&#x27;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环引用</p>
+<ul>
+<li>组件递归引用要避免</li>
+<li>不同组件间相互引用，如果产生循环引用（例如 Tree 文件系统或级联系统，模块系统会不知道到底哪个是初始组件），可以采用如下两种方式来解决：<ul>
+<li><p>在生命周期钩子 beforeCreate 中进行组件的引入：</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">beforeCreate</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">$options</span>.<span class="property">components</span>.<span class="property">TreeFolderContents</span> = <span class="built_in">require</span>(<span class="string">&#x27;./tree-folder-contents.vue&#x27;</span>).<span class="property">default</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用组件时采用异步方式：</p>
+  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">components</span>: &#123;</span><br><span class="line">  <span class="title class_">TreeFolderContents</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./tree-folder-contents.vue&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="过渡-动画"><a href="#过渡-动画" class="headerlink" title="过渡&amp;动画"></a>过渡&amp;动画</h2><h3 id="单元素-组件的过渡"><a href="#单元素-组件的过渡" class="headerlink" title="单元素&#x2F;组件的过渡"></a>单元素&#x2F;组件的过渡</h3><p>使用 <transition name="someTransition"></transition> 封装所要添加过渡的元素。这种方式适用于以下四种情况（都是单个组件显隐）：</p>
+<ul>
+<li>条件渲染 (使用 <code>v-if</code>)</li>
+<li>条件展示 (使用 <code>v-show</code>)</li>
+<li>动态组件</li>
+<li>组件根节点</li>
+</ul>
+<p>封装好元素后，还需要提供相应的 css 样式，分别由六种状态的样式名，需要根据 name 属性进行相应的设置：someTransition-enter 表示进入过渡开始状态，someTransition-enter-active 表示进入过渡生效状态，someTransition-enter-to 表示进入过渡结束状态，someTransition-leave，someTransition-leave-active，someTransition-leave-to。</p>
+<p>也可以自定义类名，相对应上面六种默认的样式，可以在 transition 标签中添加 enter-class，enter-active-class，enter-to-class，leave-class，leave-active-class，leave-to-class。</p>
+<p>transition 标签中可以指定进入和离开过渡的时长，可以通过 <code>:duration=&quot;&#123; enter: 500, leave: 800 &#125;&quot;</code> 实现</p>
+<p>transition 标签中可以指定过渡各阶段的钩子，以用来绑定相应的事件，包括 @before-enter、@enter、@after-enter、@enter-cancelled、@before-leave、@leave、@after-leave、@leave-cancelled 八种钩子：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 enter 和 leave 钩子事件，如果没有 css 控制元素过渡，那么一定需要有 done() 回调</span></span><br><span class="line"><span class="comment">// 否则 enter 和 leave 钩子事件会同时完成</span></span><br><span class="line"><span class="attr">beforeEnter</span>: <span class="keyword">function</span> (<span class="params">el</span>) &#123;&#125;,</span><br><span class="line"><span class="attr">enter</span>: <span class="keyword">function</span> (<span class="params">el, done</span>) &#123;</span><br><span class="line">    <span class="title function_">done</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>transition 标签中可以使用 appear 属性来设置元素初始化过渡的样式，用法与 enter 和 leave 相同，可以使用 someTrasition-appear 类或者自定义类名属性，当然也支持钩子的实现。</p>
+<h3 id="多元素的过渡"><a href="#多元素的过渡" class="headerlink" title="多元素的过渡"></a>多元素的过渡</h3><p>多元素使用过渡时，可以在最外层使用 transition 标签进行包装，用法与单元素相同，但是有一点需要注意——使用 v-if 或者 v-for 设置多个元素时，一定要在每个元素上绑定自己的 key。</p>
+<p>多个元素切换显隐状态时，Vue 提供了一个 mode 属性来进行平滑过渡：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition name=<span class="string">&quot;fade&quot;</span> mode=<span class="string">&quot;out-in&quot;</span>&gt;&lt;/transition&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多组件的过渡"><a href="#多组件的过渡" class="headerlink" title="多组件的过渡"></a>多组件的过渡</h3><p>多组件的过渡，使用之前所提到的动态组件即可实现，在过渡时可以在组件外包装一层 transition，指定过渡的样式名 name 属性，就可以使用上面提到的样式或钩子进行过渡样式的实现，当然也可以添加所需要的 mode：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;transition name=<span class="string">&quot;component-fade&quot;</span> mode=<span class="string">&quot;out-in&quot;</span>&gt;</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">component</span> <span class="attr">v-bind:is</span>=<span class="string">&quot;view&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">component</span>&gt;</span></span></span><br><span class="line">&lt;/transition&gt;</span><br></pre></td></tr></table></figure>
+
+<p>对于列表的过渡，可以使用 <transition-group> 包装 v-for 渲染出的列表，指明过渡样式名 name 属性，即可用上面相同的方式进行过渡的实现。在列表打乱或重新排序时，Vue 提供了 someTransition-move 的类名来实现：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">v-on:click</span>=<span class="string">&quot;shuffle&quot;</span>&gt;</span>Shuffle<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">transition-group</span> <span class="attr">name</span>=<span class="string">&quot;flip-list&quot;</span> <span class="attr">tag</span>=<span class="string">&quot;ul&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">&quot;item in items&quot;</span> <span class="attr">v-bind:key</span>=<span class="string">&quot;item&quot;</span>&gt;</span></span><br><span class="line">	      &#123;&#123; item &#125;&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">transition-group</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Vue</span>(&#123;</span><br><span class="line">  <span class="attr">el</span>: <span class="string">&#x27;#flip-list-demo&#x27;</span>,</span><br><span class="line">  <span class="attr">data</span>: &#123;</span><br><span class="line">    <span class="attr">items</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">methods</span>: &#123;</span><br><span class="line">    <span class="attr">shuffle</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">items</span> = _.<span class="title function_">shuffle</span>(<span class="variable language_">this</span>.<span class="property">items</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.flip-list-move</span> &#123;</span><br><span class="line">  <span class="attribute">transition</span>: transform <span class="number">1s</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/Vue/" rel="tag"># Vue</a>
+              <a href="/tags/Framework/" rel="tag"># Framework</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/06/03/2020-06-03-advanced-eventloop-in-javascript.html" rel="prev" title="JavaScript 基于事件循环的并发模型">
+                  <i class="fa fa-angle-left"></i> JavaScript 基于事件循环的并发模型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/23/2020-07-23-advanced-function-in-vue.html" rel="next" title="Vue 高级用法与精粹">
+                  Vue 高级用法与精粹 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

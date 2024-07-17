@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Jena初步了解JenaAPI的框架如下图：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jena学习笔记">
+<meta property="og:url" content="https://keefe.wang/2015/09/21/2015-11-20-jena-learning-note.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="Jena初步了解JenaAPI的框架如下图：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i3/O1CN01r61JlO21WqWYrTMd4_!!6000000006993-2-tps-610-590.png">
+<meta property="article:published_time" content="2015-09-21T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.647Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="Ontology">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JenaAPI">
+<meta property="article:tag" content="API">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i3/O1CN01r61JlO21WqWYrTMd4_!!6000000006993-2-tps-610-590.png">
+
+
+<link rel="canonical" href="https://keefe.wang/2015/09/21/2015-11-20-jena-learning-note.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2015/09/21/2015-11-20-jena-learning-note.html","path":"2015/09/21/2015-11-20-jena-learning-note.html","title":"Jena学习笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Jena学习笔记 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Jena%E5%88%9D%E6%AD%A5%E4%BA%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">Jena初步了解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RDF-API"><span class="nav-number">2.</span> <span class="nav-text">RDF API</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="nav-number">2.1.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9RDF%E7%9A%84%E6%93%8D%E4%BD%9C%EF%BC%88JavaAPI%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">对RDF的操作（JavaAPI）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SPARQL-API"><span class="nav-number">3.</span> <span class="nav-text">SPARQL API</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2015/09/21/2015-11-20-jena-learning-note.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Jena学习笔记 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Jena学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-09-21 12:00:00" itemprop="dateCreated datePublished" datetime="2015-09-21T12:00:00+08:00">2015-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="Jena初步了解"><a href="#Jena初步了解" class="headerlink" title="Jena初步了解"></a>Jena初步了解</h4><p>JenaAPI的框架如下图：<br><img src="https://img.alicdn.com/imgextra/i3/O1CN01r61JlO21WqWYrTMd4_!!6000000006993-2-tps-610-590.png"></p>
+<span id="more"></span>
+
+<p>如上图所示，利用Jena进行语义网处理应用的开发有通过HTTP和Servlet响应的B&#x2F;S模式，还有通过JenaAPI进行Java编程来处理本体数据。</p>
+<ul>
+<li>RDF API：Jena提供了对RDF文件的创建、读&#x2F;写以及一些基本操作的接口（方法）；</li>
+<li>SPARQL API：Jena提供一套对本体的三元组的query机制，类似于SQL语言对于数据库的操作，SPARQL对于本体的查询也可以通过简单的查询语句达到目的，这也为B&#x2F;S模式的本体展示和交互提供了基础；</li>
+<li>Ontology API：</li>
+<li>Fuseki</li>
+</ul>
+<h4 id="RDF-API"><a href="#RDF-API" class="headerlink" title="RDF API"></a>RDF API</h4><h5 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h5><ul>
+<li><p>Blank Node：一阶逻辑中表示一个无URI的resource</p>
+</li>
+<li><p>Literal：可作为一个property的值（value）</p>
+</li>
+<li><p>Object：the resource or literal pointed to by the arc（箭头指向的一端）</p>
+</li>
+<li><p>Subject：the resource from which the arc leaves（箭头离开的一端）</p>
+</li>
+<li><p>Triple：</p>
+<ul>
+<li>Predicate：三元组中的属性部分（关系）（the property that labels the arc）</li>
+<li>Property：一个resource的属性，指三元组中的关系</li>
+<li>Resouce：实体，通常由URI命名的资源</li>
+</ul>
+<p>Statement：指一个fact，即一个三元组（Each arc in an RDF Model）</p>
+</li>
+</ul>
+<h5 id="对RDF的操作（JavaAPI）"><a href="#对RDF的操作（JavaAPI）" class="headerlink" title="对RDF的操作（JavaAPI）"></a>对RDF的操作（JavaAPI）</h5><ul>
+<li>Create graph</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// some definitions</span></span><br><span class="line"><span class="keyword">static</span> <span class="type">String</span> <span class="variable">personURI</span> <span class="operator">=</span> <span class="string">&quot;http://somewhere/JohnSmith&quot;</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">String</span> <span class="variable">fullName</span> <span class="operator">=</span> <span class="string">&quot;John Smith&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create an empty Model</span></span><br><span class="line"><span class="type">Model</span> <span class="variable">model</span> <span class="operator">=</span> ModelFactory.createDefaultModel();</span><br><span class="line"></span><br><span class="line"><span class="comment">// create the resource</span></span><br><span class="line"><span class="type">Resource</span> <span class="variable">johnSmith</span> <span class="operator">=</span> model.createResource(personURI);</span><br><span class="line"></span><br><span class="line"><span class="comment">// add the property</span></span><br><span class="line"> johnSmith.addProperty(VCARD.FN, fullName);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Create resource and add the property</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Resouce example</span></span><br><span class="line"><span class="type">Resource</span> <span class="variable">johnSmith</span> <span class="operator">=</span> model.createResource(personURI).addProperty(VCARD.FN, fullName);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// some definitions</span></span><br><span class="line"><span class="type">String</span> <span class="variable">personURI</span>    <span class="operator">=</span> <span class="string">&quot;http://somewhere/JohnSmith&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">givenName</span>    <span class="operator">=</span> <span class="string">&quot;John&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">familyName</span>   <span class="operator">=</span> <span class="string">&quot;Smith&quot;</span>;</span><br><span class="line"><span class="type">String</span> <span class="variable">fullName</span>     <span class="operator">=</span> givenName + <span class="string">&quot; &quot;</span> + familyName;</span><br><span class="line"></span><br><span class="line"><span class="comment">// create an empty Model</span></span><br><span class="line"><span class="type">Model</span> <span class="variable">model</span> <span class="operator">=</span> ModelFactory.createDefaultModel();</span><br><span class="line"></span><br><span class="line"><span class="comment">// create the resource</span></span><br><span class="line"><span class="comment">// and add the properties cascading style</span></span><br><span class="line"><span class="type">Resource</span> <span class="variable">johnSmith</span></span><br><span class="line">  <span class="operator">=</span> model.createResource(personURI)</span><br><span class="line">         .addProperty(VCARD.FN, fullName)</span><br><span class="line">         .addProperty(VCARD.N,</span><br><span class="line">                      model.createResource()</span><br><span class="line">                           .addProperty(VCARD.Given, givenName)</span><br><span class="line">                           .addProperty(VCARD.Family, familyName));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Manipulate the stmt</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// list the statements in the Model</span></span><br><span class="line"><span class="type">StmtIterator</span> <span class="variable">iter</span> <span class="operator">=</span> model.listStatements();</span><br><span class="line"></span><br><span class="line"><span class="comment">// print out the predicate, subject and object of each statement</span></span><br><span class="line"><span class="keyword">while</span> (iter.hasNext()) &#123;</span><br><span class="line">    <span class="type">Statement</span> <span class="variable">stmt</span>      <span class="operator">=</span> iter.nextStatement();  <span class="comment">// get next statement</span></span><br><span class="line">    <span class="type">Resource</span>  <span class="variable">subject</span>   <span class="operator">=</span> stmt.getSubject();     <span class="comment">// get the subject</span></span><br><span class="line">    <span class="type">Property</span>  <span class="variable">predicate</span> <span class="operator">=</span> stmt.getPredicate();   <span class="comment">// get the predicate</span></span><br><span class="line">    <span class="type">RDFNode</span>   <span class="variable">object</span>    <span class="operator">=</span> stmt.getObject();      <span class="comment">// get the object</span></span><br><span class="line"></span><br><span class="line">    System.out.print(subject.toString());</span><br><span class="line">    System.out.print(<span class="string">&quot; &quot;</span> + predicate.toString() + <span class="string">&quot; &quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (object <span class="keyword">instanceof</span> Resource) &#123;</span><br><span class="line">       System.out.print(object.toString());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// object is a literal</span></span><br><span class="line">        System.out.print(<span class="string">&quot; \&quot;&quot;</span> + object.toString() + <span class="string">&quot;\&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">&quot; .&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于object可以是Resource或者Literal，所以object的类型为RDFNode。</p>
+<ul>
+<li>Writing RDF</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// now write the model in XML form to a file</span></span><br><span class="line">model.write(System.out);</span><br><span class="line">model.write(System.out, <span class="string">&quot;RDF/XML-ABBREV&quot;</span>); <span class="comment">// write the model in XML form to a file</span></span><br><span class="line">model.write(System.out, <span class="string">&quot;N-TRIPLES&quot;</span>); <span class="comment">// write the model in N-TRIPLES form to a file</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Reading RDF</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create an empty model</span></span><br><span class="line"> <span class="type">Model</span> <span class="variable">model</span> <span class="operator">=</span> ModelFactory.createDefaultModel();</span><br><span class="line"></span><br><span class="line"> <span class="comment">// use the FileManager to find the input file</span></span><br><span class="line"> <span class="type">InputStream</span> <span class="variable">in</span> <span class="operator">=</span> FileManager.get().open( inputFileName );</span><br><span class="line"><span class="keyword">if</span> (in == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(</span><br><span class="line">                                 <span class="string">&quot;File: &quot;</span> + inputFileName + <span class="string">&quot; not found&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// read the RDF/XML file</span></span><br><span class="line">model.read(in, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// write it to standard out</span></span><br><span class="line">model.write(System.out);</span><br></pre></td></tr></table></figure>
+
+<h4 id="SPARQL-API"><a href="#SPARQL-API" class="headerlink" title="SPARQL API"></a>SPARQL API</h4><p>需要保存在.rq文件中进行使用。</p>
+<ul>
+<li>Basic query：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT ?xWHERE&#123; ?x&lt;http://www.w3.org/2001/vcard-rdf/3.0#FN&gt;  &quot;JohnSmith&quot; &#125;</span><br></pre></td></tr></table></figure>
+<p>其中&lt;&gt;中为URI，“”中为literal，？x为查询变量</p>
+<ul>
+<li>Basic pattern</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">WHERE</span><br><span class="line">  &#123; ?y  &lt;http://www.w3.org/2001/vcard-rdf/3.0#Family&gt;  &quot;Smith&quot; .</span><br><span class="line">    ?y  &lt;http://www.w3.org/2001/vcard-rdf/3.0#Given&gt;  ?givenName .</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>basic patterns：是一组三元组的模式；<br>prefix and blanknodes：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PREFIX vcard:      &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;</span><br><span class="line"></span><br><span class="line">SELECT ?y ?givenName</span><br><span class="line">WHERE</span><br><span class="line"> &#123; ?y vcard:Family &quot;Smith&quot; .</span><br><span class="line">   ?y vcard:Given  ?givenName .</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Filters</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">PREFIX vcard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;</span><br><span class="line"></span><br><span class="line">SELECT ?g</span><br><span class="line">WHERE</span><br><span class="line">&#123; ?y vcard:Given ?g .</span><br><span class="line">  FILTER regex(?g, &quot;r&quot;, &quot;i&quot;) &#125;</span><br></pre></td></tr></table></figure>
+<p>上面的加粗为FILTER，其中最后一个“”中的i表示case-insensitive</p>
+<ul>
+<li>Optionals（表示如果有这个属性那么就显示在结果中，如果没有就不显示）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PREFIX info:    &lt;http://somewhere/peopleInfo#&gt;</span><br><span class="line">PREFIX vcard:   &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;</span><br><span class="line"></span><br><span class="line">SELECT ?name ?age</span><br><span class="line">WHERE</span><br><span class="line">&#123;</span><br><span class="line">    ?person vcard:FN  ?name .</span><br><span class="line">    OPTIONAL &#123; ?person info:age ?age &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>optionals with filters：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PREFIX info:        &lt;http://somewhere/peopleInfo#&gt;</span><br><span class="line">PREFIX vcard:      &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;</span><br><span class="line"></span><br><span class="line">SELECT ?name ?age</span><br><span class="line">WHERE</span><br><span class="line">&#123;</span><br><span class="line">    ?person vcard:FN  ?name .</span><br><span class="line">    OPTIONAL &#123; ?person info:age ?age . FILTER ( ?age &gt; 24 ) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Unions：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;</span><br><span class="line">PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;</span><br><span class="line"></span><br><span class="line">SELECT ?name</span><br><span class="line">WHERE</span><br><span class="line">&#123;</span><br><span class="line">   &#123; [] foaf:name ?name &#125; UNION &#123; [] vCard:FN ?name &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于FILTER ( ?p &#x3D; foaf:name || ?p &#x3D; vCard:FN)<br>如果是分开资源那么只要分别用不同变量标注即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT ?name1 ?name2</span><br><span class="line">WHERE</span><br><span class="line">&#123;</span><br><span class="line">   &#123; [] foaf:name ?name1 &#125; UNION &#123; [] vCard:FN ?name2 &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>SPARQL result forms：</p>
+<ul>
+<li>SELECT – Return a table of results.</li>
+<li>CONSTRUCT – Return an RDF graph, based on a template in the query.</li>
+<li>DESCRIBE – Return an RDF graph, based on what the query processor is configured to return.</li>
+<li>ASK – Ask a boolean query.</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Ontology/" rel="tag"># Ontology</a>
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JenaAPI/" rel="tag"># JenaAPI</a>
+              <a href="/tags/API/" rel="tag"># API</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2014/12/25/2014-12-25-markdown-programming-language.html" rel="prev" title="Markdown">
+                  <i class="fa fa-angle-left"></i> Markdown
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/09/21/2015-09-21-ontology-concepts-conclusion.html" rel="next" title="Ontology本体基础知识总结整理">
+                  Ontology本体基础知识总结整理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

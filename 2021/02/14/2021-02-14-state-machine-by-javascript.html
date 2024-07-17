@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="当一个事物拥有有限多种状态，任一时刻只处于一种状态，而且在某种条件下可以从一种状态转变为另一种状态，满足这三个条件就可以被抽象成为一个有限状态机。当一个对象的状态越多、状态转换的事件越多，就越适合使用状态机来实现。 “javascript-state-machine”是一个很好用的有限状态机函数库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 JavaScript 实现有限状态机">
+<meta property="og:url" content="https://keefe.wang/2021/02/14/2021-02-14-state-machine-by-javascript.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="当一个事物拥有有限多种状态，任一时刻只处于一种状态，而且在某种条件下可以从一种状态转变为另一种状态，满足这三个条件就可以被抽象成为一个有限状态机。当一个对象的状态越多、状态转换的事件越多，就越适合使用状态机来实现。 “javascript-state-machine”是一个很好用的有限状态机函数库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-14T14:01:01.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.651Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2021/02/14/2021-02-14-state-machine-by-javascript.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2021/02/14/2021-02-14-state-machine-by-javascript.html","path":"2021/02/14/2021-02-14-state-machine-by-javascript.html","title":"用 JavaScript 实现有限状态机"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>用 JavaScript 实现有限状态机 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2021/02/14/2021-02-14-state-machine-by-javascript.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="用 JavaScript 实现有限状态机 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 JavaScript 实现有限状态机
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-14 22:01:01" itemprop="dateCreated datePublished" datetime="2021-02-14T22:01:01+08:00">2021-02-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Toolkit/" itemprop="url" rel="index"><span itemprop="name">Toolkit</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>当一个事物拥有有限多种状态，任一时刻只处于一种状态，而且在某种条件下可以从一种状态转变为另一种状态，满足这三个条件就可以被抽象成为一个有限状态机。当一个对象的状态越多、状态转换的事件越多，就越适合使用状态机来实现。</p>
+<p>“javascript-state-machine”是一个很好用的有限状态机函数库。</p>
+<span id="more"></span>
+
+<p>该库提供一个全局对象StateMachine，使用该对象的create方法，可以生成有限状态机的实例。生成的时候，需要提供一个参数对象，用来描述实例的性质。比如，交通信号灯（红绿灯）可以这样描述：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fsm = <span class="title class_">StateMachine</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">	<span class="attr">initial</span>: <span class="string">&#x27;green&#x27;</span>,</span><br><span class="line">  <span class="attr">events</span>: [</span><br><span class="line">		&#123; <span class="attr">name</span>: <span class="string">&#x27;warn&#x27;</span>,  <span class="attr">from</span>: <span class="string">&#x27;green&#x27;</span>,  <span class="attr">to</span>: <span class="string">&#x27;yellow&#x27;</span> &#125;,</span><br><span class="line">		&#123; <span class="attr">name</span>: <span class="string">&#x27;stop&#x27;</span>, <span class="attr">from</span>: <span class="string">&#x27;yellow&#x27;</span>, <span class="attr">to</span>: <span class="string">&#x27;red&#x27;</span> &#125;,</span><br><span class="line">		&#123; <span class="attr">name</span>: <span class="string">&#x27;ready&#x27;</span>,  <span class="attr">from</span>: <span class="string">&#x27;red&#x27;</span>,    <span class="attr">to</span>: <span class="string">&#x27;yellow&#x27;</span> &#125;,</span><br><span class="line">		&#123; <span class="attr">name</span>: <span class="string">&#x27;go&#x27;</span>, <span class="attr">from</span>: <span class="string">&#x27;yellow&#x27;</span>, <span class="attr">to</span>: <span class="string">&#x27;green&#x27;</span> &#125;</span><br><span class="line">　]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>initial 参数是初始状态，events 参数是触发状态改变的各种事件。生成实例之后，可以通过以下接口访问当前状态：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fsm.<span class="property">current</span> <span class="comment">// 返回当前状态。</span></span><br><span class="line">fsm.<span class="title function_">is</span>(s)   <span class="comment">// 返回一个布尔值，表示状态 s 是否为当前状态。</span></span><br><span class="line">fsm.<span class="title function_">can</span>(e)  <span class="comment">// 返回一个布尔值，表示事件 e 是否能在当前状态触发。</span></span><br><span class="line">fsm.<span class="title function_">cannot</span>(e) <span class="comment">// 返回一个布尔值，表示事件 e 是否不能在当前状态触发。</span></span><br></pre></td></tr></table></figure>
+
+<p>其中，每个事件可以指定两个回调函数，一般为事件发生之前和发生之后两个时机触发，<code>onbefore$event/onafter$event</code>。每个状态指定两个回调函数，<code>onleave$status/onenter$status</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/01/2020-11-01-what-delete-really-delete.html" rel="prev" title="What delete really delete?">
+                  <i class="fa fa-angle-left"></i> What delete really delete?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/08/2021-04-08-design-pattern-with-javascript-class.html" rel="next" title="JavaScript 设计模式与类">
+                  JavaScript 设计模式与类 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

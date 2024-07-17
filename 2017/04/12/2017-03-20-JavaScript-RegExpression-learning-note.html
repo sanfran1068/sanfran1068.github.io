@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="正则表达式 Regular Expression正则表达式是由一个字符序列形成的搜索模式,可用于所有文本搜索和文本替换的操作。[^1]它的重要性就不言而喻了。本文结合《JavaScript高级程序设计》一书并整理其他资料，对正则表达式的基础进行一个学习笔记的记录。更加详细的正则表达式学习心得将在之后的笔记中进行记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript正则表达式学习笔记[上]">
+<meta property="og:url" content="https://keefe.wang/2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="正则表达式 Regular Expression正则表达式是由一个字符序列形成的搜索模式,可用于所有文本搜索和文本替换的操作。[^1]它的重要性就不言而喻了。本文结合《JavaScript高级程序设计》一书并整理其他资料，对正则表达式的基础进行一个学习笔记的记录。更加详细的正则表达式学习心得将在之后的笔记中进行记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-12T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.647Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="正则表达式">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html","path":"2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html","title":"JavaScript正则表达式学习笔记[上]"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript正则表达式学习笔记[上] | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-Regular-Expression"><span class="nav-number">1.</span> <span class="nav-text">正则表达式 Regular Expression</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%9E%84%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">正则表达式构成</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-number">2.1.</span> <span class="nav-text">元字符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">2.2.</span> <span class="nav-text">转义字符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8F%E8%AF%8D%E7%B1%BB%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">量词类正则表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96-%E9%9D%9E%E8%8E%B7%E5%8F%96%E4%BB%A5%E5%8F%8A%E6%AD%A3%E5%8F%8D%E5%90%91%E9%A2%84%E6%9F%A5%E7%9A%84%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">获取&#x2F;非获取以及正反向预查的正则表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4%E7%B1%BB%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">[]范围类正则表达式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.6.</span> <span class="nav-text">其他类型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RegExp%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%B1%9E%E6%80%A7%E5%92%8C%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">RegExp实例的属性和方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RegExp%E5%AE%9E%E4%BE%8B%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">4.1.</span> <span class="nav-text">RegExp实例的属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RegExp%E5%AE%9E%E4%BE%8B%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">RegExp实例的方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RegExp%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%B1%9E%E6%80%A7"><span class="nav-number">4.3.</span> <span class="nav-text">RegExp构造函数属性</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2017/04/12/2017-03-20-JavaScript-RegExpression-learning-note.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript正则表达式学习笔记[上] | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript正则表达式学习笔记[上]
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-04-12 12:00:00" itemprop="dateCreated datePublished" datetime="2017-04-12T12:00:00+08:00">2017-04-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="正则表达式-Regular-Expression"><a href="#正则表达式-Regular-Expression" class="headerlink" title="正则表达式 Regular Expression"></a>正则表达式 Regular Expression</h4><p>正则表达式是由一个字符序列形成的搜索模式,可用于所有文本搜索和文本替换的操作。[^1]它的重要性就不言而喻了。本文结合《JavaScript高级程序设计》一书并整理其他资料，对正则表达式的基础进行一个学习笔记的记录。更加详细的正则表达式学习心得将在之后的笔记中进行记录。</p>
+<span id="more"></span>
+
+<h4 id="正则表达式构成"><a href="#正则表达式构成" class="headerlink" title="正则表达式构成"></a>正则表达式构成</h4><p>正则表达式由一些<strong>普通字符</strong>和一些<strong>元字符</strong>（metacharacters）组成。普通字符包括大小写的字母和数字，而元字符（用于匹配任何单个字符）则具有特殊的含义[^2]：</p>
+<h5 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h5><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>匹配除“\r\n”之外任何单个字符；要匹配“\r\n”在内的任何字符，使用“[\s\S]”</td>
+</tr>
+<tr>
+<td>\0</td>
+<td>查找NULL字符</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配单词边界；也就是指单词和空格间的位置<a href="%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E2%80%9C%E5%8C%B9%E9%85%8D%E2%80%9D%E6%9C%89%E4%B8%A4%E7%A7%8D%E6%A6%82%E5%BF%B5%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E5%8C%B9%E9%85%8D%E5%AD%97%E7%AC%A6%EF%BC%8C%E4%B8%80%E7%A7%8D%E6%98%AF%E5%8C%B9%E9%85%8D%E4%BD%8D%E7%BD%AE%EF%BC%8C%E8%BF%99%E9%87%8C%E7%9A%84%5Cb%E5%B0%B1%E6%98%AF%E5%8C%B9%E9%85%8D%E4%BD%8D%E7%BD%AE%E7%9A%84">^3</a>；例，“er\b”可匹配“never”的”er”</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配非单词边界；“er\B”能匹配“verb”中的“er”，但不能匹配“never”中的“er”</td>
+</tr>
+<tr>
+<td>\cX</td>
+<td>匹配由X指明的控制字符；_X的值必须为A-Z或a-z之一*_；否则，视为一个原义的“c”字符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配一个数字字符；等价于[0-9]</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配一个非数字字符；等价于[^0-9]</td>
+</tr>
+<tr>
+<td>\f</td>
+<td>匹配一个换页符；等价于\x0c和<strong>\cL</strong></td>
+</tr>
+<tr>
+<td>\n</td>
+<td>匹配一个换行符；等价于\x0a和<strong>\cJ</strong></td>
+</tr>
+<tr>
+<td>\r</td>
+<td>匹配一个回车符；等价于\x0d和<strong>\cM</strong></td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配任何不可见字符；包括空格、制表符、换页符等；等价于[\f\n\r\t\v]</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任何可见字符；等价于[^\f\n\r\t\v]</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>匹配一个制表符；等价于\x09和\cI</td>
+</tr>
+<tr>
+<td>\v</td>
+<td>匹配一个垂直制表符；等价于\x0b和\cK</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配<strong>包括</strong>下划线的任何单词字符；该单词字符使用<strong>Unicode字符集</strong></td>
+</tr>
+<tr>
+<td>\W</td>
+<td>匹配任何非单词字符；等价于“[^A-Za-z0-9_]”</td>
+</tr>
+<tr>
+<td>\xdd</td>
+<td>匹配十六进制dd转义值；<strong>十六进制转义值必须为确定的两个数字长</strong></td>
+</tr>
+<tr>
+<td>\n</td>
+<td>标识一个八进制转义值或一个向后引用。如果\n之前至少n个获取的子表达式，则n为向后引用</td>
+</tr>
+<tr>
+<td>\uN</td>
+<td>匹配N，其中N是一个用四个十六进制数字表示的Unicode字符</td>
+</tr>
+</tbody></table>
+<h5 id="转义字符"><a href="#转义字符" class="headerlink" title="转义字符"></a>转义字符</h5><table>
+<thead>
+<tr>
+<th>转义字符</th>
+<th>描述（若字符本身要出现，需在特殊字符前面加\）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\</td>
+<td>将下一个字符标记符、或一个向后引用、或一个八进制转义符</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配输入字符串开始位置；若设置了正则表达式的mFlag，^也匹配“\n”或“\r”之后的位置</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配输入字符串结束位置；若设置了正则表达式的mFlag，$也匹配“\n”或“\r”之前的位置</td>
+</tr>
+<tr>
+<td>*</td>
+<td>匹配前置子表达式任意次；例，zo*能匹配“z”，“zo”以及“zoo”，等价于”o{0,}”</td>
+</tr>
+<tr>
+<td>+</td>
+<td>匹配前置子表达式大于等于1次；例，“zo+”能匹配“zo”以及“zoo”,等价于{1,}</td>
+</tr>
+<tr>
+<td>?</td>
+<td>匹配前置子表达式零次或一次。例，“do(es)?”可以匹配“do”或“does”,等价于{0,1}</td>
+</tr>
+<tr>
+<td>.</td>
+<td>匹配除“\r\n”之外任何单个字符；要匹配“\r\n”在内的任何字符，请使用像“[\s\S]”模式</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h5 id="量词类正则表达式"><a href="#量词类正则表达式" class="headerlink" title="量词类正则表达式"></a>量词类正则表达式</h5><table>
+<thead>
+<tr>
+<th>量词表达式</th>
+<th>描述（若字符本身要出现，需在特殊字符前面加\）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>n+</td>
+<td>n为某pattern，匹配任何至少包含一个n的字符串</td>
+</tr>
+<tr>
+<td>n*</td>
+<td>n为某pattern，匹配零个或者多个n的字符串</td>
+</tr>
+<tr>
+<td>n?</td>
+<td>n为某pattern，匹配零个或者1个n的字符串</td>
+</tr>
+<tr>
+<td>n{x}</td>
+<td>n为某pattern，匹配包含x个n的序列字符串</td>
+</tr>
+<tr>
+<td>n{x,y}</td>
+<td>n为某pattern，匹配至少x个，最多y个n的字符串</td>
+</tr>
+<tr>
+<td>n{x,}</td>
+<td>n为某pattern，匹配至少x个的字符串</td>
+</tr>
+</tbody></table>
+<h5 id="获取-非获取以及正反向预查的正则表达式"><a href="#获取-非获取以及正反向预查的正则表达式" class="headerlink" title="获取&#x2F;非获取以及正反向预查的正则表达式"></a>获取&#x2F;非获取以及正反向预查的正则表达式</h5><table>
+<thead>
+<tr>
+<th>获取&#x2F;非获取RegExp</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(pattern)</td>
+<td>匹配pattern并获取这一匹配；所获取的匹配可以从产生的Matches集合得到，请使用“(”或“)”匹配圆括号字符</td>
+</tr>
+<tr>
+<td>(?:pattern)</td>
+<td>非获取匹配；例，“industr(?:y</td>
+</tr>
+<tr>
+<td>(?&#x3D;pattern)</td>
+<td>非获取匹配，正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串，该匹配不需要获取供以后使用。例如，“Windows(?&#x3D;95</td>
+</tr>
+<tr>
+<td>(?!pattern)</td>
+<td>非获取匹配，正向否定预查，在任何不匹配pattern的字符串开始处匹配查找字符串，该匹配不需要获取供以后使用。例如“Windows(?!95</td>
+</tr>
+<tr>
+<td>(?&lt;&#x3D;pattern)</td>
+<td>非获取匹配，反向肯定预查，与正向肯定预查类似，只是方向相反。例如，“(?&lt;&#x3D;95</td>
+</tr>
+<tr>
+<td>(?&lt;!pattern)</td>
+<td>非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。</td>
+</tr>
+<tr>
+<td>x</td>
+<td>y</td>
+</tr>
+</tbody></table>
+<h5 id="范围类正则表达式"><a href="#范围类正则表达式" class="headerlink" title="[]范围类正则表达式"></a>[]范围类正则表达式</h5><table>
+<thead>
+<tr>
+<th>[]正则表达式</th>
+<th>描述（只要[]中任意一个字符匹配就可以）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[0-9]</td>
+<td>字符范围；匹配指定范围内的任意一个数字</td>
+</tr>
+<tr>
+<td>[xyz]</td>
+<td>字符集合；匹配所包含的任意一个字符。例，“[abc]”可以匹配“plain”中的“a”</td>
+</tr>
+<tr>
+<td>[^xyz]</td>
+<td>负值字符集合；匹配未包含的任意一个字符。例，“[^abc]”可以匹配“plain”中的“plin”</td>
+</tr>
+<tr>
+<td>[a-z]</td>
+<td>字符范围；匹配指定范围内的任意一个字符</td>
+</tr>
+<tr>
+<td>[^a-z]</td>
+<td>负值字符范围；匹配任何不在指定范围内的任意字符</td>
+</tr>
+</tbody></table>
+<h5 id="其他类型"><a href="#其他类型" class="headerlink" title="其他类型"></a>其他类型</h5><table>
+<thead>
+<tr>
+<th>其他表达式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\p{P}</td>
+<td>小写p是property的意思，表示Unicode属性，用于Unicode正表达式的前缀。中括号内的“P”表示Unicode字符集七个字符属性之一：标点字符<a href="%E5%85%B6%E4%BB%96%E5%85%AD%E4%B8%AA%E5%B1%9E%E6%80%A7%EF%BC%9AL%EF%BC%9A%E5%AD%97%E6%AF%8D%EF%BC%9BM%EF%BC%9A%E6%A0%87%E8%AE%B0%E7%AC%A6%E5%8F%B7%EF%BC%88%E4%B8%80%E8%88%AC%E4%B8%8D%E4%BC%9A%E5%8D%95%E7%8B%AC%E5%87%BA%E7%8E%B0%EF%BC%89%EF%BC%9BZ%EF%BC%9A%E5%88%86%E9%9A%94%E7%AC%A6%EF%BC%88%E6%AF%94%E5%A6%82%E7%A9%BA%E6%A0%BC%E3%80%81%E6%8D%A2%E8%A1%8C%E7%AD%89%EF%BC%89%EF%BC%9BS%EF%BC%9A%E7%AC%A6%E5%8F%B7%EF%BC%88%E6%AF%94%E5%A6%82%E6%95%B0%E5%AD%A6%E7%AC%A6%E5%8F%B7%E3%80%81%E8%B4%A7%E5%B8%81%E7%AC%A6%E5%8F%B7%E7%AD%89%EF%BC%89%EF%BC%9BN%EF%BC%9A%E6%95%B0%E5%AD%97%EF%BC%88%E6%AF%94%E5%A6%82%E9%98%BF%E6%8B%89%E4%BC%AF%E6%95%B0%E5%AD%97%E3%80%81%E7%BD%97%E9%A9%AC%E6%95%B0%E5%AD%97%E7%AD%89%EF%BC%89%EF%BC%9BC%EF%BC%9A%E5%85%B6%E4%BB%96%E5%AD%97%E7%AC%A6%E3%80%82*%E6%B3%A8%EF%BC%9A%E6%AD%A4%E8%AF%AD%E6%B3%95%E9%83%A8%E5%88%86%E8%AF%AD%E8%A8%80%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E4%BE%8B%EF%BC%9Ajavascript%E3%80%82">^4</a></td>
+</tr>
+<tr>
+<td>&lt; &gt;</td>
+<td>匹配一个<strong>word</strong>的开始（&lt;）和结束（&gt;）</td>
+</tr>
+<tr>
+<td>( )</td>
+<td>将()内的表达式定义为“组”（group），并且将匹配这个表达式的字符保存到一个临时区域（一个正则表达式中最多可以保存9个），它们可以用\1到\9的符号来引用</td>
+</tr>
+</tbody></table>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><ul>
+<li><p>直接量语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/pattern/flags;</span><br></pre></td></tr></table></figure>
+
+<p>其中&#x2F;&#x2F;包含的内部（pattern）是正则表达式字符串的主体；最后的flags是正则表达式的修饰标志，包含属性有g，i，m三种，分别是与全局匹配，不区分大小写匹配和多行匹配三种修饰标志。</p>
+<p>实例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> patt = <span class="regexp">/[bc]at/i</span>; <span class="comment">//匹配第一个“bat”或”cat“，不区分大小写</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用构造函数创建RegExp对象语法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">RegExp</span>(pattern, attributes);</span><br></pre></td></tr></table></figure>
+
+<p>其中，pattern部分与上面直接量语法中的pattern相同，attributes是上面flags相同的标志；</p>
+</li>
+</ul>
+<h4 id="RegExp实例的属性和方法"><a href="#RegExp实例的属性和方法" class="headerlink" title="RegExp实例的属性和方法"></a>RegExp实例的属性和方法</h4><h5 id="RegExp实例的属性"><a href="#RegExp实例的属性" class="headerlink" title="RegExp实例的属性"></a>RegExp实例的属性</h5><p>RegExp的每一个实例都具有下列属性，这些属性可以获取到该实例pattern的相关信息：</p>
+<ul>
+<li>.global：bool值，表示是否设置了g标志</li>
+<li>.ignoreCase：bool值，表示是否设置了i标志</li>
+<li>.multiline：bool值，表示是否设置了m标志</li>
+<li>.lastIndex：整数值，表示开始搜索下一个匹配项的自负位置，从0算起</li>
+<li>.source：正则表达式的字符串表示，按照**<em>字面量形式</em>**而非传入构造参数中的字符串模式返回；</li>
+</ul>
+<h5 id="RegExp实例的方法"><a href="#RegExp实例的方法" class="headerlink" title="RegExp实例的方法"></a>RegExp实例的方法</h5><ul>
+<li><p>exec()，该方法是专门为捕获组而设计的：</p>
+<ul>
+<li>语法：RegExpObject.exec(testString)</li>
+<li>参数：接受一个参数，即要应用该模式的字符串；</li>
+<li>返回：包含第一个匹配项信息的数组（无匹配项时返回null）；且返回值含有两个额外属性，index表示匹配项在字符串中的位置&#x2F;input表示应用正则表达式的字符串；</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> testString = <span class="string">&quot;mom and dad and baby&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/mom( and dad( and baby)?)?/gi</span>;</span><br><span class="line"><span class="keyword">var</span> matches = pattern.<span class="title function_">exec</span>(testString);</span><br><span class="line"><span class="title function_">alert</span>(matches.<span class="property">index</span>);   <span class="comment">//0</span></span><br><span class="line"><span class="title function_">alert</span>(matches.<span class="property">input</span>);   <span class="comment">//&quot;mom and dad and baby&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(matches.[<span class="number">0</span>]);     <span class="comment">//&quot;mom adn dad and baby&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(matches.[<span class="number">1</span>]);     <span class="comment">//&quot; and dad and baby&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(matches.[<span class="number">2</span>]);     <span class="comment">//&quot; and baby&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述示例代码中，可以看到，返回的数组第一项是与整个模式匹配的字符串，其他项是与模式中的捕获组匹配的字符串。关于“组”的相关内容请参考上一章节的表格中的&#x2F;()&#x2F;项。</p>
+<p><strong>有关全局和非全局模式</strong><br>当pattern为全局模式时，每次调用exec()进行匹配时会返回下一个匹配项，即exec()调用过后，matches.index可能会增加，pattern.lastIndex也是同样会增加；如果pattern为非全剧模式时，每次调用exec()进行匹配时都会返回第一个匹配项。</p>
+</li>
+<li><p>test()，简单匹配。在不知道要进行匹配的文本内容情况下使用改方法比较好：</p>
+<ul>
+<li>语法：RegExpObject.test(testString)；</li>
+<li>参数：接受一个参数，即要进行匹配的文本字符串；</li>
+<li>返回：如果字符串testString中含有与RegExpObject匹配的文本的话，就返回true，否则返回false；</li>
+</ul>
+</li>
+</ul>
+<h5 id="RegExp构造函数属性"><a href="#RegExp构造函数属性" class="headerlink" title="RegExp构造函数属性"></a>RegExp构造函数属性</h5><p>RegExp构造函数包含一些属性，这些属性适用于作用与众的所有正则表达式，并且基于所执行的最近一次正则表达式操作而变化。这些属性分别有一个长属性名和一个短属性名（Opera不支持短属性名）：</p>
+<table>
+<thead>
+<tr>
+<th>长属性名</th>
+<th>短属性名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>input</td>
+<td>$_</td>
+<td>最近一次要匹配的字符串</td>
+</tr>
+<tr>
+<td>lastMatch</td>
+<td>$&amp;</td>
+<td>最近一次的匹配项</td>
+</tr>
+<tr>
+<td>lastParen</td>
+<td>$+</td>
+<td>最近一次要匹配的捕获组</td>
+</tr>
+<tr>
+<td>leftContext</td>
+<td>$&#96;</td>
+<td>input字符串中lastMatch之前的文本</td>
+</tr>
+<tr>
+<td>multiline</td>
+<td>$*</td>
+<td>布尔值，表示是否所有表达式都是用多行模式</td>
+</tr>
+<tr>
+<td>rightContext</td>
+<td>$’</td>
+<td>input字符串中lastMatch之后的文本</td>
+</tr>
+</tbody></table>
+<p>其中，前三项是Opera没有实现的属性。使用这些属性能够从exec()和test()执行的操作中提取更具体的信息。</p>
+<p>[^1]:From <a href="http://www.runoob.com/js/js-regexp.htm">http://www.runoob.com/js/js-regexp.htm</a><br>[^2]:From <a href="http://baike.baidu.com/item/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F?sefr=enterbtn">http://baike.baidu.com/item/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F?sefr=enterbtn</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag"># 正则表达式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/04/12/2017-04-12-JavaScript-Prototype-and-Inheritance-1.html" rel="prev" title="JavaScript中的原型与继承-原型篇">
+                  <i class="fa fa-angle-left"></i> JavaScript中的原型与继承-原型篇
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/04/13/2017-04-13-JavaScript-Prototype-and-Inheritance-2.html" rel="next" title="JavaScript中的原型与继承-继承篇">
+                  JavaScript中的原型与继承-继承篇 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

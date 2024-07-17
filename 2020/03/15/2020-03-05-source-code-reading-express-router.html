@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Express 是一种保持最低程度规模的灵活 Node.js Web 应用程序框架，为 Web 和移动应用程序提供一组强大的功能。本文针对该框架进行一些简单的源码解读。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Express源码阅读-router相关">
+<meta property="og:url" content="https://keefe.wang/2020/03/15/2020-03-05-source-code-reading-express-router.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="Express 是一种保持最低程度规模的灵活 Node.js Web 应用程序框架，为 Web 和移动应用程序提供一组强大的功能。本文针对该框架进行一些简单的源码解读。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i4/O1CN0155CNRA1Gm9p9PNuL4_!!6000000000664-0-tps-1011-1542.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/O1CN01HG9tIS1lp8UOWG4zm_!!6000000004867-0-tps-1220-654.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i4/O1CN01xkM27Y1WTrrERnA8w_!!6000000002790-0-tps-1058-1713.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/O1CN01bP9D781hvJMo0r6nj_!!6000000004339-0-tps-1183-691.jpg">
+<meta property="article:published_time" content="2020-03-15T04:30:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.650Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="源码学习">
+<meta property="article:tag" content="Express">
+<meta property="article:tag" content="NodeJS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i4/O1CN0155CNRA1Gm9p9PNuL4_!!6000000000664-0-tps-1011-1542.jpg">
+
+
+<link rel="canonical" href="https://keefe.wang/2020/03/15/2020-03-05-source-code-reading-express-router.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2020/03/15/2020-03-05-source-code-reading-express-router.html","path":"2020/03/15/2020-03-05-source-code-reading-express-router.html","title":"Express源码阅读-router相关"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Express源码阅读-router相关 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Express%E4%B8%AD%E7%9A%84app"><span class="nav-number">1.</span> <span class="nav-text">Express中的app</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">中间件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">路由详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#app-Methods"><span class="nav-number">3.1.</span> <span class="nav-text">app.Methods</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#app-use"><span class="nav-number">3.2.</span> <span class="nav-text">app.use</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E8%B7%AF%E7%94%B1%E7%9A%84%E6%BA%90%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.3.</span> <span class="nav-text">两种路由的源码实现</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2020/03/15/2020-03-05-source-code-reading-express-router.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Express源码阅读-router相关 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Express源码阅读-router相关
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-03-15 12:30:00" itemprop="dateCreated datePublished" datetime="2020-03-15T12:30:00+08:00">2020-03-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SourceCodeReading/" itemprop="url" rel="index"><span itemprop="name">SourceCodeReading</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Express 是一种保持最低程度规模的灵活 Node.js Web 应用程序框架，为 Web 和移动应用程序提供一组强大的功能。本文针对该框架进行一些简单的源码解读。</p>
+<span id="more"></span>
+
+<h3 id="Express中的app"><a href="#Express中的app" class="headerlink" title="Express中的app"></a>Express中的app</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// express.js</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">createApplication</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// typeof app === &#x27;function&#x27;，同时它身上还绑定着无数属性和方法</span></span><br><span class="line">    <span class="keyword">var</span> app = <span class="keyword">function</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">        app.<span class="title function_">handle</span>(req, res, next);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// app同时继承了事件监听/触发机制和application.js中的各种方法</span></span><br><span class="line">    <span class="title function_">mixin</span>(app, <span class="title class_">EventEmitter</span>.<span class="property"><span class="keyword">prototype</span></span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="title function_">mixin</span>(app, proto, <span class="literal">false</span>);</span><br><span class="line">    <span class="comment">// 此处暴露了request和response两个类</span></span><br><span class="line">    app.<span class="property">request</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(req, &#123; ... &#125;);</span><br><span class="line">    app.<span class="property">response</span> = <span class="title class_">Object</span>.<span class="title function_">create</span>(res, &#123; ... &#125;);</span><br><span class="line">    <span class="comment">// 调用application.js中的init方法，主要调用的是defaultConfiguration方法</span></span><br><span class="line">    app.<span class="title function_">init</span>();</span><br><span class="line">    <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 这里需要注意的是exports和module.exports的不同：当module.exports被赋值后，exports就不同于module.exports了，所以需要这么做；当然也可以只用module.exports；</span></span><br><span class="line"><span class="built_in">exports</span> = <span class="variable language_">module</span>.<span class="property">exports</span> = createApplication;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，调用express()返回的app其实是一个函数，调用app.listen()其实执行的是http.createServer(app).listen()。因此，app其实就是一个请求处理函数，作为http.createServer的参数。而express其实是一个工厂函数，用来生成请求处理函数。</p>
+<h3 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h3><blockquote>
+<p>An Express application is essentially a series of middleware calls.<br>一个Express应用实际上就是一系列中间件的调用。</p>
+</blockquote>
+<p>中间件大致可分为两种，一种是普通中间件，通过 <code>app.use(&#39;/user&#39;)</code> 方法进行注册，该方法中的路径是匹配所有以 <code>/user</code> 开头的路径；另外一种是路由中间件，通过 <code>app.METHOD()</code> 方法进行注册，这种方式精确匹配路径，且只能处理确定请求方法的请求。</p>
+<p>针对app.use部分的代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">use</span> = <span class="keyword">function</span> <span class="title function_">use</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> offset = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 默认设置路径为根路径，同时判断中间件是方法还是方法所在路径</span></span><br><span class="line">  <span class="keyword">var</span> path = <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> fn !== <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> arg = fn;</span><br><span class="line">    <span class="keyword">while</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(arg) &amp;&amp; arg.<span class="property">length</span> !== <span class="number">0</span>) &#123;</span><br><span class="line">      arg = arg[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> arg !== <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">      offset = <span class="number">1</span>;</span><br><span class="line">      path = fn;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// router初始化</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">lazyrouter</span>();</span><br><span class="line">  <span class="keyword">var</span> router = <span class="variable language_">this</span>.<span class="property">_router</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> fns = <span class="title function_">flatten</span>(slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, offset));</span><br><span class="line">  fns.<span class="title function_">forEach</span>(<span class="keyword">function</span> (<span class="params">fn</span>) &#123;</span><br><span class="line">    <span class="comment">// non-express app</span></span><br><span class="line">    <span class="keyword">if</span> (!fn || !fn.<span class="property">handle</span> || !fn.<span class="property">set</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> router.<span class="title function_">use</span>(path, fn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">debug</span>(<span class="string">&#x27;.use app under %s&#x27;</span>, path);</span><br><span class="line">    fn.<span class="property">mountpath</span> = path;</span><br><span class="line">    fn.<span class="property">parent</span> = <span class="variable language_">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// restore .app property on req and res</span></span><br><span class="line">    router.<span class="title function_">use</span>(path, <span class="keyword">function</span> <span class="title function_">mounted_app</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> orig = req.<span class="property">app</span>;</span><br><span class="line">      fn.<span class="title function_">handle</span>(req, res, <span class="keyword">function</span> (<span class="params">err</span>) &#123;</span><br><span class="line">        <span class="title function_">setPrototypeOf</span>(req, orig.<span class="property">request</span>)</span><br><span class="line">        <span class="title function_">setPrototypeOf</span>(res, orig.<span class="property">response</span>)</span><br><span class="line">        <span class="title function_">next</span>(err);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// mounted an app</span></span><br><span class="line">    fn.<span class="title function_">emit</span>(<span class="string">&#x27;mount&#x27;</span>, <span class="variable language_">this</span>);</span><br><span class="line">  &#125;, <span class="variable language_">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>针对app.METHODS的代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">methods.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">method</span>)&#123;</span><br><span class="line">  app[method] = <span class="keyword">function</span>(<span class="params">path</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">&#x27;get&#x27;</span> &amp;&amp; <span class="variable language_">arguments</span>.<span class="property">length</span> === <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="comment">// app.get(setting)</span></span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">set</span>(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 路由初始化</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">lazyrouter</span>();</span><br><span class="line">    <span class="keyword">var</span> route = <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">route</span>(path);</span><br><span class="line">    route[method].<span class="title function_">apply</span>(route, slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="路由详解"><a href="#路由详解" class="headerlink" title="路由详解"></a>路由详解</h3><p>在上面两种中间件的实现代码中，都调用了 <code>this.lazyrouter()</code> 方法，所有涉及到路由的方法都会调用这个方法，作用是初始化一个应用的内部路由。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">lazyrouter</span> = <span class="keyword">function</span> <span class="title function_">lazyrouter</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">_router</span>) &#123;</span><br><span class="line">    <span class="comment">// 生成一个路由实例</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span> = <span class="keyword">new</span> <span class="title class_">Router</span>(&#123;</span><br><span class="line">        <span class="attr">caseSensitive</span>: <span class="variable language_">this</span>.<span class="title function_">enabled</span>(<span class="string">&#x27;case sensitive routing&#x27;</span>),</span><br><span class="line">        <span class="attr">strict</span>: <span class="variable language_">this</span>.<span class="title function_">enabled</span>(<span class="string">&#x27;strict routing&#x27;</span>)</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">use</span>(<span class="title function_">query</span>(<span class="variable language_">this</span>.<span class="title function_">get</span>(<span class="string">&#x27;query parser fn&#x27;</span>)));</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">use</span>(middleware.<span class="title function_">init</span>(<span class="variable language_">this</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>针对第一个默认路由，可以看下具体调用了哪些方法，最终实现了什么逻辑：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="title function_">get</span>(<span class="string">&#x27;query parser fn&#x27;</span>);</span><br><span class="line"><span class="comment">// 上面的 get 方法同 app.get，可以在 methods.forEach 循环处理时，如果 get 方法的入参长度为1时，会调用 this.set(arg)</span></span><br><span class="line"><span class="comment">// 在set方法中，有针对 &#x27;query parser&#x27; 的处理</span></span><br><span class="line"><span class="comment">// 最终，query 方法实现了将 req.query 进行 querystring.parse 的一个解析过程</span></span><br><span class="line"><span class="keyword">case</span> <span class="string">&#x27;query parser&#x27;</span>:</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">set</span>(<span class="string">&#x27;query parser fn&#x27;</span>, <span class="title function_">compileQueryParser</span>(val));</span><br><span class="line">  <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+
+<p>针对第二个默认路由 init，是给 app 上的暴露出的 req、res 继承 node 原生的 request 和 response 的一些属性。</p>
+<p>之所以不在 <code>defaultConfiguration</code> 方法中进行这一步路由的初始化，原因在于设置路由的相关参数需要调用app.set方法，这个方法明显需要有app实例，如果在获取app实例的时候就初始化了一个路由，这个路由的参数就没办法配置了。因此，在获取app实例后，必须先对路由参数进行配置，然后再调用对应的app.use等方法。</p>
+<h4 id="app-Methods"><a href="#app-Methods" class="headerlink" title="app.Methods"></a>app.Methods</h4><p>我们先以 <code>app.get</code> 为例，通过断点调试的方式来查看 <code>app.get</code> 这种路由的 <code>_router</code> 对象是什么结构。</p>
+<p><img src="https://img.alicdn.com/imgextra/i4/O1CN0155CNRA1Gm9p9PNuL4_!!6000000000664-0-tps-1011-1542.jpg" alt="702ca38d0160d8b82ab5d1b7a552bec1.png"></p>
+<p>上面的截图是当我们初始化一个 express 实例，并设置了一个 <code>app.get()</code> 的路由后，在 app.listen 处添加断点进行调试时的 app 实例的属性。可以看到在 <code>app._router</code> 中有一个 stack，里面按顺存放着三个 layer 对象，分别是初始化时的 query 和 init 两个路由，和第三个则是我们所设置的 get 路由。每一个 layer 中包含路由处理的回调函数 <code>handle</code>，路由对象 <code>route&lt;Route&gt;</code>，该对象中还包含一个存有 Layer 对象的栈（stack)，就和 <code>app._router.stack</code> 相同。</p>
+<p><img src="https://img.alicdn.com/imgextra/i2/O1CN01HG9tIS1lp8UOWG4zm_!!6000000004867-0-tps-1220-654.jpg" alt="81b68f825db7a3f5bf1ff7d87c09496d.png"></p>
+<p>根据上面对于 <code>app.get</code> 这种路由的结构分析，我们可以先猜想它的实现流程：</p>
+<ul>
+<li><p>首先根据传入的路径封装一个Route对象，再对传入的回调函数封装成Layer对象，接着把这个Layer对象push到Route.stack里面去</p>
+</li>
+<li><p>再创建一个默认Layer(跟app.use里面Layer的同级)，把步骤一中的Route挂到这个Layer.route属性上面，而这个Layer对象，会被push到app._router.stack里面</p>
+</li>
+</ul>
+<h4 id="app-use"><a href="#app-use" class="headerlink" title="app.use"></a>app.use</h4><p>接下来我们来看 <code>app.use</code> 这种路由又有什么不同。</p>
+<p><img src="https://img.alicdn.com/imgextra/i4/O1CN01xkM27Y1WTrrERnA8w_!!6000000002790-0-tps-1058-1713.jpg" alt="08bdd22fe221f77141d8af6afb5ac8bc.png"></p>
+<p>可以看到，在这种路由中，除了 <code>query</code> 和 <code>init</code> 两个初始化路由的方法外，第三个真正的回调方法被封装成的 <code>Layer</code> 对象中，<code>route</code> 属性的值为 <code>undefined</code>。<br>所以我们可以猜想：在 <code>app.use</code> 这种路由里，传入的参数（路径、回调函数）会被封装成 <code>Layer</code> 对象（其中 <code>route</code> 属性为 <code>undefined</code>），压入 <code>app._router.stack</code> 栈中。</p>
+<h4 id="两种路由的源码实现"><a href="#两种路由的源码实现" class="headerlink" title="两种路由的源码实现"></a>两种路由的源码实现</h4><p>接下来我们通过源码来分析我们写的 <code>app.use(&#39;/main&#39;, someFun())</code> 是如何成为一个 layer 对象并压入 <code>app._router</code> 的路由栈中的。</p>
+<p><strong>首先来看 <code>app.use</code>：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">app.<span class="property">use</span> = <span class="keyword">function</span> <span class="title function_">use</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> path = <span class="string">&#x27;/&#x27;</span>;   <span class="comment">// 设置一个默认的路由方法路径</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="comment">// 设置路由，同样也是由lazyrouter进行路由对象的初始化：this._router = new Router(&#123;&#125;)</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">lazyrouter</span>();</span><br><span class="line">  <span class="keyword">var</span> router = <span class="variable language_">this</span>.<span class="property">_router</span>;</span><br><span class="line"></span><br><span class="line">  fns.<span class="title function_">forEach</span>(<span class="keyword">function</span> (<span class="params">fn</span>) &#123;</span><br><span class="line">    <span class="comment">// router.use是接下来重点要看的方法</span></span><br><span class="line">    router.<span class="title function_">use</span>(path, <span class="keyword">function</span> <span class="title function_">mounted_app</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;, <span class="variable language_">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>接下来看 Router 对象的 use 方法实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">proto.<span class="property">use</span> = <span class="keyword">function</span> <span class="title function_">use</span>(<span class="params">fn</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> path = <span class="string">&#x27;/&#x27;</span>;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">var</span> callbacks = <span class="title function_">flatten</span>(slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, offset));</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; callbacks.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">var</span> fn = callbacks[i];</span><br><span class="line">    <span class="comment">// 针对传入路由中的每一个回调方法，都包装成一个 Layer 对象并压入</span></span><br><span class="line">    <span class="keyword">var</span> layer = <span class="keyword">new</span> <span class="title class_">Layer</span>(path, &#123;</span><br><span class="line">      <span class="attr">sensitive</span>: <span class="variable language_">this</span>.<span class="property">caseSensitive</span>,</span><br><span class="line">      <span class="attr">strict</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">end</span>: <span class="literal">false</span></span><br><span class="line">    &#125;, fn);</span><br><span class="line">    layer.<span class="property">route</span> = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>从代码中可以看到，与我们的猜想一致，<code>app.use</code> 这种路由的实现，是将传入的一个个路径或回调方法等参数封装成 <code>Layer</code> 对象压入 <code>_router.stack</code> 栈中。</p>
+<p><strong>然后来看 <code>app.get</code> 这种路由的代码实现：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// methods 中包含各种请求类型等，get 就包含在其中</span></span><br><span class="line">methods.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">method</span>)&#123;</span><br><span class="line">  app[method] = <span class="keyword">function</span>(<span class="params">path</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">&#x27;get&#x27;</span> &amp;&amp; <span class="variable language_">arguments</span>.<span class="property">length</span> === <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="comment">// app.get(setting)</span></span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">set</span>(path);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">lazyrouter</span>();  <span class="comment">// 路由对象 Router 初始化</span></span><br><span class="line">    <span class="keyword">var</span> route = <span class="variable language_">this</span>.<span class="property">_router</span>.<span class="title function_">route</span>(path);</span><br><span class="line">    route[method].<span class="title function_">apply</span>(route, slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>, <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中最终返回的是 <code>app</code>，那么这端代码对 <code>app</code> 进行了什么样的操作呢？我们可以将目光聚焦在 <code>route[method].apply()</code> 这行代码上。接下来我们可以看下 <code>route</code> 到底是个什么东西。<code>this._router.route</code> 的代码实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">proto.<span class="property">route</span> = <span class="keyword">function</span> <span class="title function_">route</span>(<span class="params">path</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> route = <span class="keyword">new</span> <span class="title class_">Route</span>(path);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> layer = <span class="keyword">new</span> <span class="title class_">Layer</span>(path, &#123;</span><br><span class="line">    <span class="attr">sensitive</span>: <span class="variable language_">this</span>.<span class="property">caseSensitive</span>,</span><br><span class="line">    <span class="attr">strict</span>: <span class="variable language_">this</span>.<span class="property">strict</span>,</span><br><span class="line">    <span class="attr">end</span>: <span class="literal">true</span></span><br><span class="line">  &#125;, route.<span class="property">dispatch</span>.<span class="title function_">bind</span>(route));</span><br><span class="line"></span><br><span class="line">  layer.<span class="property">route</span> = route;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">  <span class="keyword">return</span> route;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看到返回的 <code>route</code> 是一个 <code>Route</code> 对象，在这个对象中将参数封装成了 <code>Layer</code> 对象推入了 <code>app._router.stack</code> 中。</p>
+<p>接下来我们看一下 <code>Route</code> 对象中的一些实现代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Route</span>(<span class="params">path</span>) &#123;</span><br><span class="line">  <span class="comment">// Route对象初始化时添加了一个空数组stack属性</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">path</span> = path;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">stack</span> = [];</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">methods</span> = &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对于app.METHODS这种路由，将路由参数（路径、回调方法）包装成Layer对象压入Route.stack中</span></span><br><span class="line">methods.<span class="title function_">forEach</span>(<span class="keyword">function</span>(<span class="params">method</span>)&#123;</span><br><span class="line">  <span class="title class_">Route</span>.<span class="property"><span class="keyword">prototype</span></span>[method] = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="keyword">var</span> handles = <span class="title function_">flatten</span>(slice.<span class="title function_">call</span>(<span class="variable language_">arguments</span>));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; handles.<span class="property">length</span>; i++) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      <span class="keyword">var</span> layer = <span class="title class_">Layer</span>(<span class="string">&#x27;/&#x27;</span>, &#123;&#125;, handle);</span><br><span class="line">      layer.<span class="property">method</span> = method;</span><br><span class="line"></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">methods</span>[method] = <span class="literal">true</span>;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">stack</span>.<span class="title function_">push</span>(layer);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>至此，在调用 <code>route[method].apply()</code> 时就会为 <code>app.METHODS</code> 这种类型的路由的 <code>Layer</code> 中添加 <code>route&lt;Route&gt;</code> 属性。</p>
+<p><img src="https://img.alicdn.com/imgextra/i2/O1CN01bP9D781hvJMo0r6nj_!!6000000004339-0-tps-1183-691.jpg" alt="e6778eb14b0b4f77fc6bc60d49e9a053.png"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/" rel="tag"># 源码学习</a>
+              <a href="/tags/Express/" rel="tag"># Express</a>
+              <a href="/tags/NodeJS/" rel="tag"># NodeJS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/12/2020-01-12-Javascript-module-history.html" rel="prev" title="JavaScript模块化">
+                  <i class="fa fa-angle-left"></i> JavaScript模块化
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/23/2020-05-30-source-code-reading-Egg-starting.html" rel="next" title="EggJS源码阅读-启动流程与代码实现">
+                  EggJS源码阅读-启动流程与代码实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

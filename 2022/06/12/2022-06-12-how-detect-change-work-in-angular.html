@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="脏检如何实现？Angular 的变化检测机制是建立在 Javascript 的可覆写机制。Angular 在启动阶段会对浏览器的一些底层 API 进行补丁，比如在 addEventListener 方法中添加一些功能： 123456789101112function addEventListener(eventName, callback) &#123;     &#x2F;&#x2F; call the real">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 的脏检到底如何工作">
+<meta property="og:url" content="https://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="脏检如何实现？Angular 的变化检测机制是建立在 Javascript 的可覆写机制。Angular 在启动阶段会对浏览器的一些底层 API 进行补丁，比如在 addEventListener 方法中添加一些功能： 123456789101112function addEventListener(eventName, callback) &#123;     &#x2F;&#x2F; call the real">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-12T14:30:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.652Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="Framework">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="Change Detection">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html","path":"2022/06/12/2022-06-12-how-detect-change-work-in-angular.html","title":"Angular 的脏检到底如何工作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Angular 的脏检到底如何工作 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%8F%E6%A3%80%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">脏检如何实现？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%88%E6%9D%A5%E6%BA%90%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">JavaScript 运行时和事件循环（来源）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.1.</span> <span class="nav-text">事件循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E5%92%8C%E5%BE%AE%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.2.</span> <span class="nav-text">任务和微任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E5%8C%96%E6%A3%80%E6%B5%8B%E6%A0%91"><span class="nav-number">3.</span> <span class="nav-text">变化检测树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2022/06/12/2022-06-12-how-detect-change-work-in-angular.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Angular 的脏检到底如何工作 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Angular 的脏检到底如何工作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-12 22:30:00" itemprop="dateCreated datePublished" datetime="2022-06-12T22:30:00+08:00">2022-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="脏检如何实现？"><a href="#脏检如何实现？" class="headerlink" title="脏检如何实现？"></a>脏检如何实现？</h3><p>Angular 的变化检测机制是建立在 Javascript 的可覆写机制。Angular 在启动阶段会对浏览器的一些底层 API 进行补丁，比如在 addEventListener 方法中添加一些功能：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">addEventListener</span>(<span class="params">eventName, callback</span>) &#123;</span><br><span class="line">     <span class="comment">// call the real addEventListener</span></span><br><span class="line">     <span class="title function_">callRealAddEventListener</span>(eventName, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">// first call the original callback</span></span><br><span class="line">        <span class="title function_">callback</span>(...);     </span><br><span class="line">        <span class="comment">// and then run Angular-specific functionality</span></span><br><span class="line">        <span class="keyword">var</span> changed = angular.<span class="title function_">runChangeDetection</span>();</span><br><span class="line">         <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">             angular.<span class="title function_">reRenderUIPart</span>();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个为底层浏览器 API 打补丁的过程是由 zone.js 工具库提供的。补丁和脏检机制一班发生在以下几种异步情况：</p>
+<ul>
+<li>所有浏览器事件（鼠标事件、键盘事件…）</li>
+<li>setTimeout() 和 setInterval()</li>
+<li>Ajax HTTP 请求</li>
+</ul>
+<p>为了了解 zone 的概念，我们需要先了解浏览器任务和时间循环的机制。</p>
+<span id="more"></span>
+
+<p>Angular 官方文档中指出，一个 zone 指的是跨多个异步任务存在的执行上下文。</p>
+<blockquote>
+<p>执行上下文可理解为作用域，JavaScript 有全局上下文（相对于函数之外的任何代码）、本地上下文（函数执行时自己创建）和由 eval()上下文（由 eval 函数创建的上下文）。程序开始运行，全局上下文即创建，执行到某个函数时则会为该函数创建其上下文，并推入执行上下文栈中；退出该函数或该程序时，其上下文也会从执行栈中弹出并销毁。</p>
+</blockquote>
+<p>zone.js 就是通过创建一个持久的跨多个异步操作的执行上下文，并提供了异步操作的各个生命周期（onScheduleTask、onInvokeTask、onHasTask、onInvoke），在这些生命周期中可以监测数据变化，从而达到脏检的目的。</p>
+<h3 id="JavaScript-运行时和事件循环（来源）"><a href="#JavaScript-运行时和事件循环（来源）" class="headerlink" title="JavaScript 运行时和事件循环（来源）"></a>JavaScript 运行时和事件循环（<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth">来源</a>）</h3><p>为了了解 zone 的机制，我们还需要复习下 JavaScript 运行时。 执行 JS 代码时，JavaScript 运行时维护了一组用于执行 JS 代码的代理，每个代理包含一组执行上下文的集合、执行上下文栈、主线程、一组可能创建用于执行 worker 的额外的线程集合、一个任务队列以及一个微任务队列构成。</p>
+<h4 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h4><p>每个线程都拥有自己的事件循环。每个循环负责收集事件（用户、非用户事件），对任务进行排队（安排回调的执行），执行排队中的 Task（即宏任务），然后执行微任务，最后在下一次循环之前执行一些必要的渲染和绘制操作。事件循环有三种：</p>
+<ul>
+<li>Window 事件循环：驱动所有同源（意为起源，即一个窗口中打开另一个窗口或一个窗口中有多个 iframe，可能会共享一个事件循环）窗口。</li>
+<li>Worker 事件循环：驱动 workder 的事件循环</li>
+<li>Worklet 事件循环：用于驱动运行 worklet 的代理</li>
+</ul>
+<h4 id="任务和微任务"><a href="#任务和微任务" class="headerlink" title="任务和微任务"></a>任务和微任务</h4><p>任务是指按标准机制执行的任何 JavaScript，包括程序初始化、事件触发的回调、setTimeout 添加的任务。微任务指特定的一些任务，例如 Promise、Object.observe、MutationObserver、 NodeJS 环境下的 process.nextTick 和 async&#x2F;await</p>
+<ul>
+<li>每一次事件循环的迭代会执行队列中的每一个任务，每次迭代开始后加入的任务在下一次迭代才被执行</li>
+<li>每次当一个任务退出且执行上下文为空时，事件循环会执行微任务队列中的每一个微任务，直到微任务队列为空才停止，期间新添加的微任务也会在这个队列被执行。可以通过 queueMicrotask() 方法添加新的微任务。</li>
+</ul>
+<p>这也就是为什么 promise 的执行顺序要在 setTimeout 回调之前的原因。</p>
+<h3 id="变化检测树"><a href="#变化检测树" class="headerlink" title="变化检测树"></a>变化检测树</h3><p>每个 Angular 组件都有对应的一个变化检测器，在应用启动时被创建。Angular 的数据流自顶向下单向流动，变化检测树与之呼应（检测完父组件后，子组件也可能改变父组件的数据使得父组件再次被检查，所以在开发环境会出现 ExpressionChangedAfterItHasBeenCheckedError 报错）。</p>
+<p>需要注意的是，Angular 使用 view 作为底层抽象，一个 view 与一个 component 相互关联，所有的属性值的变化检测和 DOM 更新都是在 view 上操作。自顶向下，每一个 view 都与其 child views 链接，通过 nodes 属性对 child views 进行操作。每一个 view 都有一个状态（state，分别有 FirstCheck、ChecksEnabled、Errored 和 Destroyed 四种状态，默认策略下，状态可以相互组合）。</p>
+<p>针对 view 变化检测的主要逻辑是在 checkAndUpdateView 方法中。</p>
+<blockquote>
+<p>默认的检测机制，只在模板表达式的值发生改变时触发；并且不会针对对象进行深比较（只对模板中使用到的属性进行检测）。</p>
+</blockquote>
+<p>上面提到的单向流动同时也表示数据更新后视图会随之更新，但是视图的更新不会触发更多的视图更新。在 ngAfterViewChecked 生命周期里调用 this.callbacks 会触发 “EXCEPTION: Expression ‘ in App@3:20’ has changed after it was checked” 的报错（该报错仅在开发环境中出现）。</p>
+<p>有时候变化检测不到怎么办？</p>
+<p>在开发过程中，经常会遇到某一些数据变化但是视图上没有展示出来，甚至将数据打印出来已经发生了变化，但是视图上却不会变化的情况。</p>
+<ul>
+<li>第一种情况可能是由于修改了对象或数组类型的某个属性，这时导致的脏检不成功，整个情况尝试整个变量重新赋值。</li>
+<li>第二种情况可能是触发试图改变，而视图又触发视图改变，这个时候可以尝试手动使用 setTimeout() 方法进行包裹。</li>
+<li>还有一种比较特殊的情况，上面我们提到了 Angular 对三种类型的一部操作进行变化检测，而当我们使用第三方的库导致的异步操作，但这些操作并没有触发到以上三种底层的异步操作时，变化就没办法被检测到。这个时候可以尝试引入 NgZone，使用 NgZone.run 包裹这个异步操作即可。</li>
+</ul>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a href="https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/">官方文档</a></p>
+<p><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/">Tasks, microtasks, queues and schedules</a></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop">The event loop</a></p>
+<p><a href="https://stackoverflow.com/questions/51455545/when-to-use-ngzone-run">When to use Ngzone.run()?</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Framework/" rel="tag"># Framework</a>
+              <a href="/tags/Angular/" rel="tag"># Angular</a>
+              <a href="/tags/Change-Detection/" rel="tag"># Change Detection</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/19/2022-04-19-understanding-DI-in-angular.html" rel="prev" title="理解 Angular 的依赖注入">
+                  <i class="fa fa-angle-left"></i> 理解 Angular 的依赖注入
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/03/2022-07-03-angular-detect-change-detail.html" rel="next" title="Angular 脏检的细节理解">
+                  Angular 脏检的细节理解 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

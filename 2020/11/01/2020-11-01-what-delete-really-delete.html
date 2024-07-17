@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="为了引入本文要讨论的内容，先放出一个几乎不会遇到的问题：delete 0 会发生什么？答案是控制台输出 true，其他什么都没发生。那假如我们继续尝试delete ，执行下面的语句会分别发生什么呢？ 1234567891011121314151617&#x2F;* example 1 *&#x2F;delete 0&#x2F;* example 2 *&#x2F;const a &#x3D; &#123;name: &#x27;z&#x27;&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What delete really delete?">
+<meta property="og:url" content="https://keefe.wang/2020/11/01/2020-11-01-what-delete-really-delete.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="为了引入本文要讨论的内容，先放出一个几乎不会遇到的问题：delete 0 会发生什么？答案是控制台输出 true，其他什么都没发生。那假如我们继续尝试delete ，执行下面的语句会分别发生什么呢？ 1234567891011121314151617&#x2F;* example 1 *&#x2F;delete 0&#x2F;* example 2 *&#x2F;const a &#x3D; &#123;name: &#x27;z&#x27;&amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2022/png/54556479/1653465940596-f2186ba3-a104-4006-82d0-51875255d664.png">
+<meta property="article:published_time" content="2020-11-01T13:03:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.651Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://intranetproxy.alipay.com/skylark/lark/0/2022/png/54556479/1653465940596-f2186ba3-a104-4006-82d0-51875255d664.png">
+
+
+<link rel="canonical" href="https://keefe.wang/2020/11/01/2020-11-01-what-delete-really-delete.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2020/11/01/2020-11-01-what-delete-really-delete.html","path":"2020/11/01/2020-11-01-what-delete-really-delete.html","title":"What delete really delete?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>What delete really delete? | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">输出解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#delete-undefined"><span class="nav-number">4.</span> <span class="nav-text">delete undefined</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2020/11/01/2020-11-01-what-delete-really-delete.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="What delete really delete? | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          What delete really delete?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-01 21:03:00" itemprop="dateCreated datePublished" datetime="2020-11-01T21:03:00+08:00">2020-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>为了引入本文要讨论的内容，先放出一个几乎不会遇到的问题：<code>delete 0</code> 会发生什么？<br>答案是控制台输出 <code>true</code>，其他什么都没发生。<br>那假如我们继续尝试delete ，执行下面的语句会分别发生什么呢？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* example 1 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="number">0</span></span><br><span class="line"><span class="comment">/* example 2 */</span></span><br><span class="line"><span class="keyword">const</span> a = &#123;<span class="attr">name</span>: <span class="string">&#x27;z&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">delete</span> a.<span class="property">name</span></span><br><span class="line"><span class="comment">/* example 3 */</span></span><br><span class="line"><span class="keyword">delete</span> y</span><br><span class="line"><span class="comment">/* example 4 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="literal">null</span></span><br><span class="line"><span class="comment">/* example 5 */</span></span><br><span class="line"><span class="keyword">delete</span> <span class="literal">undefined</span></span><br><span class="line"><span class="comment">/* example 6 */</span></span><br><span class="line"><span class="keyword">const</span> x = <span class="number">1</span></span><br><span class="line"><span class="keyword">delete</span> x</span><br><span class="line"><span class="comment">/* example 7 */</span></span><br><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="title class_">WeakMap</span>();</span><br><span class="line"><span class="keyword">delete</span> map;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h3 id="输出解析"><a href="#输出解析" class="headerlink" title="输出解析"></a>输出解析</h3><ol>
+<li>返回 true，实际上没做任何事情，只是根据 delete 的规则，没有发生异常就必须返回 true</li>
+<li>返回 true，删除了 <a href="http://obj.name/">obj.name</a> 表达式的值</li>
+<li>如果 y 根本不存在，delete y 什么也不做，返回 true；访问不存在的变量 y 报 ReferenceError 错误，其实是对 y 表达式的的 Result 引用做 getValue 的时候报的错误，然后为啥 typeof y 和 delete y 不报错，因为这两个操作没有求值。如果 y 的 configurable 为 false，delete object.y 不能删除掉y属性，返回 false；如果在严格模式下，会报错：TypeError: Cannot delete property ‘c’</li>
+<li>返回 true，null是值，相当于delete 0</li>
+<li>返回 false</li>
+<li>返回 false</li>
+<li>返回 false</li>
+<li>同 7 的原理一样，都是在删除一个不可设置也就是只读的 global 上的属性，因此返回 false。</li>
+</ol>
+<p>对于所有情况都是 true，除非属性是一个<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty">自身的</a> <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Errors/Cant_delete">不可配置</a>的属性（configurable 为 false），在这种情况下，非严格模式返回 false。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="title function_">getOwnPropertyDescriptor</span>(obj, <span class="string">&#x27;x&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>1、delete x 的三种可能：x是一个值、x是一个引用、x是global对象上声明的属性，等同于一个全局变量。</p>
+<ul>
+<li>删除一个值：delete 0，不代表真的把0从语言当前的运行环境中删除，彷佛“啥也没发生”？</li>
+<li>删除一个属性：delete obj.x ？</li>
+<li>删除一个变量：delete x ？</li>
+</ul>
+<p>后两者其实都可以可以理解成，删除对象的属性，x可以理解成global.x。</p>
+<p>2、delete 这个操作的正式语法设计并不是“删除某个东西”，而是“删除一个表达式的结果”；</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> expression</span><br></pre></td></tr></table></figure>
+
+<p>所以1当中的delete 0，JavaScript 将 0 视为一个表达式，并尝试删除它的求值结果。所以，现在这里的 0，其实不是值（Value）类型的数据，而是一个表达式运算的结果（Result）。而在进一步的删除操作之前，JavaScript 需要检测这个 Result 的类型：</p>
+<ul>
+<li>如果它是值，则按照传统的 JavaScript 的约定返回 true；</li>
+<li>如果它是一个引用，那么对该引用进行分析，以决定如何操作。</li>
+</ul>
+<p>当 x 是全局对象 global 的属性时，所谓delete x其实只需要返回global.x这个引用就可以了。而当它不是全局对象 global 的属性时，那么就需要从当前环境中找到一个名为x的引用，删除其表达式的结果即可。</p>
+<p>3、那么究竟如何去看是值还是引用？</p>
+<p>语句的执行结果是一个值（value） 表达式的执行结果是一个result（可能是一个引用，也有可能是一个值），是引用还是值，取决于这是要一个左值还是右值。当你确定了一个Result用作lhs（左手端），那么它就是引用；如果确定它用作rhs（右手端），那么它就是值（将由引擎隐式地调用<code>GetValue()</code>）。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> x = x; <span class="comment">// x = GetValue(x)</span></span><br><span class="line"><span class="comment">// “把 值x 赋给 引用x”</span></span><br></pre></td></tr></table></figure>
+
+<p>4、“delete x”归根到底，是在删除一个表达式的、引用类型的结果（Result），而不是在删除 x 表达式，或者这个删除表达式的值（Value）。</p>
+<p><strong>在 JavaScript 中的delete是一个很罕见的、能直接操作“引用”的语法元素。除了&#x3D;，在Js中几乎没有其他操作符能直接去操作引用。</strong></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>delete 运算符尝试删除值数据时，会返回 true，用于表示没有错误（Error）。</li>
+<li>delete 0 的本质是删除一个表达式的值（Result）。</li>
+<li>delete x 与上述的区别只在于 Result 是一个引用（Reference）。</li>
+<li>delete 其实只能删除一种引用，即对象的成员（Property）。</li>
+</ul>
+<p><img src="https://intranetproxy.alipay.com/skylark/lark/0/2022/png/54556479/1653465940596-f2186ba3-a104-4006-82d0-51875255d664.png" alt="https://intranetproxy.alipay.com/skylark/lark/0/2022/png/54556479/1653465940596-f2186ba3-a104-4006-82d0-51875255d664.png"></p>
+<h3 id="delete-undefined"><a href="#delete-undefined" class="headerlink" title="delete undefined"></a>delete undefined</h3><p>在早期的JavaScript中，undefined是一个特殊值，是在运行期中通过void运算，或者不返回值的函数，又或者一个声明了但未赋值的变量，等等类似这样的情况来“计算得到”的。所以在JavaScript的早期版本中，你没有办法直接判断“undefined是undefined”，例如无法写出“x &#x3D;&#x3D;&#x3D; undefined”这样的代码，而你只能写类似“typeof(x) &#x3D;&#x3D;&#x3D;’undefined’”这样的代码。</p>
+<p>后来（其实也没有太久），规范就约定把undefined作为可以缺省访问的名字，类似于null。但是这个时候就带来了一个矛盾，因为这个undefined很重要，早期的绝大多数框架或引擎都把它作为一个“全局名字”给声明了。也就是说，ECMAScript现在既没有办法将它规范成一个keyword，也没有办法处理成保留字等等，它看起来像null，但又没有办法在规范层面强制它。所以……ECMAScript就搞了一个“奇招”：把undefined声明成全局的属性，怎么样？！！（又一个天坑）</p>
+<p>嗯嗯，很好。所以，现在的引擎上面undefined看起来长得跟null值差不多，而且在ECMAScript规范中它们都还是平级的（是原始值），而且它们的作用也很接近，最后他们都还是从最初的JavaScript 1.x中就存在的概念，但是undefined&#x2F;null两者却在实现上完全不同：undefined是一个全局属性，而null是一个关键字。</p>
+<p>由于undefined是全局属性，所以<code>delete undefined</code>其实就是<code>delete global.undefined</code>，是删除引用，而不是删除值。而这个属性是只读的，所以就返回false了。</p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/delete">delete 操作符</a></li>
+<li><a href="https://time.geekbang.org/column/article/164312">delete 0：JavaScript中到底有什么是可以销毁的</a>（付费）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/08/2020-09-08-understand-this-in-function.html" rel="prev" title="理解函数中的 this">
+                  <i class="fa fa-angle-left"></i> 理解函数中的 this
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/14/2021-02-14-state-machine-by-javascript.html" rel="next" title="用 JavaScript 实现有限状态机">
+                  用 JavaScript 实现有限状态机 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="问题一：为什么网站（网页应用）需要有登录的功能？问题二：Cookie 到底是个什么东西？问题三：Cookie 是怎样告诉服务器”是谁发送的请求“？问题四：Cookie 和 Session 验证之间有什么不同？问题五：Session 又是什么？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解 JavaScript（Node）中的 Cookie 和 Session">
+<meta property="og:url" content="https://keefe.wang/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="问题一：为什么网站（网页应用）需要有登录的功能？问题二：Cookie 到底是个什么东西？问题三：Cookie 是怎样告诉服务器”是谁发送的请求“？问题四：Cookie 和 Session 验证之间有什么不同？问题五：Session 又是什么？">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://keefe.wang/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_ZIkc8UzGscPbkxFg.png">
+<meta property="og:image" content="https://keefe.wang/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/1_WYrTZqQI8PaZjYLZcaLizA.png">
+<meta property="og:image" content="https://keefe.wang/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_i6W-t0A6zjk7-4mP.png">
+<meta property="article:published_time" content="2021-05-03T14:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.651Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="NodeJS">
+<meta property="article:tag" content="浏览器存储">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://keefe.wang/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_ZIkc8UzGscPbkxFg.png">
+
+
+<link rel="canonical" href="https://keefe.wang/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html","path":"2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html","title":"理解 JavaScript（Node）中的 Cookie 和 Session"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>理解 JavaScript（Node）中的 Cookie 和 Session | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95-%E7%99%BB%E5%87%BA%E5%8A%9F%E8%83%BD%E5%9C%A8%E7%BD%91%E7%AB%99%E4%B8%AD%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">登录&#x2F;登出功能在网站中的必要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie-%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">Cookie 的必要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A9%E6%88%91%E4%BB%AC%E5%88%9B%E5%BB%BA-cookie-%E5%B9%B6%E6%8A%8A%E5%AE%83%E5%8F%91%E9%80%81%E7%BB%99%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%A7"><span class="nav-number">3.</span> <span class="nav-text">让我们创建 cookie 并把它发送给浏览器吧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-Header-%E5%92%8C-HTTP-Body"><span class="nav-number">4.</span> <span class="nav-text">HTTP Header 和 HTTP Body</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-Cookie-%E4%BD%9C%E4%B8%BA%E8%AF%B7%E6%B1%82%E7%9A%84%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">5.</span> <span class="nav-text">将 Cookie 作为请求的标识符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie-%E9%80%89%E9%A1%B9"><span class="nav-number">6.</span> <span class="nav-text">Cookie 选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Session-%E4%BB%A3%E6%9B%BF-Cookie"><span class="nav-number">7.</span> <span class="nav-text">使用 Session 代替 Cookie</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="理解 JavaScript（Node）中的 Cookie 和 Session | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          理解 JavaScript（Node）中的 Cookie 和 Session
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-03 22:00:00" itemprop="dateCreated datePublished" datetime="2021-05-03T22:00:00+08:00">2021-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Translation/" itemprop="url" rel="index"><span itemprop="name">Translation</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>问题一：为什么网站（网页应用）需要有登录的功能？<br>问题二：Cookie 到底是个什么东西？<br>问题三：Cookie 是怎样告诉服务器”是谁发送的请求“？<br>问题四：Cookie 和 Session 验证之间有什么不同？<br>问题五：Session 又是什么？</p>
+<span id="more"></span>
+
+<h3 id="登录-登出功能在网站中的必要性"><a href="#登录-登出功能在网站中的必要性" class="headerlink" title="登录&#x2F;登出功能在网站中的必要性"></a>登录&#x2F;登出功能在网站中的必要性</h3><ul>
+<li>登录&#x2F;登出的验证对于开发者来说是最难搞的功能之一</li>
+<li>但是为了让网站更可靠，登录&#x2F;登出功能又是必须的</li>
+</ul>
+<p><strong>客户端请求有几个非常严肃的问题</strong>：</p>
+<ul>
+<li>客户端是不知道到底是谁触发的这个请求</li>
+<li>当然，我们有 IP 地址和浏览器的一些信息</li>
+<li>但是很有可能，不同的用户在不同的电脑上使用的是同一个 IP 地址</li>
+<li>所以我们需要登录功能来告诉服务器究竟是谁发送的这个请求，Cookie 和 Session 验证就是解决这个问题的方法之二</li>
+</ul>
+<h3 id="Cookie-的必要性"><a href="#Cookie-的必要性" class="headerlink" title="Cookie 的必要性"></a>Cookie 的必要性</h3><ul>
+<li><p>如果一个网站在刷新页面的时候不会使用户登出，那么这个网站一定是使用了 cookie 或 session</p>
+</li>
+<li><p>几乎每一个你所浏览的网站都使用了 cookie 和session</p>
+</li>
+<li><p>客户端之所以能够发送一些关于你和你的验证信息、状态到服务器，就是用了 cookie</p>
+</li>
+<li><p>Cookie 就是非常简单的<strong>键值对</strong>： <code>name=gplee</code></p>
+</li>
+<li><p>浏览器将 cookie 保存在内部，并在每一次发送请求的时候把这些 cookie 也一并发送到服务端</p>
+<p>  <img src="/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_ZIkc8UzGscPbkxFg.png" alt="%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_ZIkc8UzGscPbkxFg.png"></p>
+</li>
+<li><p>换句话说，cookie 能够记录和追踪你和关于你的信息</p>
+</li>
+<li><p>这也是为什么你会经常被建议去阶段性地删除 cookie（因为要防止个人信息的泄露）</p>
+</li>
+<li><p>Cookie 是在 request 和 response 的 header 中进行传输的</p>
+</li>
+</ul>
+<h3 id="让我们创建-cookie-并把它发送给浏览器吧"><a href="#让我们创建-cookie-并把它发送给浏览器吧" class="headerlink" title="让我们创建 cookie 并把它发送给浏览器吧"></a>让我们创建 cookie 并把它发送给浏览器吧</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">parseCookies</span> = (<span class="params">cookie = <span class="string">&#x27;&#x27;</span></span>) =&gt; cookie.<span class="title function_">split</span>(<span class="string">&#x27;;&#x27;</span>)</span><br><span class="line">	.<span class="title function_">map</span>(<span class="function"><span class="params">v</span> =&gt;</span> v.<span class="title function_">split</span>(<span class="string">&#x27;=&#x27;</span>))</span><br><span class="line">	.<span class="title function_">map</span>(<span class="function">(<span class="params">[k, ...vs]</span>) =&gt;</span> [k, vs.<span class="title function_">join</span>(<span class="string">&#x27;=&#x27;</span>)])</span><br><span class="line">	.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, [k, v]</span>) =&gt;</span> &#123;</span><br><span class="line">	    acc[k.<span class="title function_">trim</span>()] = <span class="built_in">decodeURIComponent</span>(v);</span><br><span class="line">	    <span class="keyword">return</span> acc;</span><br><span class="line">	&#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">http.<span class="title function_">createServer</span>(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> cookies = <span class="title function_">parseCookies</span>(req.<span class="property">headers</span>.<span class="property">cookie</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(req.<span class="property">url</span>, cookies);</span><br><span class="line">  res.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123;<span class="string">&#x27;Set-Cookie&#x27;</span>: <span class="string">&#x27;mycookie=test&#x27;</span>&#125;);</span><br><span class="line">  res.<span class="title function_">end</span>(<span class="string">&#x27;Hello Cookie&#x27;</span>);</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">8082</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listening on port 8082&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>parseCookie 方法</strong></p>
+<ul>
+<li>该方法将字符串转换为对象</li>
+<li>Cookie 是字符串类型，例如 <code>name=gplee;year=1993</code>，通过这个方法转化为一个对象</li>
+</ul>
+<p><strong>createServer 方法</strong></p>
+<ul>
+<li>在第一个回调方法中，将请求中的 cookie 字符串（在 req.headers.cookie 中）转化为一个对象</li>
+<li>使用 res.writeHead 方法，第一个参数为 200 状态码，第二个参数为响应头的信息（Set-Cookie 字段能够让浏览器保存这个 cookie）</li>
+<li>浏览器收到响应之后便将 <code>mycookie=test</code> 这个 cookie 保存下来</li>
+</ul>
+<p><strong>在浏览器中查看 cookie</strong></p>
+<p>运行上面代码，并在浏览器中访问 <a href="http://localhost:8082/">http://localhost:8082</a> 这个地址，能够在服务器端的控制台看到</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  test node index.<span class="property">js</span></span><br><span class="line">listening on port <span class="number">8082</span></span><br><span class="line">/ &#123; <span class="string">&#x27;&#x27;</span>: <span class="string">&#x27;&#x27;</span> &#125;</span><br><span class="line">/favicon.<span class="property">ico</span> &#123; <span class="attr">mycookie</span>: <span class="string">&#x27;test&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三行返回的是初始浏览器的第一次请求，该请求中没有任何 cookie，但是在该请求的响应里，服务器已经通知浏览器保存 <code>mycookie=test</code> 这个 cookie。最后一行是当浏览器没有在 HTML 文档中找到 favicon 的信息会再次请求 favicon 的信息，这时就能够看到 mycookie 了。</p>
+<p>浏览器端，我们可以看到</p>
+<p><img src="/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/1_WYrTZqQI8PaZjYLZcaLizA.png" alt="%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/1_WYrTZqQI8PaZjYLZcaLizA.png"></p>
+<ul>
+<li>General 是通用的头部信息</li>
+<li>Request Header 是请求头独有的信息</li>
+<li>Response Header 是响应头独有的信息</li>
+<li>我们能够在 Request Header 中看到 Cookie 字段，也能在 Response Header 中看到 Set-Cookie 字段</li>
+<li>Set-Cookie 字段就是服务器通知浏览器保存这个字段的 cookie 值，在浏览器保存完成之后，每次发送请求到服务器就能够带上 Cookie 字段了</li>
+</ul>
+<h3 id="HTTP-Header-和-HTTP-Body"><a href="#HTTP-Header-和-HTTP-Body" class="headerlink" title="HTTP Header 和 HTTP Body"></a>HTTP Header 和 HTTP Body</h3><p><img src="/%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_i6W-t0A6zjk7-4mP.png" alt="%5B%E7%BF%BB%E8%AF%91%5D%E7%90%86%E8%A7%A3%20JavaScript%EF%BC%88Node%EF%BC%89%E4%B8%AD%E7%9A%84%20Cookie%20%E5%92%8C%20Session%20821cab22b670445cacf2816c132b0710/0_i6W-t0A6zjk7-4mP.png"></p>
+<ul>
+<li>客户端请求和服务器响应都由 HTTP Header 和 HTTP Body组成（详细点讲，是（请求行+请求头）+空行+（请求内容））</li>
+<li>HTTP Header 中包含了请求和相应的一些描述信息</li>
+<li>Cookie 保存在 HTTP Header 中</li>
+</ul>
+<h3 id="将-Cookie-作为请求的标识符"><a href="#将-Cookie-作为请求的标识符" class="headerlink" title="将 Cookie 作为请求的标识符"></a>将 Cookie 作为请求的标识符</h3><p>在上面的代码例子中，我们发送的 cookie 并没有表明是谁发送的。这次我们将在 cookie 中发送一些用户的信息。</p>
+<p>网页代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">		    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">		    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Understand Cookie and Session<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">		    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;/login&quot;</span>&gt;</span></span><br><span class="line">		        <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;name&quot;</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;Write your name&quot;</span>&gt;</span></span><br><span class="line">		        <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;login&quot;</span>&gt;</span>Login<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">		    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>服务器代码</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> url = <span class="built_in">require</span>(<span class="string">&#x27;url&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> qs = <span class="built_in">require</span>(<span class="string">&#x27;querystring&#x27;</span>);</span><br><span class="line"></span><br><span class="line">http.<span class="title function_">createServer</span>(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> cookies = <span class="title function_">parseCookies</span>(req.<span class="property">headers</span>.<span class="property">cookie</span>);</span><br><span class="line">  <span class="keyword">if</span>(req.<span class="property">url</span>.<span class="title function_">startsWith</span>(<span class="string">&#x27;/login&#x27;</span>)) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; query &#125; = url.<span class="title function_">parse</span>(req.<span class="property">url</span>);</span><br><span class="line">    <span class="keyword">const</span> &#123; name &#125; = qs.<span class="title function_">parse</span>(query);</span><br><span class="line">    <span class="keyword">const</span> expires = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">    expires.<span class="title function_">setMinutes</span>(expires.<span class="title function_">getMinutes</span>() + <span class="number">1</span>);</span><br><span class="line">    res.<span class="title function_">writeHead</span>(<span class="number">302</span>, &#123;</span><br><span class="line">      <span class="title class_">Location</span>: <span class="string">&#x27;/&#x27;</span>, </span><br><span class="line">			<span class="string">&#x27;Set-Cookie&#x27;</span>: <span class="string">`name=<span class="subst">$&#123;<span class="built_in">encodeURIComponent</span>(name)&#125;</span>;Expires=<span class="subst">$&#123;expires.toGMTString()&#125;</span>;HttpOnly; Path=/`</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    res.<span class="title function_">end</span>();</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cookies.<span class="property">name</span>) &#123;</span><br><span class="line">    res.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123; <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/html; charset=utf-8&#x27;</span>&#125;);</span><br><span class="line">    res.<span class="title function_">end</span>(<span class="string">`Welcome <span class="subst">$&#123;cookies.name&#125;</span>`</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    fs.<span class="title function_">readFile</span>(<span class="string">&#x27;./index.html&#x27;</span>, <span class="function">(<span class="params">err,data</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="keyword">throw</span> err;</span><br><span class="line">      &#125;</span><br><span class="line">      res.<span class="title function_">end</span>(data);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">8083</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listening on port 8083&#x27;</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>我们直接来看服务器的代码：</p>
+<ul>
+<li>第一个方法仍然是将 cookie 字符串解析成对象的方法</li>
+<li>在 createServer 的回调中我们可以看到如果直接访问 <a href="https://localhost:8083/">https://localhost:8083</a> 这个地址，会跳过前两个判断的分支（因为请求地址没有带着 &#x2F;login 的目录，初始也没有 <a href="http://req.headers.cookie.name/">req.headers.cookie.name</a> 这个属性，直接返回 index.html 这个静态文件，在浏览器渲染出一个提交名字的表单</li>
+<li>当我们在表单输入名字并点击提交后，会请求 &#x2F;login，这时服务器会使用 querystring 模块对query 字段进行解析，读出 name 字段。最后服务器会返回 302，并让浏览器在 cookie 中保存了 name 字段，并给 name 设置了一分钟的过期时间，然后重定向到 &#x2F; 目录。</li>
+<li>浏览器收到上面的响应之后，会根据 302 状态码重定向到 <a href="http://localhost:8083/">localhost:8083</a></li>
+<li>这时浏览器的请求中就有了 <a href="http://cookies.name/">cookies.name</a> 字段，服务器会返回 <code>Welcome $&#123;cookies.name&#125;</code></li>
+</ul>
+<h3 id="Cookie-选项"><a href="#Cookie-选项" class="headerlink" title="Cookie 选项"></a>Cookie 选项</h3><p>cookie 能够使用分号分隔来配置一些属性。</p>
+<ul>
+<li><code>cookiename=cookievalue</code> ：默认的 cookie 键值对</li>
+<li><code>Expires=date</code> ：cookie 的过期时间，默认是浏览器关闭就会被删除</li>
+<li><code>Max-age=seconds</code> ：和 Expires 功能一样也是设置过期时间，但是是以秒计数，优先级高于 Expires</li>
+<li><code>Domain=DomainName</code> : 设置 cookie 发送时的域名，默认是当前页面域名</li>
+<li><code>Path=URL</code> : 指明 cookie 发送的 url 地址，默认为 ‘&#x2F;‘</li>
+<li><code>Secure</code> : 只有在 https 协议下才会发送该 cookie</li>
+<li><code>HttpOnly</code> : 禁止客户端 javascript 手动设置 cookie</li>
+</ul>
+<h3 id="使用-Session-代替-Cookie"><a href="#使用-Session-代替-Cookie" class="headerlink" title="使用 Session 代替 Cookie"></a>使用 Session 代替 Cookie</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> url = <span class="built_in">require</span>(<span class="string">&#x27;url&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> qs = <span class="built_in">require</span>(<span class="string">&#x27;querystring&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> session = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">http.<span class="title function_">createServer</span>(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> cookies = <span class="title function_">parseCookies</span>(req.<span class="property">headers</span>.<span class="property">cookie</span>);</span><br><span class="line">    <span class="keyword">if</span>(req.<span class="property">url</span>.<span class="title function_">startsWith</span>(<span class="string">&#x27;/login&#x27;</span>)) &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; query &#125; = url.<span class="title function_">parse</span>(req.<span class="property">url</span>);</span><br><span class="line">        <span class="keyword">const</span> &#123; name &#125; = qs.<span class="title function_">parse</span>(query);</span><br><span class="line">        <span class="keyword">const</span> expires = <span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">        expires.<span class="title function_">setMinutes</span>(expires.<span class="title function_">getMinutes</span>() + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">const</span> randomInt = +<span class="keyword">new</span> <span class="title class_">Date</span>();</span><br><span class="line">        session[randomInt] = &#123;</span><br><span class="line">            name,</span><br><span class="line">            expires</span><br><span class="line">        &#125;;</span><br><span class="line">        res.<span class="title function_">writeHead</span>(<span class="number">302</span>, &#123;</span><br><span class="line">            <span class="title class_">Location</span>: <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;Set-Cookie&#x27;</span>: <span class="string">`session=<span class="subst">$&#123;randomInt&#125;</span>;Expires=<span class="subst">$&#123;expires.toUTCString()&#125;</span>;HttpOnly;Path=/`</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">        res.<span class="title function_">end</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cookies.<span class="property">session</span> &amp;&amp; session[cookies.<span class="property">session</span>].<span class="property">expires</span> &gt; <span class="keyword">new</span> <span class="title class_">Date</span>()) &#123;</span><br><span class="line">        res.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123; <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/html; charset=utf-8&#x27;</span>&#125;);</span><br><span class="line">        res.<span class="title function_">end</span>(<span class="string">`Welcome <span class="subst">$&#123;session[cookies.session].name&#125;</span>`</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fs.<span class="title function_">readFile</span>(<span class="string">&#x27;./server4.html&#x27;</span>, <span class="function">(<span class="params">err,data</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (err) &#123;</span><br><span class="line">                <span class="keyword">throw</span> err;</span><br><span class="line">            &#125;</span><br><span class="line">            res.<span class="title function_">end</span>(data);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">8084</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listening on port 8084&#x27;</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这个例子中，我们在提交名字后让浏览器设置了一个名为 session 值为一个随机整数的 cookie，并在服务端维护了一个 session 的缓存对象。如果 cookie.session 没有过期，那么我们可以从中获取 session 的值。</p>
+<p><strong>Session 是什么？</strong></p>
+<ul>
+<li>基于 session 的身份验证，用户信息是保存在服务器端的，而浏览器和服务器之间只通过一个 session id 进行交流</li>
+<li>有很多实现 session id 的方式，大部分网站使用 cookie 进行实现</li>
+<li>服务端的 session 通常是维护在数据库中（redis）</li>
+<li>具体实现中，我们不会直接使用一个变量作为 session id，我们经常会使用第三方模块（例如 express-session 或 cookie-parser）。这样更加安全。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/NodeJS/" rel="tag"># NodeJS</a>
+              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AD%98%E5%82%A8/" rel="tag"># 浏览器存储</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/21/2021-04-21-value-type-of-javascript.html" rel="prev" title="JavaScript 中的值">
+                  <i class="fa fa-angle-left"></i> JavaScript 中的值
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/21/2021-05-21-typescript-docuemnt-essence.html" rel="next" title="TypeScript 文档精粹">
+                  TypeScript 文档精粹 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

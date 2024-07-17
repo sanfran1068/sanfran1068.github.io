@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="文章来源：https:&#x2F;&#x2F;segmentfault.com&#x2F;a&#x2F;1190000006879700文章优点：采用总分总的形式进行撰写，结构和章节明确，发散较广。本文从打开网站的完整流程进行分析：DNS解析，TCP连接，发送HTTP请求，服务器处理请求并返回HTTP报文，浏览器解析渲染页面，连接结束。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从输入URL到页面加载发生了什么之进阶篇">
+<meta property="og:url" content="https://keefe.wang/2018/03/22/2018-03-22-what-happend-during-opening-url.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="文章来源：https:&#x2F;&#x2F;segmentfault.com&#x2F;a&#x2F;1190000006879700文章优点：采用总分总的形式进行撰写，结构和章节明确，发散较广。本文从打开网站的完整流程进行分析：DNS解析，TCP连接，发送HTTP请求，服务器处理请求并返回HTTP报文，浏览器解析渲染页面，连接结束。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/O1CN01CyEdCz1VBG9VdQ4xB_!!6000000002614-0-tps-800-518.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/O1CN01IDCe7X1qbSk8Ue29Z_!!6000000005514-0-tps-2584-1460.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i3/O1CN01Qnfdal1fBOQSgeKkv_!!6000000003968-0-tps-600-66.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i1/O1CN016XZiQ31QdaZTG2t5w_!!6000000001999-0-tps-624-289.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i2/O1CN01V0qNep1cVb3Fykjrr_!!6000000003606-0-tps-532-769.jpg">
+<meta property="og:image" content="https://img.alicdn.com/imgextra/i4/O1CN01BU8Wr61Ywq9E8e29w_!!6000000003124-0-tps-1668-1230.jpg">
+<meta property="article:published_time" content="2018-03-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.649Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="HTTP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.alicdn.com/imgextra/i1/O1CN01CyEdCz1VBG9VdQ4xB_!!6000000002614-0-tps-800-518.jpg">
+
+
+<link rel="canonical" href="https://keefe.wang/2018/03/22/2018-03-22-what-happend-during-opening-url.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2018/03/22/2018-03-22-what-happend-during-opening-url.html","path":"2018/03/22/2018-03-22-what-happend-during-opening-url.html","title":"从输入URL到页面加载发生了什么之进阶篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>从输入URL到页面加载发生了什么之进阶篇 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E7%AB%A0%E9%A6%96%E5%85%88%E6%8C%87%E5%87%BA%E6%95%B4%E4%B8%AA%E8%BF%87%E7%A8%8B%E5%88%86%E4%B8%BA%E5%85%AD%E5%A4%A7%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.</span> <span class="nav-text">文章首先指出整个过程分为六大步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">DNS解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">TCP连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E9%80%81HTTP%E8%AF%B7%E6%B1%82"><span class="nav-number">4.</span> <span class="nav-text">发送HTTP请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E8%A7%A3%E6%9E%90%E6%B8%B2%E6%9F%93%E9%A1%B5%E9%9D%A2"><span class="nav-number">5.</span> <span class="nav-text">浏览器解析渲染页面</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2018/03/22/2018-03-22-what-happend-during-opening-url.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从输入URL到页面加载发生了什么之进阶篇 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从输入URL到页面加载发生了什么之进阶篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-03-22 12:00:00" itemprop="dateCreated datePublished" datetime="2018-03-22T12:00:00+08:00">2018-03-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Reading/" itemprop="url" rel="index"><span itemprop="name">Reading</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>文章来源：<a href="https://segmentfault.com/a/1190000006879700">https://segmentfault.com/a/1190000006879700</a><br>文章优点：采用总分总的形式进行撰写，结构和章节明确，发散较广。<br>本文从打开网站的完整流程进行分析：DNS解析，TCP连接，发送HTTP请求，服务器处理请求并返回HTTP报文，浏览器解析渲染页面，连接结束。</p>
+<span id="more"></span>
+
+<h4 id="文章首先指出整个过程分为六大步骤"><a href="#文章首先指出整个过程分为六大步骤" class="headerlink" title="文章首先指出整个过程分为六大步骤"></a>文章首先指出整个过程分为六大步骤</h4><ul>
+<li>DNS解析</li>
+<li>TCP连接</li>
+<li>发送HTTP请求</li>
+<li>服务器处理请求并返回HTTP报文</li>
+<li>浏览器解析渲染页面</li>
+<li>连接结束</li>
+</ul>
+<h4 id="DNS解析"><a href="#DNS解析" class="headerlink" title="DNS解析"></a>DNS解析</h4><p>将网站的【姓名】翻译成【身份证号】，是一个翻译的过程。<br>这个过程是将网址从右到左进行解析和查询的过程。.&#x3D;&gt;com&#x3D;&gt;google.com<br>为了查询效率，DNS解析简历起多级缓存（浏览器缓存，系统缓存，路由器缓存，IPS服务器缓存，根域名服务器缓存，顶级域名服务器缓存，主域名服务器缓存）<br>为了均衡地发送和处理请求，DNS进行负载均衡（DNS重定向），CDN也是利用了该技术，根据每台机器负载量、地理位置距离等返回给用户最优的一个IP地址<br>没有使用CDN时请求服务器资源：localDNS-rootDNS-逐级查询到域名授权的DNS记录-使用查询到的ip去请求内容<br>使用了CDN之后：localDNS-rootDNS-逐级查询到域名授权的DNS记录-向DNS服务器请求最优ip地址-使用该ip去CDN节点服务器返回对应的资源</p>
+<p><img src="https://img.alicdn.com/imgextra/i1/O1CN01CyEdCz1VBG9VdQ4xB_!!6000000002614-0-tps-800-518.jpg" alt="DNS解析流程图"><br><img src="https://img.alicdn.com/imgextra/i1/O1CN01IDCe7X1qbSk8Ue29Z_!!6000000005514-0-tps-2584-1460.jpg" alt="DNS解析流程图"></p>
+<h4 id="TCP连接"><a href="#TCP连接" class="headerlink" title="TCP连接"></a>TCP连接</h4><p>网站请求大部分使用http请求，http协议是使用tcp作为其传输层协议，（应用http、传输tcp、网络ip、数据、物理），http由tcp报文中提取。<br>由于http报文为明文存在一定风险，所以在http报文包裹入tcp报文之前使用ssl对其进行加密。<br>https在原有tcp握手的基础上需要提前进行一个解密握手。https会有时间损耗，需要在安全和性能两者做出权衡。（公钥加密报文，私钥加密公钥）</p>
+<h4 id="发送HTTP请求"><a href="#发送HTTP请求" class="headerlink" title="发送HTTP请求"></a>发送HTTP请求</h4><p>请求报文：请求行（请求方法、内容、协议），请求报头（Accept、Content-Type、Cookie、User-Agent）、请求正文（POST&#x2F;PUT时会有）<br>响应报文：状态码、响应报头、相应报文<br>状态码：<br>1xx：指示信息–表示请求已接收，继续处理。<br>2xx：成功–表示请求已被成功接收、理解、接受。<br>3xx：重定向–要完成请求必须进行更进一步的操作。4xx：客户端错误–请求有语法错误或请求无法实现。5xx：服务器端错误–服务器未能实现合法的请求。</p>
+<h4 id="浏览器解析渲染页面"><a href="#浏览器解析渲染页面" class="headerlink" title="浏览器解析渲染页面"></a>浏览器解析渲染页面</h4><p>文档来源：<a href="https://www.html5rocks.com/en/tutorials/internals/howbrowserswork">https://www.html5rocks.com/en/tutorials/internals/howbrowserswork</a><br>主要文章：<a href="https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/#The_rendering_engine">https://www.html5rocks.com/en/tutorials/internals/howbrowserswork/#The_rendering_engine</a><br>总流程：<br><img src="https://img.alicdn.com/imgextra/i3/O1CN01Qnfdal1fBOQSgeKkv_!!6000000003968-0-tps-600-66.jpg" alt="浏览器解析渲染页面总流程"></p>
+<p>没有脚本的流程：<br><img src="https://img.alicdn.com/imgextra/i1/O1CN016XZiQ31QdaZTG2t5w_!!6000000001999-0-tps-624-289.jpg" alt="没有脚本的流程"></p>
+<p>HTML Parsing: 输出DOM tree<br>HTML不是一种context free grammar，是因为它不同于XML，它允许一些类似标签缺失等的容错<br>分为两部分：tokenize和tree construction<br>Tokenize：状态机实现，初始状态为DATA，遇到&lt;状态改为TAGOPEN，之后遇到第一个a-z的字符状态改为TAGNAME，之后遇到&gt;状态改为DATA，直到&lt;&#x2F;&gt;，tokenize就commit一个token，<br>Tree Construction：状态机实现。Document Object在token的parser创建时同时创建，每当一个token被commited，constroctor会判断该token跟哪个dom元素相关，新建该token的元素，并添加到开放元素栈（这个栈用于检查标签闭合以及未正常闭合标签）中：<br><img src="https://img.alicdn.com/imgextra/i2/O1CN01V0qNep1cVb3Fykjrr_!!6000000003606-0-tps-532-769.jpg" alt="DOM tree 生成"></p>
+<p>css和js的parse过程：<br>Firefox blocks all scripts when there is a style sheet that is still being loaded and parsed.<br>WebKit blocks scripts only when they try to access certain style properties that may be affected by unloaded style sheets.<br>文章的优点：<br>从dom tree的构建的词法分析层面指出一些标签错误以及兼容方式，从语法分析层面指出了类似<table><table></table></table>这种情况应当怎样处理。<br>render tree构建过程中，构建方法对head标签以及display:none的标签不予插入树结构中，而hidden则会存在在结构当中。</p>
+<p>Web优化<br>雅虎35条军规：<a href="https://juejin.im/post/5b73ef38f265da281e048e51">https://juejin.im/post/5b73ef38f265da281e048e51</a><br><img src="https://img.alicdn.com/imgextra/i4/O1CN01BU8Wr61Ywq9E8e29w_!!6000000003124-0-tps-1668-1230.jpg" alt="35条军规"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/tags/HTTP/" rel="tag"># HTTP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/10/10/2017-10-10-The-Good-Part-of-JavaScripts-The-Good-Part.html" rel="prev" title="JS语言精粹中的精粹">
+                  <i class="fa fa-angle-left"></i> JS语言精粹中的精粹
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/01/2019-12-01-Vue-source-code-reading-data-binding.html" rel="next" title="源码阅读 - Vue的数据响应式原理">
+                  源码阅读 - Vue的数据响应式原理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

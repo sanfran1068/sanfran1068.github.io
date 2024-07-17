@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"keefe.wang","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Introduction to TypeScript TypeScript is a super set of JavaScript. 一个没有任何预发错误的 js 文件也可以被 ts 正常编译。 TS 一般会支持到 JS 未来版本 stage3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 文档精粹">
+<meta property="og:url" content="https://keefe.wang/2021/05/21/2021-05-21-typescript-docuemnt-essence.html">
+<meta property="og:site_name" content="Keefe&#39;s Café">
+<meta property="og:description" content="Introduction to TypeScript TypeScript is a super set of JavaScript. 一个没有任何预发错误的 js 文件也可以被 ts 正常编译。 TS 一般会支持到 JS 未来版本 stage3">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-21T15:01:00.000Z">
+<meta property="article:modified_time" content="2024-07-17T07:10:56.651Z">
+<meta property="article:author" content="Keefe Wang">
+<meta property="article:tag" content="基础知识">
+<meta property="article:tag" content="TypeScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://keefe.wang/2021/05/21/2021-05-21-typescript-docuemnt-essence.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://keefe.wang/2021/05/21/2021-05-21-typescript-docuemnt-essence.html","path":"2021/05/21/2021-05-21-typescript-docuemnt-essence.html","title":"TypeScript 文档精粹"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TypeScript 文档精粹 | Keefe's Café</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Keefe's Café</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduction-to-TypeScript"><span class="nav-number">1.</span> <span class="nav-text">Introduction to TypeScript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TypeScript-Setup"><span class="nav-number">2.</span> <span class="nav-text">TypeScript Setup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TypeScript-Type"><span class="nav-number">3.</span> <span class="nav-text">TypeScript Type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">5.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">泛型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE"><span class="nav-number">8.</span> <span class="nav-text">枚举</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E8%AE%BA"><span class="nav-number">9.</span> <span class="nav-text">类型推论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">10.</span> <span class="nav-text">类型兼容性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E7%B1%BB%E5%9E%8B"><span class="nav-number">11.</span> <span class="nav-text">高级类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Symbol"><span class="nav-number">12.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">13.</span> <span class="nav-text">迭代器和生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">14.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">15.</span> <span class="nav-text">命名空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90"><span class="nav-number">16.</span> <span class="nav-text">模块解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%90%88%E5%B9%B6"><span class="nav-number">17.</span> <span class="nav-text">声明合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSX"><span class="nav-number">18.</span> <span class="nav-text">JSX</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="nav-number">19.</span> <span class="nav-text">装饰器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mixins"><span class="nav-number">20.</span> <span class="nav-text">Mixins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%96%9C%E7%BA%BF%E6%8C%87%E4%BB%A4"><span class="nav-number">21.</span> <span class="nav-text">三斜线指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Javascript-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5"><span class="nav-number">22.</span> <span class="nav-text">Javascript 文件类型检查</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Keefe Wang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keefe.wang/2021/05/21/2021-05-21-typescript-docuemnt-essence.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Keefe Wang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TypeScript 文档精粹 | Keefe's Café">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TypeScript 文档精粹
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-21 23:01:00" itemprop="dateCreated datePublished" datetime="2021-05-21T23:01:00+08:00">2021-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-17 15:10:56" itemprop="dateModified" datetime="2024-07-17T15:10:56+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Document/" itemprop="url" rel="index"><span itemprop="name">Document</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Introduction-to-TypeScript"><a href="#Introduction-to-TypeScript" class="headerlink" title="Introduction to TypeScript"></a>Introduction to TypeScript</h3><ul>
+<li>TypeScript is a super set of JavaScript. 一个没有任何预发错误的 js 文件也可以被 ts 正常编译。</li>
+<li>TS 一般会支持到 JS 未来版本 stage3</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="TypeScript-Setup"><a href="#TypeScript-Setup" class="headerlink" title="TypeScript Setup"></a>TypeScript Setup</h3><ul>
+<li>install NodeJS</li>
+<li>install TypeScript compiler (npm install -g typescript)</li>
+</ul>
+<h3 id="TypeScript-Type"><a href="#TypeScript-Type" class="headerlink" title="TypeScript Type"></a>TypeScript Type</h3><p>Type 描述一个值拥有什么样的属性和方法，每一个值都有一个类型。Type的主要目的，一是为了 TypeScript 编译器分析代码错误，二是让开发者明确所处理的变量的特征和属性。</p>
+<ul>
+<li>Primitive Type: string, number, boolean, null, undefined, symbol<ul>
+<li>null和undefined: 一般不会用作类型标记，只能赋值给void类型和其自身类型的变量</li>
+</ul>
+</li>
+<li>Object Types: functions, arrays, classes etc.<ul>
+<li>object vs. Object: object 代表所有非原始类型值，Object 描述 objects 所拥有的能力</li>
+<li>{} 是一种特殊类型，空对象</li>
+<li>tuple（元组）: 长度固定、元素确定且无重复的数组，可以有可选项带 ? 表示，通过[type1, type2…]进行标记</li>
+<li>enum（枚举）: 一组常量，enum Month { Jan &#x3D; 1, Feb, Mar … }，定义枚举，默认有各自序号，也可以为每个自行定义</li>
+<li>array（数组）: 可以通过 type[] 或 Array<type> 进行标记</li>
+<li>any: 不进行类型检查直接通过编译阶段</li>
+<li>void: 没有任何类型，一般用于没有返回值的函数</li>
+<li>never: 用不存在的值的类型，总抛出异常或永无返回值的函数表达式。只能赋值给自身类型的变量</li>
+</ul>
+</li>
+<li>类型标记（type annotation: variable: [type]）</li>
+<li>类型推断（type inference）<br>变量赋值、函数参数设置默认值、函数返回值类型确定时会自动推断其类型。TS 能够推断出当下变量最合适的一个类型。</li>
+<li>类型断言：通过“尖括号 &lt;&gt; ”和 as 语法<br>当变量只声明未赋值时、变量类型无法推断、函数返回值类型不明确等情况是需要类型标记的。</li>
+</ul>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><ul>
+<li>通过 ? 表示可选属性</li>
+<li>通过添加 readonly 表示只读属性，只能在对象刚刚创建时赋值</li>
+<li>如果有未知的需要扩展的属性，可以添加 [propName: string]: any 在接口中</li>
+<li>方法的接口：（param1: type1, param2: type2): returnType</li>
+<li>索引（类数组）类型 [index: number]: string，可以通过下标返回对应的值</li>
+<li>类接口：强制一个类符合某种契约，可以通过 implements 对接口进行实现和拓展</li>
+<li>接口继承：通过 extends 对接口进行集成，在原有接口上添加更多属性定义</li>
+<li>混合类型：对象可以同时作为函数和对象使用</li>
+</ul>
+<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><ul>
+<li>类可以通过 extends 进行继承。派生类可以没有构造函数，若写构造函数必须调用 super()。在构造函数里访问 this 的属性之前，我们 一定要调用 super()</li>
+<li>成员默认为 public；设置为 private 时就不能再声明它的类（包括派生类）外部使用；设置为 protected 时类似 private，但是派生类中可以访问</li>
+<li>ts 使用鸭子类型（结构性类型系统），成员类型兼容（private、protected修饰符也要兼容）即类兼容，类实例可以相互赋值</li>
+<li>构造函数也可以被标记成 protected。 这意味着这个类不能在包含它的类外被实例化，但是能被继承</li>
+<li>readonly 修饰的成员必须在声明、构造函数中被初始化</li>
+<li>静态成员，存在在类本身，使用时需要去访问类本身</li>
+<li>abstract 修饰的抽象类作为其他派生类的基类使用，不可直接实例化，但是可以作为一种类型。抽象类中的抽象（abstract 修饰的）方法必须在派生类中实现</li>
+<li>定义类即定义了实例的类型，类可以当做接口使用</li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li>函数类型由参数类型（参数名并不重要）与返回值类型组成，例如 let myAdd: (x: number, y: number) &#x3D;&gt; number &#x3D; function(x: number, y: number): number { return x + y; };</li>
+<li>可选参数必须在参数之后，用 ? 表示，不传时值为 undefined。参数默认值用 &#x3D; 表示。</li>
+<li>剩余参数必须在参数之后，用 …restOfParams 表示，restOfParams 作为参数数组使用。</li>
+<li>如果需要对函数进行重载，需要给函数设置多个类型</li>
+</ul>
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><p>当我们在设计函数或接口类型时，考虑到函数和接口的可复用性，可能会需要对参数和返回值类型进行动态传入，这时就需要类型的变量。反省函数指的就是可以传入类型变量作为参数，从而确定函数参数和返回值的类型。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> loggingIdentity&lt;T&gt;(<span class="attr">arg</span>: T[]): T[] &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(arg.<span class="property">length</span>);</span><br><span class="line">    <span class="keyword">return</span> arg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>泛型只用于函数，泛型使用 &lt;T, U&gt; 来表示（T 为类型参数，可以用任何参数名）</li>
+<li>泛型接口：<code>interface GenericIdentityFn&lt;T&gt; &#123; (arg: T): T; &#125;</code></li>
+<li>泛型类：<code>class GenericNumber&lt;T&gt; &#123; zeroValue: T; &#125;</code></li>
+<li>泛型约束：给泛型增加条件，让泛型不再是任意类型：<ul>
+<li>使用 extends 关键词实现约束：<code>&lt;T extends Lengthwise&gt;</code></li>
+<li>传入参数为实例时：<code>function create&lt;T&gt;(c: &#123;new(): T; &#125;): T &#123; eturn new c(); &#125;</code>，<code>c:&#123;new():T&#125;</code> 和 <code>c:new()=&gt;T</code> 是一样的。new() 在此处时构造函数类型字面量，而 new func() 中 new 是操作符。</li>
+</ul>
+</li>
+</ul>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><ul>
+<li>枚举用来定义一组常量，并且可以给每个枚举定义其数字值，默认从 0 开始；如果定义其值为字符串则不会有自增的特性。</li>
+<li>枚举是在运行时真正存在的对象，意思是枚举在运行时可以当做对象使用</li>
+<li>数字值的枚举成员可以类似下标进行反向映射</li>
+<li>const 枚举：在编译阶段会被删除，<code>const enum Enum &#123; A = 1 &#125;</code></li>
+<li>外部枚举：<code>declare enum Enum &#123; A = 1 &#125;</code></li>
+</ul>
+<h3 id="类型推论"><a href="#类型推论" class="headerlink" title="类型推论"></a>类型推论</h3><p>TS 中，没有明确指出类型，类型推论会帮助提供类型。这种推论只发生在<strong>初始化变量和成员</strong>，<strong>设置默认参数值</strong>和<strong>决定函数返回值</strong>时。</p>
+<h3 id="类型兼容性"><a href="#类型兼容性" class="headerlink" title="类型兼容性"></a>类型兼容性</h3><p>TypeScript里的类型兼容性是基于结构子类型的，结构类型是一种只使用其成员来描述类型的方式，也就是鸭子模型。如果 A 属于 B，那么 B 类型可以赋值给 A 类型（也就是说多属性可以赋值给少属性的，反之则不可以）。那么这两种类型（接口）就是兼容的（兼容指的是这两种类型的变量可以相互赋值）。</p>
+<ul>
+<li>对象类型兼容：A、B 成员变量有包含关系时，多的可以赋值给少的。</li>
+<li>函数类型兼容：参数有包含关系时，少参数的可以赋值给多参数的。返回值是简单值可以互相复制，如果是对象类型，遵循对象类型兼容。</li>
+</ul>
+<h3 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h3><ul>
+<li>交叉类型：&lt;A &amp; B &amp; C&gt;，需要有 A、B、C 中的所有成员。</li>
+<li>联合类型：<code>func(a: number | string)</code>，指一个变量可以是几种类型之一。需要使用类型断言（或 instanceof 操作符）判断到底是哪种类型。</li>
+<li>类型别名：type NumOrStr &#x3D; number | string，这不是一种新类型，而是一个名字来引用这些类型。类型别名不能被 extends&#x2F;implements。</li>
+<li>可辨识联合：联合的类型中有一个通用字段可以用来辨识各个类型</li>
+<li>keyof 可以直接将对象或对象类型接口的 key 变成联合类型</li>
+</ul>
+<h3 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h3><p>Symbol 是一种原生类型，通过 Symbol() 构造函数创建。</p>
+<ul>
+<li>Symbol 创建后均为不可变且唯一的（尽管构造时传参相同）。</li>
+<li>Symbol 构造的值可以被用作对象属性的 key，可以作为对象的成员属性名（包括方法）。</li>
+<li>Symbol 有内置的，包括 Symbol.hasInstance、Symbol.isConcatSpreadable、Symbol.iterator、Symbol.match…</li>
+</ul>
+<h3 id="迭代器和生成器"><a href="#迭代器和生成器" class="headerlink" title="迭代器和生成器"></a>迭代器和生成器</h3><p>当一个对象实现了 Symbol.iterator 属性时，就认为这个对象是可迭代的。</p>
+<ul>
+<li>for…of：遍历可迭代的对象，调用对象上的Symbol.iterator方法，返回的是<strong>属性值</strong>。</li>
+<li>for…in：与 for…of 相同，但是返回的是<strong>属性键</strong>。</li>
+</ul>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>模块在其自身的作用域里执行，而不是在全局作用域里；这意味着定义在一个模块里的变量，函数，类等等在模块外部是不可见的。如果想在不同作用域使用模块，必须使用 import 和 export 进行导入和导出。<strong>若没有标注 import 或 export</strong> 则视为全局作用域。</p>
+<ul>
+<li>导出<ul>
+<li>导出声明：任何声明（比如变量，函数，类，类型别名或接口）都能够通过添加export关键字来导出。</li>
+<li>B 重新导出 A 中的内容，是不会在 B 中添加变量，而是直接导出。</li>
+<li>默认导出：每个模块有且仅有一个默认导出 default，类和函数声明可以直接被标记为默认导出。</li>
+<li>若使用 <code>export = someClass/someFunc</code> 导出一个模块，则必须使用TypeScript的特定语法 <code>import module = require(&quot;someModule&quot;)</code> 来导入此模块。</li>
+</ul>
+</li>
+<li>导入<ul>
+<li>导入模块中某个内容 <code>import &#123; content &#125; from &#39;someModule&#39;</code>；导入整个模块<code>import * as someModule</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h3><p>一个 ts 文件内部如果想使用模块，可以使用 namespace 关键字来进行声明。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title class_">Validation</span> &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">interface</span> <span class="title class_">StringValidator</span> &#123;</span><br><span class="line">        <span class="title function_">isAcceptable</span>(<span class="attr">s</span>: <span class="built_in">string</span>): <span class="built_in">boolean</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">validators</span>: &#123; [<span class="attr">s</span>: <span class="built_in">string</span>]: <span class="title class_">Validation</span>.<span class="property">StringValidator</span>; &#125; = &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>就算相同的 namespace 分割在不同文件中，使用时也是同一个 namespace，编译成一个文件时需要添加 –outFile 参数</li>
+<li>namespace 也可以嵌套：<code>namespace Shapes &#123; export namespace Polygons &#123; export class Triangle &#123; &#125; &#125; &#125;</code></li>
+</ul>
+<h3 id="模块解析"><a href="#模块解析" class="headerlink" title="模块解析"></a>模块解析</h3><p>编译器在查找导入的模块内容时，会遵循一定流程。</p>
+<ul>
+<li><p>相对导入是以 &#x2F;，.&#x2F;，..&#x2F; 开头的文件，相对于导入这些模块的文件的文件地址，不能解析为一个外部模块声明</p>
+</li>
+<li><p>所有其他类型的导入是非相对导入，通过路径映射来解析，可以被解析为外部模块声明</p>
+</li>
+<li><p>模块解析策略有 Classic 和 Node 两种。</p>
+<ul>
+<li>Classic：TS 以前的默认策略：在 <code>/root/src/folder/A.ts</code> 中 <code>import &#123; b &#125; from &#39;./moduleB&#39;;</code>从包含导入文件的目录依次向上级目录遍历<br>  &#x2F;root&#x2F;src&#x2F;folder&#x2F;moduleB.ts<br>  &#x2F;root&#x2F;src&#x2F;folder&#x2F;moduleB.d.ts<br>  &#x2F;root&#x2F;src&#x2F;moduleB.ts<br>  &#x2F;root&#x2F;src&#x2F;moduleB.d.ts<br>  &#x2F;root&#x2F;moduleB.ts<br>  &#x2F;root&#x2F;moduleB.d.ts<br>  &#x2F;moduleB.ts<br>  &#x2F;moduleB.d.ts</li>
+<li>Node：通常在 NodeJS 中是通过 require 函数来导入模块的。而根据相对&#x2F;非相对路径会有不同查找行为<ul>
+<li>相对路径：在文件 <code>/root/src/folder/A.ts</code> 中 <code>import x = require(&#39;./moduleB&#39;);</code><ul>
+<li>检查 <code>/root/src/moduleB.js</code> 文件是否存在</li>
+<li>检查 <code>/root/src/moduleB</code>目录是否包含一个 package.json 文件，且 package.json 文件指定了一个 “main” 模块</li>
+<li><code>/root/src/moduleB</code> 目录是否包含一个 index.js 文件</li>
+</ul>
+</li>
+<li>非相对路径：在文件 <code>/root/src/folder/A.ts</code> 中 <code>import x = require(&#39;moduleB&#39;);</code><ul>
+<li>首先在同一级目录下的 node_modules 目录中进行寻找，其次会在父级目录下的 node_modules 目录中进行寻找，以此向根目录方向查找：<br>  <code>/root/src/node_modules/moduleB.js</code> &#x3D;&gt; <code>/root/src/node_modules/moduleB/package.json</code> &#x3D;&gt; <code>/root/src/node_modules/moduleB/index.js/root/node_modules/moduleB.js</code> &#x3D;&gt; <code>/root/node_modules/moduleB/package.json</code> &#x3D;&gt; <code>/root/node_modules/moduleB/index.js</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>TypeScript（模仿 Node.js 运行时的解析策略来编译定位模块定义文件）：<ul>
+<li>引入相对路径的文件时：<ul>
+<li>从本级目录向根目录方向查找</li>
+<li>在同级目录下，会依据 moduleB.ts &#x3D;&gt; moduleB.tsx &#x3D;&gt; moduleB.d.ts &#x3D;&gt; moduleB&#x2F;package.json &#x3D;&gt; moduleB&#x2F;index.ts &#x3D;&gt; moduleB&#x2F;index.tsx &#x3D;&gt; moduleB&#x2F;index.tsx &#x3D;&gt; moduleB&#x2F;index.d.ts</li>
+</ul>
+</li>
+<li>引入绝对路径的模块时：<ul>
+<li>从本级目录下的 node_modules 向根目录下的 node_modules 方向查找</li>
+<li>在同级目录下，同“引入相对路径”相同</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>  在引入的文件是相对路径时，路径计算都是相对于当前路径计算；如果引入文件是绝对路径时，会根据 “tsconfig.json” 里的 baseUrl 属性值来计算；如果想指定某些 npm 包的解析路径，可以在 ”tsconfig.json” 中的 compilerOptions.paths 中进行设置，而 paths 的值是基于 baseUrl 进行解析。</p>
+<h3 id="声明合并"><a href="#声明合并" class="headerlink" title="声明合并"></a>声明合并</h3><p>  指编译器将针对同一个名字的两个独立声明合并为单一声明。任何数量的声明都可被合并；不局限于两个声明。</p>
+<p>  TypeScript 中的声明可以产生<strong>命名空间</strong>、<strong>类型</strong>和<strong>值</strong>三种实体。</p>
+<ul>
+<li>接口合并<ul>
+<li>接口的非函数的<strong>成员应该是唯一</strong>的。如果<strong>不是唯一的，那么必须是相同的类型</strong>。如果同名但类型不同，则编译器会报错。</li>
+<li>如果成员为函数，每个同名函数声明都会被当成这个函数的一个重载。</li>
+<li>接口内部成员声明顺序不变，接口间则是后声明的接口成员重载出现会排在前面</li>
+</ul>
+</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">Box</span> &#123;</span><br><span class="line">    <span class="attr">height</span>: <span class="built_in">number</span>;</span><br><span class="line">    <span class="attr">width</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Box</span> &#123;</span><br><span class="line">    <span class="attr">scale</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">box</span>: <span class="title class_">Box</span> = &#123;<span class="attr">height</span>: <span class="number">5</span>, <span class="attr">width</span>: <span class="number">6</span>, <span class="attr">scale</span>: <span class="number">10</span>&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>合并命名空间<ul>
+<li>namespace 中的 export 成员相互是可访问</li>
+<li>namespace 中的非 export 成员，其他命名空间合并来的是无法访问的</li>
+</ul>
+</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> haveMuscles = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">animalsHaveMuscles</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> haveMuscles;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">Animal</span> &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">doAnimalsHaveMuscles</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> haveMuscles;  <span class="comment">// Error, because haveMuscles is not accessible here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>合并命名空间和类：可以实现内部类</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Album</span> &#123;</span><br><span class="line">    <span class="attr">label</span>: <span class="title class_">Album</span>.<span class="property">AlbumLabel</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">Album</span> &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">class</span> <span class="title class_">AlbumLabel</span> &#123; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>合并命名空间和函数</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">buildLabel</span>(<span class="params"><span class="attr">name</span>: <span class="built_in">string</span></span>): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> buildLabel.<span class="property">prefix</span> + name + buildLabel.<span class="property">suffix</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">buildLabel</span> &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">let</span> suffix = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">let</span> prefix = <span class="string">&quot;Hello, &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>合并命名空间和枚举：扩展枚举型</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Color</span> &#123;</span><br><span class="line">    red = <span class="number">1</span>,</span><br><span class="line">    green = <span class="number">2</span>,</span><br><span class="line">    blue = <span class="number">4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">Color</span> &#123;</span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">mixColor</span>(<span class="params"><span class="attr">colorName</span>: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (colorName == <span class="string">&quot;yellow&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="title class_">Color</span>.<span class="property">red</span> + <span class="title class_">Color</span>.<span class="property">green</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (colorName == <span class="string">&quot;white&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="title class_">Color</span>.<span class="property">red</span> + <span class="title class_">Color</span>.<span class="property">green</span> + <span class="title class_">Color</span>.<span class="property">blue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (colorName == <span class="string">&quot;magenta&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="title class_">Color</span>.<span class="property">red</span> + <span class="title class_">Color</span>.<span class="property">blue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (colorName == <span class="string">&quot;cyan&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="title class_">Color</span>.<span class="property">green</span> + <span class="title class_">Color</span>.<span class="property">blue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h3><ul>
+<li>使用 JSX 需要：文件改为 .tsx 扩展名，启用 jsx 选项（preserve、react 和 react-native）</li>
+<li>JSX 结果类型默认为 any，可以指定 JSX.Element 接口进行自定义</li>
+<li>JSX 允许使用 {} 内嵌表达式</li>
+<li>as 操作符：.tsx 文件不支持 <foo>bar 的类型断言，必须使用 bar as foo</li>
+<li>元素类型检查：<ul>
+<li>固有元素会生成字符串，以小写字母开头，在 JSX.IntrinsicElements 接口中查找</li>
+<li>值元素（无状态函数组件、类组件），以大写字母开头，在其作用域里按标识符查找<ul>
+<li>无状态函数组件：组件被定义成  Javascript 函数，第一个参数为 props 对象</li>
+<li>类组件：<Expr />，元素类的类型即 Expr 的类型；如果组件是 ES6 的类，类类型就是类的<strong>构造函数+静态部分</strong>，如果组件是工厂函数，类类型就是这个<strong>函数</strong>。元素的实例类型必须赋值给 <code>JSX.ElementClass</code> 或抛出一个错误。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyComponent</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> myComponent = <span class="keyword">new</span> <span class="title class_">MyComponent</span>();</span><br><span class="line"><span class="comment">// 元素类的类型 =&gt; MyComponent</span></span><br><span class="line"><span class="comment">// 元素实例的类型 =&gt; &#123; render: () =&gt; void &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">MyFactoryFunction</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">		    <span class="attr">render</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">		    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> myComponent = <span class="title class_">MyFactoryFunction</span>();</span><br><span class="line"><span class="comment">// 元素类的类型 =&gt; FactoryFunction</span></span><br><span class="line"><span class="comment">// 元素实例的类型 =&gt; &#123; render: () =&gt; void &#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>元素的属性类型检查<ul>
+<li>固有元素：还是在 JSX.IntrinsicElements 接口中查找</li>
+<li>值元素：在元素实例的 props 中指定属性</li>
+</ul>
+</li>
+</ul>
+<h3 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h3><p>  装饰器是一种特殊类型的声明，它能够被附加到<a href="https://www.tslang.cn/docs/handbook/decorators.html#class-decorators">类声明</a>，<a href="https://www.tslang.cn/docs/handbook/decorators.html#method-decorators">方法</a>， <a href="https://www.tslang.cn/docs/handbook/decorators.html#accessor-decorators">访问符</a>，<a href="https://www.tslang.cn/docs/handbook/decorators.html#property-decorators">属性</a>或<a href="https://www.tslang.cn/docs/handbook/decorators.html#parameter-decorators">参数</a>上。 装饰器使用 <code>@expression</code> 这种形式，<code>expression</code> 求值后必须为一个函数，它会在运行时被调用，被装饰的声明信息做为参数传入。</p>
+<ul>
+<li>装饰器工厂函数</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">color</span>(<span class="params"><span class="attr">value</span>: <span class="built_in">string</span></span>) &#123; <span class="comment">// 这是一个装饰器工厂，传入的是与 target 无关的参数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">target</span>) &#123; <span class="comment">//  这是装饰器，target 就是类、方法等</span></span><br><span class="line">        <span class="comment">// do something with &quot;target&quot; and &quot;value&quot;...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>装饰器组合：类似复合函数 **f(g(x))**，由上至下对装饰器表达式求值，由下至上将求值结果进行传参调用</li>
+</ul>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@f</span></span><br><span class="line"><span class="meta">@g</span></span><br><span class="line">x</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>装饰器分为：类装饰器、参数装饰器、方法装饰器、访问符装饰器和属性装饰器。</p>
+<p>  类装饰器应用于<strong>构造函数</strong>，用于监视、修改和替换类定义，不能用于声明文件（.d.ts）和外部上下文（declare 的类）。传参仅构造函数一个。</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @sealed 类装饰器：类将不可增减属性、属性也不可配置</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sealed</span>(<span class="params"><span class="attr">constructor</span>: <span class="title class_">Function</span></span>) &#123;</span><br><span class="line">    <span class="title class_">Object</span>.<span class="title function_">seal</span>(constructor);</span><br><span class="line">    <span class="title class_">Object</span>.<span class="title function_">seal</span>(constructor.<span class="property"><span class="keyword">prototype</span></span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法装饰器</p>
+<p>  方法声明之前声明，会被应用到方法的属性描述符上，用来监视、修改和替换方法定义。传参有三个：类的构造函数（对于静态成员）&#x2F;类实例的原型对象（对于实例成员）、成员名字、成员的属性描述符。返回值会被用作方法的<em>属性描述符</em>（如果输出版本大于ES5）</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">enumerable</span>(<span class="params"><span class="attr">value</span>: <span class="built_in">boolean</span></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"><span class="attr">target</span>: <span class="built_in">any</span>, <span class="attr">propertyKey</span>: <span class="built_in">string</span>, <span class="attr">descriptor</span>: <span class="title class_">PropertyDescriptor</span></span>) &#123;</span><br><span class="line">        descriptor.<span class="property">enumerable</span> = value;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问器装饰器：和成员方法装饰器类似，返回值会被用作方法的<em>属性描述符</em>（如果输出版本大于ES5）</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">configurable</span>(<span class="params"><span class="attr">value</span>: <span class="built_in">boolean</span></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"><span class="attr">target</span>: <span class="built_in">any</span>, <span class="attr">propertyKey</span>: <span class="built_in">string</span>, <span class="attr">descriptor</span>: <span class="title class_">PropertyDescriptor</span></span>) &#123;</span><br><span class="line">        descriptor.<span class="property">configurable</span> = value;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="meta">@configurable</span>(<span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">get</span> <span class="title function_">x</span>() &#123; <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">_x</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>属性装饰器</p>
+<p>  属性装饰器作用是用来监视类中是否有某个名字的属性。传参有两个：类的构造函数（对于静态成员）&#x2F;类实例的原型对象（对于实例成员）、成员名字。返回值会被忽略。</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">format</span>(<span class="params"><span class="attr">formatString</span>: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Reflect</span>.<span class="title function_">metadata</span>(formatMetadataKey, formatString);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Greeter</span> &#123;</span><br><span class="line">    <span class="meta">@format</span>(<span class="string">&quot;Hello, %s&quot;</span>)</span><br><span class="line">    <span class="attr">greeting</span>: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参数装饰器</p>
+<p>  运行时当做函数被调用，返回值会被忽略。</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">required</span>(<span class="params"><span class="attr">target</span>: <span class="title class_">Object</span>, <span class="attr">propertyKey</span>: <span class="built_in">string</span> | <span class="built_in">symbol</span>, <span class="attr">parameterIndex</span>: <span class="built_in">number</span></span>) &#123;&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">validate</span>(<span class="params"><span class="attr">target</span>: <span class="built_in">any</span>, <span class="attr">propertyName</span>: <span class="built_in">string</span>, <span class="attr">descriptor</span>: <span class="title class_">TypedPropertyDescriptor</span>&lt;<span class="title class_">Function</span>&gt;</span>) &#123;&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Greeter</span> &#123;</span><br><span class="line">    <span class="meta">@validate</span></span><br><span class="line">    <span class="title function_">greet</span>(<span class="params"><span class="meta">@required</span> <span class="attr">name</span>: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello &quot;</span> + name + <span class="string">&quot;, &quot;</span> + <span class="variable language_">this</span>.<span class="property">greeting</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="Mixins"><a href="#Mixins" class="headerlink" title="Mixins"></a>Mixins</h3><p>设计一个类可以同时具有多个类的属性和方法。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Disposable</span> &#123;</span><br><span class="line">  <span class="attr">isDisposed</span>: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="title function_">dispose</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">isDisposed</span> = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Activatable</span> &#123;</span><br><span class="line">  <span class="attr">isActive</span>: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="title function_">activate</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">isActive</span> = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">deactivate</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">isActive</span> = <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SmartObject</span> <span class="keyword">implements</span> <span class="title class_">Disposable</span>, <span class="title class_">Activatable</span> &#123;</span><br><span class="line">	<span class="comment">// 因为要混合多个类，所以只能用 implements 而非 extends，但是原有类的方法实现没法直接使用</span></span><br><span class="line">	<span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">isActive</span> + <span class="string">&quot; : &quot;</span> + <span class="variable language_">this</span>.<span class="property">isDisposed</span>), <span class="number">500</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">interact</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">activate</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Disposable</span></span><br><span class="line">  <span class="attr">isDisposed</span>: <span class="built_in">boolean</span> = <span class="literal">false</span>;</span><br><span class="line">  <span class="attr">dispose</span>: <span class="function">() =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Activatable</span></span><br><span class="line">  <span class="attr">isActive</span>: <span class="built_in">boolean</span> = <span class="literal">false</span>;</span><br><span class="line">  <span class="attr">activate</span>: <span class="function">() =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">  <span class="attr">deactivate</span>: <span class="function">() =&gt;</span> <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">applyMixins</span>(<span class="title class_">SmartObject</span>, [<span class="title class_">Disposable</span>, <span class="title class_">Activatable</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里就是将具体方法实现也混合到结果类中</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">applyMixins</span>(<span class="params"><span class="attr">derivedCtor</span>: <span class="built_in">any</span>, <span class="attr">baseCtors</span>: <span class="built_in">any</span>[]</span>) &#123;</span><br><span class="line">  baseCtors.<span class="title function_">forEach</span>(<span class="function"><span class="params">baseCtor</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="title class_">Object</span>.<span class="title function_">getOwnPropertyNames</span>(baseCtor.<span class="property"><span class="keyword">prototype</span></span>).<span class="title function_">forEach</span>(<span class="function"><span class="params">name</span> =&gt;</span> &#123;</span><br><span class="line">      derivedCtor.<span class="property"><span class="keyword">prototype</span></span>[name] = baseCtor.<span class="property"><span class="keyword">prototype</span></span>[name];</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三斜线指令"><a href="#三斜线指令" class="headerlink" title="三斜线指令"></a>三斜线指令</h3><p>三斜线指令是包含单个XML标签的单行注释。 注释的内容会做为编译器指令使用。三斜线指令只能放在文件的最顶端，它的前面只能出现单行&#x2F;多行注释或其他三斜线指令，否则会被当成普通注释。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// &lt;reference path=&quot;...&quot; /&gt;</span></span><br><span class="line"><span class="comment">// 最常用的指令，用于声明文件间的依赖，告诉编译器在编译过程中要引入的额外的文件</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>预处理输入文件</p>
+<p>  编译器会对输入文件进行预处理来解析所有三斜线引用指令。 在这个过程中，额外的文件会加到编译过程中。</p>
+</li>
+<li><p>错误：引用不存在的文件会报错。 一个文件用三斜线指令引用自己会报错。</p>
+</li>
+<li><p>使用 <code>--noResolve</code> ：指定该编译选项，三斜线指令会被忽略。</p>
+</li>
+<li><p><code>/// &lt;reference types=&quot;...&quot; /&gt;</code> 和 <code>/// &lt;reference path=&quot;...&quot; /&gt;</code> 类似，用来声明依赖，与 import 类似。</p>
+</li>
+<li><p><code>/// &lt;reference no-default-lib=&quot;true&quot;/&gt;</code> 将一个文件标记成默认库，在编译过程中不能编译这个默认库，类似 —noLib 命令</p>
+</li>
+<li><p><code>/// &lt;amd-module /&gt;</code></p>
+</li>
+</ul>
+<h3 id="Javascript-文件类型检查"><a href="#Javascript-文件类型检查" class="headerlink" title="Javascript 文件类型检查"></a>Javascript 文件类型检查</h3><p>TypeScript 2.3以后的版本支持使用<code>--checkJs</code>对<code>.js</code>文件进行类型检查和错误提示。</p>
+<ul>
+<li><p>设置是否进行检查的方式：</p>
+<ul>
+<li>如果设置了 —checkJs 配置，可以通过添加<code>// @ts-nocheck</code>注释来忽略类型检查。</li>
+<li>如果没有 —checkJs 配置，可以通过去掉<code>--checkJs</code>设置并添加一个<code>// @ts-check</code>注释来选则检查某些<code>.js</code>文件。</li>
+<li>可以使用<code>// @ts-ignore</code>来忽略本行的错误。</li>
+</ul>
+</li>
+<li><p>使用 JSDoc 表示类型信息，表示类属性的类型信息</p>
+  <figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">number</span>&#125; */</span></span><br><span class="line"><span class="keyword">var</span> x;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">number | undefined</span>&#125; */</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">prop</span> = <span class="literal">undefined</span>;</span><br><span class="line">        <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">number | undefined</span>&#125; */</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">count</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ES2015中，构造函数等同于类</p>
+</li>
+<li><p>.js 文件中，ts能够识别出 CommonJS 模块</p>
+</li>
+<li><p>类、函数和对象字面量都是命名空间</p>
+</li>
+<li><p>对象属性字面量是开放的，对象中的属性可以被赋值任意值，也可以添加任意属性</p>
+</li>
+<li><p><strong><strong>null，undefined，和空数组的类型是any或any[]</strong></strong></p>
+</li>
+<li><p>函数参数是默认可选的，但是不能传过多的参数；未指定类型的参数默认为 any</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="tag"># 基础知识</a>
+              <a href="/tags/TypeScript/" rel="tag"># TypeScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/03/2021-05-03-understand-cookie-and-session-in-javascript-node.html" rel="prev" title="理解 JavaScript（Node）中的 Cookie 和 Session">
+                  <i class="fa fa-angle-left"></i> 理解 JavaScript（Node）中的 Cookie 和 Session
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/01/2021-06-01-angular-document-study-note.html" rel="next" title="Angular 学习笔记">
+                  Angular 学习笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Keefe Wang</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
